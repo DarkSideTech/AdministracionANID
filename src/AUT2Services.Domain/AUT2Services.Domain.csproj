@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>1.0.345.25348</AssemblyVersion>
+    <FileVersion>1.0.345.25348</FileVersion>
+	<TransformOnBuild>true</TransformOnBuild>
+	<OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AUT2Services.Domain.Core\AUT2Services.Domain.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+</Project>

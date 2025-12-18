@@ -1,0 +1,32 @@
+// -------------------------------------------------
+// Dark Side Tech
+// Solution Name : AUT2Services
+// Domain : Administracion version 1.17
+// Date Generated File : 2025-12-03 21:03:27.078
+// -------------------------------------------------
+ 
+using AUT2Services.Domain.Core.Data;
+using AUT2Services.Domain.Entities;
+
+namespace AUT2Services.Domain.Interfaces;
+
+public interface IEntidadRepository : IRepository<Entidad>
+{
+    void Crear(Entidad data);
+    void Modificar(Entidad data);
+    void Eliminar(Entidad data);
+    Task<Entidad> BuscarPor_Id(
+        Guid id 
+        );
+    Task<Entidad> BuscarPor_Id_Usuario_Id_UnidadOrganizacional(
+        Guid id_Usuario, 
+        Guid id_UnidadOrganizacional 
+        );
+    Task<IEnumerable<Entidad>> BuscarPor_Id_Usuario(
+        Guid id_Usuario 
+        );
+    Task<IEnumerable<Entidad>> BuscarPor_Id_UnidadOrganizacional(
+        Guid id_UnidadOrganizacional 
+        );
+}
+
