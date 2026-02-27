@@ -1,11 +1,16 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Messaging;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
+using AUT2Services.Infra.Security.Accounts.BaseEntity;
 using AUT2Services.Infra.Security.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace AUT2Services.Infra.Security.Accounts.ValidateEmail;
 
@@ -16,17 +21,20 @@ public class EmailConfirmationTokenCommandHandler : CommandHandler,
     private readonly AUT2ServicesContext aUT2ServicesContext;
     private readonly IMediatorHandler mediator;
     private readonly IEntidadRepository entidadRepository;
+    private readonly IEmailMessageSender emailMessageSender;
 
     public EmailConfirmationTokenCommandHandler(
         UserManager<Usuario> userManager,
         AUT2ServicesContext aUT2ServicesContext,
         IMediatorHandler mediator,
-        IEntidadRepository entidadRepository)
+        IEntidadRepository entidadRepository,
+        IEmailMessageSender emailMessageSender)
     {
         this.userManager = userManager;
         this.aUT2ServicesContext = aUT2ServicesContext;
         this.mediator = mediator;
         this.entidadRepository = entidadRepository;
+        this.emailMessageSender = emailMessageSender;
     }
 
     public async Task<CommandResponse> Handle(EmailConfirmationTokenCommand command, CancellationToken cancellationToken)
@@ -38,11 +46,11 @@ public class EmailConfirmationTokenCommandHandler : CommandHandler,
         {
             return CommandResponse;
         }
-        var profile = new ProfileModel();
 
+        using var transaction = await aUT2ServicesContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            var usuario = await userManager.FindByIdAsync(command.UserId);
+            var usuario = await this.userManager.FindByEmailAsync(command.Email);
             if (usuario is null)
             {
                 AddError("El usuario no existe, no se puede validar el correo electronico");
@@ -56,62 +64,49 @@ public class EmailConfirmationTokenCommandHandler : CommandHandler,
                     return CommandResponse;
                 }
 
-                using var transaction = await aUT2ServicesContext.Database.BeginTransactionAsync(cancellationToken);
-                var result = await this.userManager.ConfirmEmailAsync(usuario, command.ConfirmationToken);
+                var result = await this.userManager.ConfirmEmailAsync(usuario, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(command.ConfirmationToken)));
                 if (!result.Succeeded)
                 {
                     AddError("No se puede validar el correo electronico");
                     await transaction.RollbackAsync(cancellationToken);
                     return CommandResponse;
                 }
-                
-                var numeroDeDocumento = JsonConvert.DeserializeObject<InformacionAdicionalModel>(usuario.InformacionAdicional!)!.NumeroDeDocumento!;
-                //var entidad = await entidadRepository.BuscarPor_Codigo(numeroDeDocumento);
 
-                //if (entidad is null)
-                //{
-                //    try
-                //    {
-                //        var estructuraAutorizacionCommand = new EstructuraAutorizacionCommand()
-                //        {
-                //            CorreoElectronico = usuario.Email!,
-                //            NumeroDeDocumento = numeroDeDocumento,
-                //            Id_Persona = usuario.IdPersona!,
-                //            NombreADesplegar = usuario.NombreADesplegar!,
-                //            Descripcion = usuario.Descripcion!,
-                //            Id_Usuario = Guid.Parse(usuario.Id)
-                //        };
+                var baseEntityCommand = new BaseEntityCommand()
+                {
+                    CodigoOrganizacion = JsonConvert.DeserializeObject<InformacionAdicionalModel>(usuario.InformacionAdicional!)!.NumeroDeDocumento,
+                    NombreOrganizacion = usuario.NombreADesplegar,
+                    Id_Usuario = Guid.Parse(usuario.Id),
+                    TipoDeEntidad = EnumTipoDeEntidad.PERSONA,
+                    CorreoElectronico = usuario.Email,
+                };
 
-                //        var resultCommand = await mediator.SendCommand(estructuraAutorizacionCommand, cancellationToken);
+                var resulCrearBaseEntityCommand = await mediator.SendCommand(baseEntityCommand, cancellationToken);
 
-                //        if (!resultCommand.Result)
-                //        {
-                //            foreach (var item in resultCommand.ValidationResult.Errors)
-                //            {
-                //                AddError($"{item.ErrorCode} {item.ErrorMessage}");
-                //            }
-                //            await transaction.RollbackAsync(cancellationToken);
-                //        }
-                //        else
-                //        {
-                //            await transaction.CommitAsync(cancellationToken);
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        await transaction.RollbackAsync();
-                //        AddError($"Error no manejado al momento de crear un usuario, error: {ex.Message}");
-                //    }
-                //}
-                //else
-                //{
-                //    await transaction.CommitAsync(cancellationToken);
-                //}
+                if (!resulCrearBaseEntityCommand.Result)
+                {
+                    foreach (var item in resulCrearBaseEntityCommand.ValidationResult.Errors)
+                    {
+                        AddError($"{item.ErrorCode} {item.ErrorMessage}");
+                    }
+                    await transaction.RollbackAsync(cancellationToken);
+                    return CommandResponse;
+                }
+
+                if (string.IsNullOrEmpty(resulCrearBaseEntityCommand.Data))
+                {
+                    AddError("No se pudo crear la entidad base del usuario");
+                    await transaction.RollbackAsync(cancellationToken);
+                    return CommandResponse;
+                }
+
+                await transaction.CommitAsync(cancellationToken);
             }
         }
         catch (Exception ex)
         {
             AddError($"Error al momento de obtener los datos del usuario, message [{ex.Message}]");
+            await transaction.RollbackAsync(cancellationToken);
         }
 
         CommandResponse.Data = string.Empty;

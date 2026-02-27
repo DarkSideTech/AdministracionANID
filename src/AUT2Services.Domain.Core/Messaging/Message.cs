@@ -1,13 +1,12 @@
-﻿namespace AUT2Services.Domain.Core.Messaging
-{
-    public abstract class Message
-    {
-        public string MessageType { get; protected set; }
-        public Guid AggregateId { get; protected set; }
+﻿namespace AUT2Services.Domain.Core.Messaging;
 
-        protected Message()
-        {
-            MessageType = GetType().Name;
-        }
+public abstract class Message
+{
+    public string MessageType { get; protected set; }
+    public Guid AggregateId { get; protected set; }
+
+    protected Message()
+    {
+        MessageType = GetType().Name;
     }
 }

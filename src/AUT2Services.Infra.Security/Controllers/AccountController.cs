@@ -1,10 +1,13 @@
-﻿using AUT2Services.Domain.Core.Mediator;
+﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Models;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Infra.Security.Accounts.ValidateEmail;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace AUT2Services.Infra.Security.Controllers;
 
@@ -14,38 +17,56 @@ public partial class AccountController : ApiController
 {
     private readonly IMediatorHandler mediator;
     private readonly IAccountServiceApp accountServiceApp;
+    private readonly SendEmailOptions sendEmailOptions;
 
     public AccountController(
         IMediatorHandler mediator,
-        IAccountServiceApp accountServiceApp)
+        IAccountServiceApp accountServiceApp,
+        IOptions<SendEmailOptions> sendEmailOptions)
     {
         this.mediator = mediator;
         this.accountServiceApp = accountServiceApp;
+        this.sendEmailOptions = sendEmailOptions.Value;
     }
 
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterViewModel dataViewModel)
     {
-        var result = await accountServiceApp.RegisterAsync(dataViewModel);
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.RegisterAsync(dataViewModel));
+        CommandResponse result = null!;
+        try
+        {
+            result = await accountServiceApp.RegisterAsync(dataViewModel);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(result);
     }
 
-    [HttpPost("ValidateEmail")]
+    [HttpGet("validateemail")]
     [AllowAnonymous]
-    public async Task<IActionResult> ValidateEmail(
-        [FromBody] EmailConfirmationTokenViewModel request,
-        CancellationToken cancellationToken
-    )
+    public async void ValidateEmail(string email, string validationtoken)
     {
         var validateEmailCommand = new EmailConfirmationTokenCommand()
         {
-            UserId = request.UserId,
-            ConfirmationToken = request.ConfirmationToken
+            Email = email,
+            ConfirmationToken = validationtoken
         };
 
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await mediator.SendCommand(validateEmailCommand, cancellationToken));
-    }
+        var result = await mediator.SendCommand(validateEmailCommand);
+
+        if (result.Result)
+        {
+            Redirect(sendEmailOptions.URLEmailValidate);
+        }
+        else 
+        { 
+            Redirect(sendEmailOptions.URLEmailNotValidate);
+        }
+   }
 
     [HttpPost("login")]
     [AllowAnonymous]
@@ -100,7 +121,7 @@ public partial class AccountController : ApiController
     [Authorize]
     public DatosUsuarioDTO DatosUsuario()
     {
-        return null;//accountServiceApp.RolesPorProceso();
+        return accountServiceApp.DatosUsuario();
     }
 }
 

@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.151
+// Date Generated File : 2026-01-21 15:35:09.343
 // -------------------------------------------------
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AUT2Services.Services.API.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 public class ServicioDeDominioController : ApiController
 {
@@ -54,7 +53,7 @@ public class ServicioDeDominioController : ApiController
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.MarcarEntidadComoPrincipal(dataViewModel));
     } 
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpGet("BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion")]
     public async Task<IEnumerable<UnidadOrganizacionalViewModel>> BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion( 
             Guid id_Usuario, 
@@ -67,7 +66,7 @@ public class ServicioDeDominioController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpGet("BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion")]
     public async Task<EntidadViewModel> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion( 
             Guid id_Usuario, 
@@ -80,7 +79,7 @@ public class ServicioDeDominioController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpGet("BuscarOrganizacionesPor_Id_Usuario")]
     public async Task<IEnumerable<OrganizacionPorUsuarioViewModel>> BuscarOrganizacionesPor_Id_Usuario( 
             Guid id_Usuario 

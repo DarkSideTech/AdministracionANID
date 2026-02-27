@@ -31,7 +31,7 @@ public static class AccountExtensions
         };
     }
 
-    public static RegisterCommand ToLoginOrganizacionCommand(this RegisterViewModel viewModel)
+    public static RegisterCommand ToRegisterCommand(this RegisterViewModel viewModel)
     {
         if (viewModel is null) return null;
 

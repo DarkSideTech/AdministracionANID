@@ -1,5 +1,5 @@
-﻿using AUT2Services.Domain.AI_Models;
-using AUT2Services.Domain.Core.Commands;
+﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

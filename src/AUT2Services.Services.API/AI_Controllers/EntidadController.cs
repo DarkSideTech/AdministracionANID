@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.150
+// Date Generated File : 2026-01-21 15:35:09.342
 // -------------------------------------------------
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AUT2Services.Services.API.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 public class EntidadController : ApiController
 {
@@ -25,13 +24,6 @@ public class EntidadController : ApiController
         _entidadServiceApp = entidadServiceApp;
         _logger = logger;
     }
-
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD_UNIDAD)]
-    [HttpPost("Crear")]
-    public async Task<IActionResult> Crear(CrearEntidadViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _entidadServiceApp.Crear(dataViewModel));
-    } 
 
     [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD_UNIDAD)]
     [HttpPut("Modificar")]
@@ -62,6 +54,19 @@ public class EntidadController : ApiController
     {
         return await _entidadServiceApp.BuscarPor_Id( 
             id 
+        ); 
+    } 
+
+    [AllowAnonymous]
+    [HttpGet("BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal")]
+    public async Task<EntidadViewModel> BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal( 
+            Guid id_Usuario, 
+            Guid id_UnidadOrganizacional 
+        ) 
+    {
+        return await _entidadServiceApp.BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal( 
+            id_Usuario, 
+            id_UnidadOrganizacional 
         ); 
     } 
 

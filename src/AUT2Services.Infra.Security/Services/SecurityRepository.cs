@@ -1,6 +1,6 @@
-﻿using AUT2Services.Domain.AI_Enumerations;
-using AUT2Services.Domain.Core.Data;
+﻿using AUT2Services.Domain.Core.Data;
 using AUT2Services.Domain.Entities;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Interfaces;

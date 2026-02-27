@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.148
+// Date Generated File : 2026-01-21 15:35:09.337
 // -------------------------------------------------
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
@@ -117,6 +117,27 @@ public class EnumerationController : ApiController
     public IEnumerable<string> BuscarTodosLosValores_EnumAuthCookie()
     {
         return EnumAuthCookie.ObtenerListaValores();
+    }
+
+    [HttpGet("BuscarTodosLosValores_EnumBusinessClaimTypes")]
+    [Authorize]
+    public IEnumerable<string> BuscarTodosLosValores_EnumBusinessClaimTypes()
+    {
+        return EnumBusinessClaimTypes.ObtenerListaValores();
+    }
+
+    [HttpGet("BuscarTodosLosValores_EnumPartialBusinessClaimTypes")]
+    [Authorize]
+    public IEnumerable<string> BuscarTodosLosValores_EnumPartialBusinessClaimTypes()
+    {
+        return EnumPartialBusinessClaimTypes.ObtenerListaValores();
+    }
+
+    [HttpGet("BuscarTodosLosValores_EnumAccessTokenType")]
+    [Authorize]
+    public IEnumerable<string> BuscarTodosLosValores_EnumAccessTokenType()
+    {
+        return EnumAccessTokenType.ObtenerListaValores();
     }
 
  

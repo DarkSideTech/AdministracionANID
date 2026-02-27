@@ -2,10 +2,10 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.148
+// Date Generated File : 2026-01-21 15:35:09.336
 // -------------------------------------------------
-using AUT2Services.Domain.AI_Models;
 using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

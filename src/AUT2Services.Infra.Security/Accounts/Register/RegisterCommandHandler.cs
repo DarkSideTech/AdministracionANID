@@ -1,18 +1,22 @@
 ﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Enumerations;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Core.Models;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Accounts.BaseEntity;
-using AUT2Services.Infra.Security.Accounts.LoginOrganizacion;
 using AUT2Services.Infra.Security.Models;
 using AUT2Services.Infra.Security.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace AUT2Services.Infra.Security.Accounts.Register;
 public class RegisterCommandHandler : CommandHandler,
@@ -23,19 +27,25 @@ public class RegisterCommandHandler : CommandHandler,
     private readonly AUT2ServicesContext aUT2ServicesContext;
     private readonly IConfiguration configuration;
     private readonly IEntidadRepository entidadRepository;
+    private readonly IEmailMessageSender emailSender;
+    private readonly SendEmailOptions sendEmailOptions;
 
     public RegisterCommandHandler(
         UserManager<Usuario> userManager,
         IMediatorHandler mediator,
         AUT2ServicesContext aUT2ServicesContext,
         IConfiguration configuration,
-        IEntidadRepository entidadRepository)
+        IEntidadRepository entidadRepository,
+        IOptions<SendEmailOptions> sendEmailOptions,
+        IEmailMessageSender emailSender)
     {
         this.userManager = userManager;
         this.configuration = configuration;
         this.aUT2ServicesContext = aUT2ServicesContext;
         this.mediator = mediator;
         this.entidadRepository = entidadRepository;
+        this.emailSender = emailSender;
+        this.sendEmailOptions = sendEmailOptions.Value;
     }
 
     public async Task<CommandResponse> Handle(RegisterCommand command, CancellationToken cancellationToken)
@@ -134,7 +144,7 @@ public class RegisterCommandHandler : CommandHandler,
             {
                 if (!usuarioExistente.EmailConfirmed)
                 {
-                    var confirmationEmailToken = await this.userManager.GenerateEmailConfirmationTokenAsync(usuarioExistente);
+                    var confirmationEmailToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(await this.userManager.GenerateEmailConfirmationTokenAsync(usuarioExistente)));
 
                     if (string.IsNullOrEmpty(confirmationEmailToken))
                     {
@@ -143,9 +153,60 @@ public class RegisterCommandHandler : CommandHandler,
                         return CommandResponse;
                     }
 
+                    string emailBody = string.Format($@"
+                        <!DOCTYPE html>
+                        <html lang=""es"">
+	                        <head>
+		                        <meta charset=""UTF-8"">
+		                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+		                        <title>Correo Automático</title>
+	                        </head>
+	                        <body style=""margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;"">
+		                        <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
+			                        <tr>
+				                        <td align=""center"" style=""padding: 20px 0;"">
+					                        <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" style=""background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"">
+						                        <tr>
+							                        <td align=""center"">
+                                                        <h1 style=""color: #333333; margin: 0; font-size: 24px;"">Agencia Nacional de Investigacion y Desarrollo</h1>
+							                        </td>
+						                        </tr>
+						                        <tr>
+							                        <td style=""padding: 40px; text-align: center;"">
+								                        <h2 style=""color: #333333; margin: 0; font-size: 24px;"">Hola Nuevo Usuario</h2>
+								                        <div style=""margin-top: 30px; padding: 20px; background-color: #f8f9fa; border: 2px dashed #007bff; display: inline-block;"">
+									                        <span style=""font-size: 18px; font-weight: bold; color: #007bff; letter-spacing: 2px;"">
+										                        <a href=""{sendEmailOptions.APIValidateEmail}?email={usuarioExistente.Email}&validationtoken={confirmationEmailToken}"">Link para Validar Cuenta de Correo</a>. 
+									                        </span>
+								                        </div>
+							                        </td>
+						                        </tr>
+						                        <tr>
+							                        <td style=""padding: 10px; background-color: #333333; color: #ffffff; text-align: center; font-size: 12px;"">
+								                        <p style=""margin: 0;"">&copy; 2026 Dark Side Tech. Todos los derechos reservados.</p>
+							                        </td>
+						                        </tr>
+					                        </table>
+				                        </td>
+			                        </tr>
+		                        </table>
+	                        </body>
+                        </html>");
+
+                    var email = new EmailDataModel()
+                    {
+                        FromMailboxAddresses = [new() { Address = sendEmailOptions.Remitente, Name = "Correo ANID"}],
+                        ToMailboxAddresses = [new() { Address = usuarioExistente.Email!, Name = usuarioExistente.NombreADesplegar! }],
+                        Body = emailBody,
+                        BodyType = EnumEmailBodyType.HTML_BODY,
+                        Subject = "ANID: Validación Registro Usuario"
+                    };
+
+                    var result = await emailSender.SendEmail(email);
+
                     CommandResponse.Data = JsonConvert.SerializeObject(new EmailConfirmationTokenViewModel()
                     {
-                        UserId = usuarioExistente.Id!,
+                        Email = usuarioExistente.Email!,
                         ConfirmationToken = confirmationEmailToken
                     });
                     CommandResponse.Result = true;
@@ -197,35 +258,14 @@ public class RegisterCommandHandler : CommandHandler,
                 return CommandResponse;
             }
 
-            var baseEntityRequestModel = JsonConvert.DeserializeObject<BaseEntityRequestModel>(resulCrearBaseEntityCommand.Data);
+            await transaction.CommitAsync(cancellationToken);
 
-            var loginCommand = new LoginOrganizacionCommand()
-            {
-                Email = usuarioExistente.Email,
-                Password = command.Contraseña,
-                Organizacion = baseEntityRequestModel!.NombreOrganizacion
-            };
-
-            var resultLoginCommand = await mediator.SendCommand(loginCommand, cancellationToken);
-
-            if (resultLoginCommand.Result)
-            {
-                await transaction.CommitAsync(cancellationToken);
-                CommandResponse.Data = resultLoginCommand.Data;
-                CommandResponse.Result = true;
-            }
-            else
-            {
-                foreach (var item in resultLoginCommand.ValidationResult.Errors)
-                {
-                    AddError($"{item.ErrorCode} {item.ErrorMessage}");
-                }
-                await transaction.RollbackAsync(cancellationToken);
-            }
+            CommandResponse.Data = string.Empty;
+            CommandResponse.Result = true;
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
+            await transaction.RollbackAsync(cancellationToken);
             AddError($"Error no manejado al momento de crear un usuario, error: {ex.Message}");
             return CommandResponse;
         }

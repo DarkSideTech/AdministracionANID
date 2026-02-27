@@ -1,5 +1,4 @@
-﻿using AUT2Services.Domain.AI_Enumerations;
-using AUT2Services.Domain.Enumerations;
+﻿using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Security.Interfaces;
@@ -66,22 +65,9 @@ public class TokenService : ITokenService
             new(EnumBusinessClaimTypes.NOMBRE_UNIDAD_ORGANIZACIONAL, unidadOrganizacional.Nombre!),
             new(EnumBusinessClaimTypes.ID_ENTIDAD, entidad.Id.ToString()),
             new(EnumBusinessClaimTypes.PROCESO, EnumProcesosBase.ADMINISTRACION)
-
-            //TODO: Solo para pruebas
-            ,new(EnumProcesosBase.ADMINISTRACION, "Rol1")
-            ,new(EnumProcesosBase.ADMINISTRACION, "Rol2")
-            ,new(EnumProcesosBase.ADMINISTRACION, "Rol3")
-            ,new(EnumBusinessClaimTypes.PROCESO, "Proceso2")
-            ,new("Proceso2", "Rol1")
-            ,new("Proceso2", "Rol4")
-            ,new("Proceso2", "Rol5")
-            ,new(EnumBusinessClaimTypes.PROCESO, "Proceso3")
-            ,new("Proceso2", "Rol1")
-            ,new("Proceso2", "Rol2")
-            ,new("Proceso2", "Rol4")
         };
 
-        IEnumerable<SecurityClaims> policies = null;
+        IEnumerable<SecurityClaims> policies = null!;
 
         try
         {
@@ -118,7 +104,7 @@ public class TokenService : ITokenService
 
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        var expires = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationTokenTimeInMinutes);
+        var expires = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationLoginOrganizationTokenTimeInMinutes);
 
         var token = new JwtSecurityToken(
             issuer: jwtOptions.Issuer,
@@ -149,7 +135,7 @@ public class TokenService : ITokenService
             new(EnumBusinessClaimTypes.PROCESO, EnumProcesosBase.ADMINISTRACION)
         };
 
-        var expires = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationTokenTimeInMinutes);
+        var expires = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationLoginTokenTimeInMinutes);
 
         var token = new JwtSecurityToken(
             issuer: jwtOptions.Issuer,

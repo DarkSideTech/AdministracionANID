@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.151
+// Date Generated File : 2026-01-21 15:35:09.343
 // -------------------------------------------------
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AUT2Services.Services.API.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 public class ProcesoController : ApiController
 {

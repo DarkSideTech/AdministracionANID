@@ -6,6 +6,5 @@ public class ProcesoActivoDTO
     public IEnumerable<string> Roles { get; set; } = [];
     public string NombreProceso { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
-    public string Token { get; set; } = string.Empty;
     public string ComoDesplegarUrlDeProceso { get; set; } = string.Empty;
 }

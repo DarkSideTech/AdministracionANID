@@ -3,6 +3,9 @@ using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AUT2Services.Infra.Data.Extensions;
 
@@ -24,31 +27,40 @@ public static class IncludeBaseData
     private const string Id_Proceso_Administracion = "d1889c7c-c5dc-4d9a-a2fe-34cdf956b145";
 
     private const string Id_Proceso_Postulacion = "233783de-9094-4030-907d-82d7c5abf10e";
-    private const string Id_Proceso_POS_CONVOCATORIA = "afc327c0-3970-40c7-9ef6-c0a3fdb42cb9";
-    private const string Id_Proceso_POS_POSTULAR = "3f5cceaf-4c86-4495-90b4-aafe7c4ab509";
-    private const string Id_Proceso_POS_PATROCINIO_INSTITUCIONAL = "c6b401ab-5164-43cc-8ae4-28ca2c9edbbe";
-    private const string Id_Proceso_POS_CARTAS_DE_RECOMENDACION = "a6ef77f1-e26b-430d-9d94-eef157e4df65";
+    private const string Id_Proceso_POS_Aconcagua_API = "afc327c0-3970-40c7-9ef6-c0a3fdb42cb9";
+    private const string Id_Proceso_POS_Aconcagua_Generico = "3f5cceaf-4c86-4495-90b4-aafe7c4ab509";
+    private const string Id_Proceso_POS_Genesis = "c6b401ab-5164-43cc-8ae4-28ca2c9edbbe";
+    private const string Id_Proceso_POS_Milenio = "a6ef77f1-e26b-430d-9d94-eef157e4df65";
 
     private const string Id_Proceso_Seleccion_y_Formalizacion = "c4a10de0-791c-45ec-820c-1a8802cd3e80";
-    private const string Id_Proceso_SFO_ADMISIBILIDAD = "6bd742e3-0e0a-4990-b51f-661c710ba4b9";
-    private const string Id_Proceso_SFO_EVALUACION = "7faa600f-2f47-4168-9a65-3c6d47ef2241";
-    private const string Id_Proceso_SFO_FALLO = "5eeb676d-b3fc-4db7-9421-358a6c26d3dc";
-    private const string Id_Proceso_SFO_FIRMA_CONVENIO = "f78ccd33-9762-4beb-83bc-7f2b02a295d7";
-
-    private const string Id_Proceso_SeguimientoFinanciero = "06001a21-9b5f-47a3-ae8b-c749e531f9b1";
-    private const string Id_Proceso_SFI_PROYECTOS_PRESUPUESTO = "e256405c-0bda-479a-8a41-a043c672f9b1";
-    private const string Id_Proceso_SFI_RENDICIONES = "2b597b09-55ad-4304-b57d-76bd2df5ac4c";
+    private const string Id_Proceso_SFO_Eval_SPI = "6bd742e3-0e0a-4990-b51f-661c710ba4b9";
+    private const string Id_Proceso_SFO_Eval_Becas = "7faa600f-2f47-4168-9a65-3c6d47ef2241";
+    private const string Id_Proceso_SFO_Eval_Generico = "5eeb676d-b3fc-4db7-9421-358a6c26d3dc";
+    private const string Id_Proceso_SFO_Firma_Convenio = "f78ccd33-9762-4beb-83bc-7f2b02a295d7";
+    private const string Id_Proceso_SFO_Fallo_Beca = "9679412f-ae9f-4d77-8629-7559d280ece2";
+    private const string Id_Proceso_SFO_Fallo_SPI = "a6151eed-ea81-4edb-9c89-5bf7e260989f";
 
     private const string Id_Proceso_SeguimientoTecnico = "aeaeb19b-2206-4870-9a99-f5d40a982b2e";
-    private const string Id_Proceso_STE_PROYECTOS_INFORMES = "f2224186-ffcc-41ee-bbce-4bbd72504e22";
+    private const string Id_Proceso_STE_SIAL_SPI = "f2224186-ffcc-41ee-bbce-4bbd72504e22";
+    private const string Id_Proceso_STE_SyC_Legacy_SIA = "f3285b94-90a4-4610-8c65-2782d2e3a1a3";
+    private const string Id_Proceso_STE_sisfon_luthien_SPI_SCH = "fa2e0bda-3063-4357-91b5-17f443b74ebd";
+    private const string Id_Proceso_STE_Sistema_Verde_SIA = "8ff51db1-44a5-4b9e-b0eb-0cd739cee604";
+    private const string Id_Proceso_STE_Gestion_Milenio = "e150709d-4fed-480b-8916-8b0837a775d3";
+    private const string Id_Proceso_STE_Sistema_Termino_SIA = "9cc3ac0d-503a-42b1-bc8e-10d20265e15b";
 
-    private const string Id_Proceso_ProductividadCientifica = "fcd2dcf8-7230-4fdd-9651-b4efeb60d11f";
-    private const string Id_Proceso_PSC_PORTAL_DEL_INVESTIGADOR = "eec159f1-9ba9-463d-8407-ec2951751c29";
-    private const string Id_Proceso_PSC_REPOSITORIO_ANID = "4bb69d17-cc38-4e52-ad36-42226aa5723d";
-    private const string Id_Proceso_PSC_DATOS_ABIERTOS = "a4ebe253-17c4-4a98-a333-d6fee919a212";
+    private const string Id_Proceso_SeguimientoFinanciero = "06001a21-9b5f-47a3-ae8b-c749e531f9b1";
+    private const string Id_Proceso_SFI_SGDL_SPI = "e256405c-0bda-479a-8a41-a043c672f9b1";
+    private const string Id_Proceso_SFI_Sisfon_Luthien_SPI_SCH = "2b597b09-55ad-4304-b57d-76bd2df5ac4c";
+    private const string Id_Proceso_SFI_SyC_Financiero_SIA = "d65b2a0d-0742-491b-be4f-c7c00219821d";
+    private const string Id_Proceso_SFI_Sistema_Termino_SIA = "0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c";
 
-    private const string Id_Proceso_Expediente = "ed685882-0d73-4fe4-986c-b34f9641622c";
-    private const string Id_Proceso_EXP_EXPEDIENTE_ELECTRONICO = "7f618ddf-cadc-4955-b97f-31ebb43cac6f";
+    private const string Id_Proceso_Vinculacion = "fcd2dcf8-7230-4fdd-9651-b4efeb60d11f";
+    private const string Id_Proceso_VIN_Scielo = "eec159f1-9ba9-463d-8407-ec2951751c29";
+    private const string Id_Proceso_VIN_Beic = "4bb69d17-cc38-4e52-ad36-42226aa5723d";
+    private const string Id_Proceso_VIN_PDI = "a4ebe253-17c4-4a98-a333-d6fee919a212";
+    private const string Id_Proceso_VIN_DataCiencia = "35e9a345-dda9-45fc-9a35-7cf27ec8e947";
+    private const string Id_Proceso_VIN_Repositorio = "9c4a10ea-d6f3-4a0c-b4b0-25fb0396c7ee";
+    private const string Id_Proceso_VIN_DIODI = "587ec39b-e7d8-4c0f-9ac4-697940cf7b07";
 
     private const string Id_Entidad_Administrador = "05507441-5792-4c46-9334-9a5faa99e20a";
 
@@ -304,66 +316,66 @@ public static class IncludeBaseData
                     url: "http://localhost:4210",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
-                    procesoBase: true,
-                    maximaAsignacionDeRoles: 1,
-                    activo: true
-                    ),
-                new Proceso(
-                    id: Guid.Parse(Id_Proceso_POS_CONVOCATORIA),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_Postulacion),
-                    codigo: "POS_CONVOCATORIA",
-                    nombre: "Proceso de Postulacion Convocatoria",
-                    descripcion: "Proceso de Postulacion Convocatoria",
-                    contexto: "Sistema de Postulaciones Convocatoria",
-                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
-                    token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_POS_POSTULAR),
+                    id: Guid.Parse(Id_Proceso_POS_Aconcagua_API),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_Postulacion),
-                    codigo: "POS_POSTULAR",
-                    nombre: "Proceso de Postulacion Postular",
-                    descripcion: "Proceso de Postulacion Postular",
-                    contexto: "Sistema de Postulaciones Postular",
+                    codigo: "POS_ACONCAGUA_SPI",
+                    nombre: "Sistema Aconcagua SPI",
+                    descripcion: "Sistema Aconcagua SPI",
+                    contexto: "Sistema Aconcagua SPI",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "https://auth-qa01.anid.cl",
                     token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.REDIRECCION,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_POS_PATROCINIO_INSTITUCIONAL),
+                    id: Guid.Parse(Id_Proceso_POS_Aconcagua_Generico),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_Postulacion),
-                    codigo: "POS_PATROCINIO_INSTITUCIONAL",
-                    nombre: "Proceso de Postulacion Patrocinio Institucional",
-                    descripcion: "Proceso de Postulacion Patrocinio Institucional",
-                    contexto: "Sistema de Postulaciones Patrocinio Institucional",
+                    codigo: "POS_ACONCAGUA_GENERICO",
+                    nombre: "Sistema Aconcagua Generico",
+                    descripcion: "Sistema Aconcagua Generico",
+                    contexto: "Sistema Aconcagua generico",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "http://auth-qa05.anid.cl",
                     token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.REDIRECCION,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_POS_CARTAS_DE_RECOMENDACION),
+                    id: Guid.Parse(Id_Proceso_POS_Genesis),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_Postulacion),
-                    codigo: "POS_CARTAS_DE_RECOMENDACION",
-                    nombre: "Proceso de Postulacion Cartas de recomendación",
-                    descripcion: "Proceso de Postulacion Cartas de recomendación",
-                    contexto: "Sistema de Postulaciones Cartas de recomendación",
+                    codigo: "POS_GENESIS",
+                    nombre: "Sistema Genesis",
+                    descripcion: "Sistema Genesis",
+                    contexto: "Sistema Genesis",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "https://splqa.anid.cl",
                     token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.REDIRECCION,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_POS_Milenio),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Postulacion),
+                    codigo: "POS_MILENIO",
+                    nombre: "Proceso de Postulacion Milenio",
+                    descripcion: "Proceso de Postulacion Milenio",
+                    contexto: "Sistema de Postulaciones Milenio",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "https://post-im.conicyt.cl/Concursos",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.REDIRECCION,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
@@ -376,105 +388,86 @@ public static class IncludeBaseData
                     id: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
                     idMacro_Proceso: Guid.Empty,
                     codigo: "SELECCION_FORMALIZACION",
-                    nombre: "Sistema de Seleccion y Autorizacion",
-                    descripcion: "Sistema de Seleccion y Autorizacion",
-                    contexto: "Sistema de Seleccion y Autorizacion",
+                    nombre: "Sistema de Seleccion y Formalizacion",
+                    descripcion: "Sistema de Seleccion y Formalizacion",
+                    contexto: "Sistema de Seleccion y Formalizacion",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_MACRO,
                     url: "http://localhost:4210",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
-                    procesoBase: true,
-                    maximaAsignacionDeRoles: 1,
-                    activo: true
-                    ),
-                new Proceso(
-                    id: Guid.Parse(Id_Proceso_SFO_ADMISIBILIDAD),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
-                    codigo: "SFO_ADMISIBILIDAD",
-                    nombre: "Sistema de Seleccion y Autorizacion Admisibilidad",
-                    descripcion: "Sistema de Seleccion y Autorizacion Admisibilidad",
-                    contexto: "Sistema de Seleccion y Autorizacion Admisibilidad",
-                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
-                    token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_SFO_EVALUACION),
+                    id: Guid.Parse(Id_Proceso_SFO_Eval_SPI),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
-                    codigo: "SFO_EVALUACION",
-                    nombre: "Sistema de Seleccion y Autorizacion Evaluacion",
-                    descripcion: "Sistema de Seleccion y Autorizacion Evaluacion",
-                    contexto: "Sistema de Seleccion y Autorizacion Evaluacion",
+                    codigo: "SFO_EVAL_SPI",
+                    nombre: "Sistema Eval SPI",
+                    descripcion: "Sistema Eval SPI",
+                    contexto: "Sistema Eval SPI",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "https://faraondesa.anid.cl/desa2/Evaluacion_TESTING/index.php",
                     token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.VENTANA,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_SFO_FALLO),
+                    id: Guid.Parse(Id_Proceso_SFO_Eval_Becas),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
-                    codigo: "SFO_FALLO",
-                    nombre: "Sistema de Seleccion y Autorizacion Fallo",
-                    descripcion: "Sistema de Seleccion y Autorizacion Fallo",
-                    contexto: "Sistema de Seleccion y Autorizacion Fallo",
+                    codigo: "SFO_EVAL_BECAS",
+                    nombre: "Sistema Eval Becas",
+                    descripcion: "Sistema Eval Becas",
+                    contexto: "Sistema Eval Becas",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "https://servicios-qa.anid.cl/evalbecas",
                     token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.VENTANA,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_SFO_FIRMA_CONVENIO),
+                    id: Guid.Parse(Id_Proceso_SFO_Eval_Generico),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
+                    codigo: "SFO_EVAL_GENERICO",
+                    nombre: "Sistema Eval Generico",
+                    descripcion: "Sistema Eval Generico",
+                    contexto: "Sistema Eval Generico",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.VENTANA,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_SFO_Firma_Convenio),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
                     codigo: "SFO_FIRMA_CONVENIO",
                     nombre: "Sistema de Seleccion y Autorizacion Firma de Convenio",
                     descripcion: "Sistema de Seleccion y Autorizacion Firma de Convenio",
                     contexto: "Sistema de Seleccion y Autorizacion Firma de Convenio",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "https://servicios-qa.anid.cl/web/firma-convenio/#/login",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
                     procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
-                    )
-            );
-
-        modelBuilder.Entity<Proceso>()
-            .HasData(
-                new Proceso(
-                    id: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
-                    idMacro_Proceso: Guid.Empty,
-                    codigo: "SEGUIMIENTO_FINANCIERO",
-                    nombre: "Sistema de Seguimiento Financiero",
-                    descripcion: "Sistema de Seguimiento Financiero",
-                    contexto: "Sistema de Seguimiento Financiero",
-                    nivelDeProceso: EnumNivelDeProceso.NIVEL_MACRO,
-                    url: "http://localhost:4210",
-                    token: string.Empty,
-                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
-                    procesoBase: true,
-                    maximaAsignacionDeRoles: 1,
-                    activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_SFI_PROYECTOS_PRESUPUESTO),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
-                    codigo: "SFI_PROYECTOS_PRESUPUESTO",
-                    nombre: "Sistema de Seguimiento Financiero Proyectos y Presupuesto",
-                    descripcion: "Sistema de Seguimiento Financiero Proyectos y Presupuesto",
-                    contexto: "Sistema de Seguimiento Financiero Proyectos y Presupuesto",
+                    id: Guid.Parse(Id_Proceso_SFO_Fallo_Beca),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
+                    codigo: "SFO_FALLO_BECA",
+                    nombre: "Sistema Fallo Beca",
+                    descripcion: "Sistema Fallo Beca",
+                    contexto: "Sistema Fallo Beca",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
-                    url: "http://localhost:4210",
+                    url: "https://servicios-qa.anid.cl/web//fallo/#/public",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
                     procesoBase: false,
@@ -482,12 +475,12 @@ public static class IncludeBaseData
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_SFI_RENDICIONES),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
-                    codigo: "SFI_RENDICIONES",
-                    nombre: "Sistema de Seguimiento Financiero Rendiciones",
-                    descripcion: "Sistema de Seguimiento Financiero Rendiciones",
-                    contexto: "Sistema de Seguimiento Financiero Rendiciones",
+                    id: Guid.Parse(Id_Proceso_SFO_Fallo_SPI),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Seleccion_y_Formalizacion),
+                    codigo: "SFO_FALLO_SPI",
+                    nombre: "Sistema Fallo SPI",
+                    descripcion: "Sistema Fallo SPI",
+                    contexto: "Sistema Fallo SPI",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
                     url: "http://localhost:4210",
                     token: string.Empty,
@@ -511,17 +504,92 @@ public static class IncludeBaseData
                     url: "http://localhost:4210",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
-                    procesoBase: true,
+                    procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_STE_PROYECTOS_INFORMES),
+                    id: Guid.Parse(Id_Proceso_STE_SIAL_SPI),
                     idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
-                    codigo: "STE_PROYECTOS_INFORMES",
-                    nombre: "Sistema de Seguimiento Técnico Proyectos e Informes",
-                    descripcion: "Sistema de Seguimiento Técnico Proyectos e Informes",
-                    contexto: "Sistema de Seguimiento Técnico Proyectos e Informes",
+                    codigo: "STE_SIAL_SPI",
+                    nombre: "Sistema SIAL SPI",
+                    descripcion: "Sistema SIAL SPI",
+                    contexto: "Sistema SIAL SPI",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_STE_SyC_Legacy_SIA),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
+                    codigo: "STE_SyC_LEGACY_SIA",
+                    nombre: "Sistema SyC Legacy SIA",
+                    descripcion: "Sistema SyC Legacy SIA",
+                    contexto: "Sistema SyC Legacy SIA",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_STE_sisfon_luthien_SPI_SCH),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
+                    codigo: "STE_SISFON_LUTHIEN_SPI_SCH",
+                    nombre: "Sistema Sisfon Luthien SPI SCH",
+                    descripcion: "Sistema Sisfon Luthien SPI SCH",
+                    contexto: "Sistema Sisfon Luthien SPI SCH",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "172.16.4.107:22",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_STE_Sistema_Verde_SIA),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
+                    codigo: "STE_SISTEMA_VERDE_SIA",
+                    nombre: "Sistema Verde SIA",
+                    descripcion: "Sistema Verde SIA",
+                    contexto: "Sistema Verde SIA",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_STE_Gestion_Milenio),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
+                    codigo: "STE_GESTION_MILENIO",
+                    nombre: "Sistema Gestion Milenio",
+                    descripcion: "Sistema Gestion Milenio",
+                    contexto: "Sistema Gestion Milenio",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_STE_Sistema_Termino_SIA),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
+                    codigo: "STE_SISTEMA_TERMINO_SIA",
+                    nombre: "Sistema Termino SIA",
+                    descripcion: "Sistema Termino SIA",
+                    contexto: "Sistema Termino SIA",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
                     url: "http://localhost:4210",
                     token: string.Empty,
@@ -535,27 +603,27 @@ public static class IncludeBaseData
         modelBuilder.Entity<Proceso>()
             .HasData(
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_ProductividadCientifica),
+                    id: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
                     idMacro_Proceso: Guid.Empty,
-                    codigo: "PRODUCTIVIDAD_CIENTÍFICA",
-                    nombre: "Sistema de Productividad Científica",
-                    descripcion: "Sistema de Productividad Científica",
-                    contexto: "Sistema de Productividad Científica",
+                    codigo: "SEGUIMIENTO_FINANCIERO",
+                    nombre: "Sistema de Seguimiento Financiero",
+                    descripcion: "Sistema de Seguimiento Financiero",
+                    contexto: "Sistema de Seguimiento Financiero",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_MACRO,
                     url: "http://localhost:4210",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
-                    procesoBase: true,
+                    procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_PSC_PORTAL_DEL_INVESTIGADOR),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_ProductividadCientifica),
-                    codigo: "PSC_PORTAL_DEL_INVESTIGADOR",
-                    nombre: "Sistema de Productividad Científica Portal del Investigador",
-                    descripcion: "Sistema de Productividad Científica Portal del Investigador",
-                    contexto: "Sistema de Productividad Científica Portal del Investigador",
+                    id: Guid.Parse(Id_Proceso_SFI_SGDL_SPI),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
+                    codigo: "SFI_SGDL_SPI",
+                    nombre: "Sistema SDGL SPI",
+                    descripcion: "Sistema SDGL SPI",
+                    contexto: "Sistema SDGL SPI",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
                     url: "http://localhost:4210",
                     token: string.Empty,
@@ -565,12 +633,27 @@ public static class IncludeBaseData
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_PSC_REPOSITORIO_ANID),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_ProductividadCientifica),
-                    codigo: "PSC_REPOSITORIO_ANID",
-                    nombre: "Sistema de Productividad Científica Repositorio ANID",
-                    descripcion: "Sistema de Productividad Científica Repositorio ANID",
-                    contexto: "Sistema de Productividad Científica Repositorio ANID",
+                    id: Guid.Parse(Id_Proceso_SFI_Sisfon_Luthien_SPI_SCH),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
+                    codigo: "SFI_SISFON_LUTHIEN_SPI_SCH",
+                    nombre: "Sistema Sisfon Luthien SPI SCH",
+                    descripcion: "Sistema Sisfon Luthien SPI SCH",
+                    contexto: "Sistema Sisfon Luthien SPI SCH",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "172.16.4.107:22",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_SFI_SyC_Financiero_SIA),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
+                    codigo: "SFI_SYC_FINANCIERO_SIA",
+                    nombre: "Sistema SyC Financiero SIA",
+                    descripcion: "Sistema SyC Financiero SIA",
+                    contexto: "Sistema SyC Financiero SIA",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
                     url: "http://localhost:4210",
                     token: string.Empty,
@@ -580,12 +663,12 @@ public static class IncludeBaseData
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_PSC_DATOS_ABIERTOS),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_ProductividadCientifica),
-                    codigo: "PSC_DATOS_ABIERTOS",
-                    nombre: "Sistema de Productividad Científica Datos Abiertos",
-                    descripcion: "Sistema de Productividad Científica Datos Abiertos",
-                    contexto: "Sistema de Productividad Científica Datos Abiertos",
+                    id: Guid.Parse(Id_Proceso_SFI_Sistema_Termino_SIA),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
+                    codigo: "SFI_SISTEMA_TERMINO_SIA",
+                    nombre: "Sistema Sistema Termino SIA",
+                    descripcion: "Sistema Sistema Termino SIA",
+                    contexto: "Sistema Sistema Termino SIA",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
                     url: "http://localhost:4210",
                     token: string.Empty,
@@ -599,27 +682,102 @@ public static class IncludeBaseData
         modelBuilder.Entity<Proceso>()
             .HasData(
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_Expediente),
+                    id: Guid.Parse(Id_Proceso_Vinculacion),
                     idMacro_Proceso: Guid.Empty,
-                    codigo: "EXPEDIENTE",
-                    nombre: "Sistema de Expediente Electrónico",
-                    descripcion: "Sistema de Expediente Electrónico",
-                    contexto: "Sistema de Expediente Electrónico",
+                    codigo: "VIN_SCIELO",
+                    nombre: "Sistema Scielo",
+                    descripcion: "Sistema Scielo",
+                    contexto: "Sistema Scielo",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_MACRO,
                     url: "http://localhost:4210",
                     token: string.Empty,
                     comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
-                    procesoBase: true,
+                    procesoBase: false,
                     maximaAsignacionDeRoles: 1,
                     activo: true
                     ),
                 new Proceso(
-                    id: Guid.Parse(Id_Proceso_EXP_EXPEDIENTE_ELECTRONICO),
-                    idMacro_Proceso: Guid.Parse(Id_Proceso_Expediente),
-                    codigo: "EXP_EXPEDIENTE_ELECTRONICO",
-                    nombre: "Sistema de Expediente Electrónico Expediente",
-                    descripcion: "Sistema de Expediente Electrónico Expediente",
-                    contexto: "Sistema de Expediente Electrónico Expediente",
+                    id: Guid.Parse(Id_Proceso_VIN_Scielo),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    codigo: "VIN_SCIELO",
+                    nombre: "Sistema Scielo",
+                    descripcion: "Sistema Scielo",
+                    contexto: "Sistema Scielo",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_VIN_Beic),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    codigo: "VIN_BEIC",
+                    nombre: "Sistema Beic",
+                    descripcion: "Sistema Beic",
+                    contexto: "Sistema Beic",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_VIN_PDI),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    codigo: "VIN_PDI",
+                    nombre: "Sistema PDI",
+                    descripcion: "Sistema PDI",
+                    contexto: "Sistema PDI",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_VIN_DataCiencia),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    codigo: "VIN_DATACIENCIA",
+                    nombre: "Sistema DataCiencia",
+                    descripcion: "Sistema DataCiencia",
+                    contexto: "Sistema DataCiencia",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_VIN_Repositorio),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    codigo: "VIN_REPOSITORIO",
+                    nombre: "Sistema Repositorio",
+                    descripcion: "Sistema Repositorio",
+                    contexto: "Sistema Repositorio",
+                    nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
+                    url: "http://localhost:4210",
+                    token: string.Empty,
+                    comoDesplegarUrlDeProceso: EnumComoDesplegarUrlDeProceso.IFRAME,
+                    procesoBase: false,
+                    maximaAsignacionDeRoles: 1,
+                    activo: true
+                    ),
+                new Proceso(
+                    id: Guid.Parse(Id_Proceso_VIN_DIODI),
+                    idMacro_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    codigo: "VIN_DIODI",
+                    nombre: "Sistema DIODI",
+                    descripcion: "Sistema DIODI",
+                    contexto: "Sistema DIODI",
                     nivelDeProceso: EnumNivelDeProceso.NIVEL_SISTEMA,
                     url: "http://localhost:4210",
                     token: string.Empty,
@@ -629,7 +787,6 @@ public static class IncludeBaseData
                     activo: true
                     )
             );
-
     }
 
     private static void SeedEntidades(ModelBuilder modelBuilder)

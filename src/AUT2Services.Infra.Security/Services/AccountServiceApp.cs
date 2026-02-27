@@ -39,7 +39,16 @@ public class AccountServiceApp : IAccountServiceApp
 
     public Task<CommandResponse> RegisterAsync(RegisterViewModel viewModel)
     {
-        throw new NotImplementedException();
+        Task<CommandResponse> result = null!;
+        try
+        {
+            result = mediator.SendCommand(viewModel.ToRegisterCommand());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        return result;
     }
 
     public async Task<CommandResponse> Logout()
@@ -59,9 +68,7 @@ public class AccountServiceApp : IAccountServiceApp
 
     public DatosUsuarioDTO DatosUsuario()
     {
-        DatosUsuarioDTO result = null;
-        
-        result = new DatosUsuarioDTO()
+        DatosUsuarioDTO result = new()
         {
             NombreADesplegar = userAccessor.GetNombreADesplegar(),
             CodigoOrganizaicon = userAccessor.GetCodigoOrganizacion(),
@@ -69,6 +76,22 @@ public class AccountServiceApp : IAccountServiceApp
             CodigoUnidadOrganizacional = userAccessor.GetCodigoUnidadOrganizacional(),
             NombreUnidadOrganizacional = userAccessor.GetNombreUnidadOrganizacional(),
         };
+
+        var procesosActivos = new List<ProcesoActivoDTO>();
+
+        foreach (var item in userAccessor.GetProcesos())
+        {
+            procesosActivos.Add(new ProcesoActivoDTO()
+            {
+                Codigo = item,
+                Roles = userAccessor.GetRolesPorProceso(item),
+                NombreProceso = userAccessor.GetProcesoNombre(item),
+                Url = userAccessor.GetProcesoUrl(item),
+                ComoDesplegarUrlDeProceso = userAccessor.GetProcesoComoDesplegarUrl(item)
+            });
+        }
+
+        result.ProcesosActivos = procesosActivos;
 
         return result;
     }

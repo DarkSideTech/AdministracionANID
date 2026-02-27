@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.143
+// Date Generated File : 2026-01-21 15:35:09.316
 // -------------------------------------------------
 using AUT2Services.Domain.Core.Data;
 using AUT2Services.Domain.Core.Domain;
@@ -83,7 +83,7 @@ public sealed class AUT2ServicesContext : IdentityDbContext<Usuario, Rol, string
         // performed through the DbContext will be committed
         var success = await SaveChangesAsync() > 0;
 
-        //this.ChangeTracker.Clear();
+        this.ChangeTracker.Clear();
         return success;
     }
 }

@@ -1,4 +1,4 @@
-using AUT2Services.Domain.AI_Enumerations;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
@@ -126,5 +126,29 @@ public class UserAccessor : IUserAccessor
         .HttpContext!
             .User
                 .FindFirstValue(EnumBusinessClaimTypes.ACCESS_TOKEN_TYPE)!;
+    }
+
+    public string GetProcesoNombre(string proceso)
+    {
+        return _httpContextAccessor
+            .HttpContext!
+                .User
+                    .FindFirstValue($"{proceso}{EnumPartialBusinessClaimTypes._NOMBRE}")!;
+    }
+
+    public string GetProcesoUrl(string proceso)
+    {
+        return _httpContextAccessor
+            .HttpContext!
+                .User
+                    .FindFirstValue($"{proceso}{EnumPartialBusinessClaimTypes._URL}")!;
+    }
+
+    public string GetProcesoComoDesplegarUrl(string proceso)
+    {
+        return _httpContextAccessor
+            .HttpContext!
+                .User
+                    .FindFirstValue($"{proceso}{EnumPartialBusinessClaimTypes._COMO_DESPLEGAR_URL}")!;
     }
 }

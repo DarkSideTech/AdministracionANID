@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.111
+// Date Generated File : 2026-01-21 15:35:09.268
 // -------------------------------------------------
 using AUT2Services.Domain.Commands.Entidades.Commands;
 using AUT2Services.Domain.Core.Commands;
@@ -44,16 +44,10 @@ namespace AUT2Services.Domain.Commands.Entidades.Handlers
                 existEntidad.EntidadBase 
                 );
 
-            var existEntidadPrincipal = await _entidadRepository.BuscarPor_Id_Usuario_Id_UnidadOrganizacional(existEntidad.Id_Usuario, existEntidad.Id_UnidadOrganizacional);
+            var existEntidadPrincipal = await _entidadRepository.BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal(existEntidad.Id_Usuario, existEntidad.Id_UnidadOrganizacional);
 
             if (existEntidadPrincipal is not null)
             {
-                if (existEntidad.Id.Equals(existEntidadPrincipal.Id))
-                {
-                    AddError($"La Entidad seleccionada ya es la entidad principal");
-                    return CommandResponse;
-                }
-
                 var newEntidadPrincipal = new Entidad(
                     existEntidadPrincipal.Id,
                     existEntidadPrincipal.Id_UnidadOrganizacional,

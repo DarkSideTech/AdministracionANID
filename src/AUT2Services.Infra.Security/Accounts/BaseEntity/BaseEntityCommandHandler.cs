@@ -102,7 +102,7 @@ public class BaseEntityCommandHandler : CommandHandler,
             Guid.Parse(JsonConvert.DeserializeObject<ResponseSingleId>(resultCrearEntidadCommand.Data)!.Id)
             );
 
-        var resultCambiarEntidadAPrincipalEntidadCommand = await mediator.SendCommand(crearEntidadCommand, cancellationToken);
+        var resultCambiarEntidadAPrincipalEntidadCommand = await mediator.SendCommand(cambiarEntidadAPrincipalEntidadCommand, cancellationToken);
 
         if (!resultCambiarEntidadAPrincipalEntidadCommand.Result)
         {

@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.345.25348</AssemblyVersion>
-    <FileVersion>1.0.345.25348</FileVersion>
+    <AssemblyVersion>1.0.379.26058</AssemblyVersion>
+    <FileVersion>1.0.379.26058</FileVersion>
 	<TransformOnBuild>true</TransformOnBuild>
 	<OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
 	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
@@ -17,6 +17,10 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AI_Models\" />
   </ItemGroup>
 
 </Project>

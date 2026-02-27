@@ -4,6 +4,6 @@ namespace AUT2Services.Infra.Security.Accounts.ValidateEmail;
 
 public class EmailConfirmationTokenCommand : Command
 {
-    public string UserId { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public string ConfirmationToken { get; set; } = string.Empty;
 }

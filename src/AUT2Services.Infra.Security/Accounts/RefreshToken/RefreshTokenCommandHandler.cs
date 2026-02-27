@@ -1,5 +1,4 @@
-﻿using AUT2Services.Domain.AI_Enumerations;
-using AUT2Services.Domain.Core.Commands;
+﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;

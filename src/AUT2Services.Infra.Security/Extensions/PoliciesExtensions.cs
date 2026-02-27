@@ -75,6 +75,11 @@ public static class PoliciesExtensions
                         )
                     )
                 );
+
+            opt.AddPolicy(
+                EnumPolicyMaster.USUARIO_LOGUEADO, policy =>
+                    policy.RequireAuthenticatedUser()
+                );
         });
 
         return services;

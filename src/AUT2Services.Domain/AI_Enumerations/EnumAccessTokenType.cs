@@ -1,6 +1,12 @@
-﻿using AUT2Services.Domain.Core.Enumerations;
+// -------------------------------------------------
+// Dark Side Tech
+// Solution Name : AUT2Services
+// Domain : Administracion version 1.17
+// Date Generated File : 2026-01-21 15:35:09.220
+// -------------------------------------------------
+using AUT2Services.Domain.Core.Enumerations;
 
-namespace AUT2Services.Domain.AI_Enumerations;
+namespace AUT2Services.Domain.Enumerations;
 
 public static class EnumAccessTokenType
 {
@@ -9,6 +15,7 @@ public static class EnumAccessTokenType
 
     public static IList<string> ObtenerListaValores()
     {
-        return EnumUtils.GetAllPublicConstantValues<string>(typeof(EnumBusinessClaimTypes));
+        return EnumUtils.GetAllPublicConstantValues<string>(typeof(EnumAccessTokenType));
     }
 }
+

@@ -4,9 +4,9 @@
 // Domain : Administracion version 1.17
 // Date Generated File : 2025-12-03 11:34:56.414
 // -------------------------------------------------
+using AUT2Services.Domain.Core.Models;
 using AUT2Services.Infra.Security.Models;
 using AUT2Services.Services.API.Configurations;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,8 @@ builder.AddApiConfiguration();
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.JwtOptionsKey));
 
-//var allowedCorsOrigins = builder.Configuration.GetSection("JwtOptions:AllowedOrigins").Get<string[]>();
+builder.Services.Configure<SendEmailOptions>(
+    builder.Configuration.GetSection(SendEmailOptions.EmailOptionsKey));
 
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
 builder.AddDependencyInjectionConfiguration();

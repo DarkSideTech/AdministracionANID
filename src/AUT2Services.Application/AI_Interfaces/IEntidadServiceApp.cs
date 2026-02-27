@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.134
+// Date Generated File : 2026-01-21 15:35:09.301
 // -------------------------------------------------
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.Entidades;
@@ -21,6 +21,11 @@ public interface IEntidadServiceApp : IDisposable
   
     Task<EntidadViewModel> BuscarPor_Id(
         Guid id 
+        ); 
+
+    Task<EntidadViewModel> BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal(
+        Guid id_Usuario, 
+        Guid id_UnidadOrganizacional 
         ); 
 
     Task<EntidadViewModel> BuscarPor_Id_Usuario_Id_UnidadOrganizacional(

@@ -2,13 +2,14 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.094
+// Date Generated File : 2026-01-21 15:35:09.242
 // -------------------------------------------------
 using AUT2Services.Domain.Commands.Proveedores.Commands;
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.Proveedores.Events;
 using Newtonsoft.Json;
 

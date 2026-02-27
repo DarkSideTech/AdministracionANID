@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2025-12-03 21:03:27.100
+// Date Generated File : 2026-01-21 15:35:09.255
 // -------------------------------------------------
 using AUT2Services.Domain.Commands.AutenticadoresExternos.Commands;
 using AUT2Services.Domain.Core.Commands;
@@ -43,19 +43,25 @@ namespace AUT2Services.Domain.Commands.AutenticadoresExternos.Handlers
                 existAutenticadorExterno.Activo 
                 );
 
-                if (existAutenticadorExterno.AutenticadorExternoBase)
-        {
-            AddError($"No es posible modificar un autenticador externo marcado como base");
-            return CommandResponse;
-        }
+                    if (existAutenticadorExterno.AutenticadorExternoBase)
+            {
+                AddError($"No es posible modificar un autenticador externo marcado como base");
+                return CommandResponse;
+            }
 
-        if (!existAutenticadorExterno.Activo)
-        {
-            AddError($"No es posible desactivar el autenticador externo porque ya se encuentra desactivado");
-            return CommandResponse;
-        }
+            if (existAutenticadorExterno.ValidadorPrimario)
+            {
+                AddError($"No es posible eliminar el Validador Primario, primero debe eliminar la marca de primario");
+                return CommandResponse;
+            }
 
-        newAutenticadorExterno.CambiarActivo(false);
+            if (!existAutenticadorExterno.Activo)
+            {
+                AddError($"No es posible desactivar el autenticador externo porque ya se encuentra desactivado");
+                return CommandResponse;
+            }
+
+            newAutenticadorExterno.CambiarActivo(false);
 
             newAutenticadorExterno.AddDomainEvent(new AutenticadorExternoEventDesactivado(
                     newAutenticadorExterno.Id, 

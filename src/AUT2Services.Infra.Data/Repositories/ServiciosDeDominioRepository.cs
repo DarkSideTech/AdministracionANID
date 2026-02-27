@@ -209,6 +209,7 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
         {
             void action() => result = repositoryQuery
                                 .AsNoTracking()
+                                .Distinct()
                                 .ToList();
             await Task.Run(action);
         }
