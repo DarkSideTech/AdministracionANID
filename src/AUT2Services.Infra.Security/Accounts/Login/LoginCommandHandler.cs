@@ -76,8 +76,8 @@ public class LoginCommandHandler : CommandHandler,
 
             profile = new ProfileModel
             {
-                Token = jwtToken,
-                RefreshToken = refreshTokenValue,
+                AccessToken = jwtToken,
+                RefreshToken = refreshTokenValue
             };
 
         }

@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-01-21 15:35:09.335
+// Date Generated File : 2026-03-02 21:15:49.939
 // -------------------------------------------------
 using AUT2Services.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -39,10 +39,9 @@ public static class DatabaseConfig
             options => _ = database_provider switch
             {
                 PostgreSql =>
-                  options
-                    .UseNpgsql(
+                  options.UseNpgsql(
                     connectionString,
-                    x => x.MigrationsAssembly("AUT2Services.Infra.Migrations.PostgreSql")),                    
+                    x => x.MigrationsAssembly("AUT2Services.Infra.Migrations.PostgreSql")),
 
                 SqlServer => options.UseSqlServer(
                     connectionString,

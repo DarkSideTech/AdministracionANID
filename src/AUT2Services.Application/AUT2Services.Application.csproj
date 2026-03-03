@@ -4,13 +4,14 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.397.26058</AssemblyVersion>
-    <FileVersion>1.0.397.26058</FileVersion>
+    <AssemblyVersion>1.0.401.26062</AssemblyVersion>
+    <FileVersion>1.0.401.26062</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AUT2Services.Domain\AUT2Services.Domain.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Data\AUT2Services.Infra.Data.csproj" />
+    <ProjectReference Include="..\AUT2Services.Infra.Security\AUT2Services.Infra.Security.csproj" />
   </ItemGroup>
 
 </Project>

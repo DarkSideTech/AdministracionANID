@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-01-21 15:35:09.343
+// Date Generated File : 2026-03-02 21:15:49.946
 // -------------------------------------------------
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
@@ -80,14 +80,10 @@ public class ServicioDeDominioController : ApiController
     } 
 
     [Authorize]
-    [HttpGet("BuscarOrganizacionesPor_Id_Usuario")]
-    public async Task<IEnumerable<OrganizacionPorUsuarioViewModel>> BuscarOrganizacionesPor_Id_Usuario( 
-            Guid id_Usuario 
-        ) 
+    [HttpGet("BuscarOrganizacionesPor_Usuario")]
+    public async Task<IEnumerable<OrganizacionPorUsuarioViewModel>> BuscarOrganizacionesPor_Usuario() 
     {
-        return await _servicioDeDominioServiceApp.BuscarOrganizacionesPor_Id_Usuario( 
-            id_Usuario 
-        ); 
+        return await _servicioDeDominioServiceApp.BuscarOrganizacionesPor_Usuario(); 
     } 
 
 }

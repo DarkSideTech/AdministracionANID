@@ -100,7 +100,7 @@ public class RefreshTokenCommandHandler : CommandHandler,
 
             profile = new ProfileModel
             {
-                Token = jwtToken,
+                AccessToken = jwtToken,
                 RefreshToken = user.RefreshToken,
             };
         }

@@ -3,6 +3,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
+using AUT2Services.Infra.Security.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace AUT2Services.Application.Services.ServicioDeDominioHandlers;
@@ -19,6 +20,7 @@ public partial class ServicioDeDominioServiceApp : IServicioDeDominioServiceApp
     private readonly IEntidadRepository entidadRepository;
     private readonly IPoliticaAsignadaRepository politicaAsignadaRepository;
     private readonly IProcesoRepository procesoRepository;
+    private readonly IUserAccessor userAccessor;
     private readonly CancellationToken cancellationToken = default;
 
     public ServicioDeDominioServiceApp(
@@ -31,7 +33,8 @@ public partial class ServicioDeDominioServiceApp : IServicioDeDominioServiceApp
                 IOrganizacionRepository organizacionRepository,
                 IEntidadRepository entidadRepository,
                 IPoliticaAsignadaRepository politicaAsignadaRepository,
-                IProcesoRepository procesoRepository
+                IProcesoRepository procesoRepository,
+                IUserAccessor userAccessor
         )
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -44,6 +47,7 @@ public partial class ServicioDeDominioServiceApp : IServicioDeDominioServiceApp
         this.entidadRepository = entidadRepository;
         this.politicaAsignadaRepository = politicaAsignadaRepository;
         this.procesoRepository = procesoRepository;
+        this.userAccessor = userAccessor;
     }
 
     public void Dispose()

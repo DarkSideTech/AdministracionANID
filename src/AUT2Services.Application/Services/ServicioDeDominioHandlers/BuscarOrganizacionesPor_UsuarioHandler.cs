@@ -4,13 +4,11 @@ namespace AUT2Services.Application.Services.ServicioDeDominioHandlers;
 
 public partial class ServicioDeDominioServiceApp
 {
-    public async Task<IEnumerable<OrganizacionPorUsuarioViewModel>> BuscarOrganizacionesPor_Id_Usuario(Guid id_Usuario)
+    public async Task<IEnumerable<OrganizacionPorUsuarioViewModel>> BuscarOrganizacionesPor_Usuario()
     {
         IList<OrganizacionPorUsuarioViewModel> result = [];
 
-        var resultGet = await servicioDeDominioRepository.BuscarOrganizacionesPor_Id_Usuario(
-            id_Usuario
-        );
+        var resultGet = await servicioDeDominioRepository.BuscarOrganizacionesPor_Id_Usuario(Guid.Parse(userAccessor.GetIdUsuario()));
 
         if (resultGet.Any())
         {

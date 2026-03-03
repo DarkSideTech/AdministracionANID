@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.379.26058</AssemblyVersion>
-    <FileVersion>1.0.379.26058</FileVersion>
+    <AssemblyVersion>1.0.381.26061</AssemblyVersion>
+    <FileVersion>1.0.381.26061</FileVersion>
 	<TransformOnBuild>true</TransformOnBuild>
 	<OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
 	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>

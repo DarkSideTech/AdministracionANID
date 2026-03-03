@@ -129,6 +129,7 @@ public class TokenService : ITokenService
 
         var claims = new List<Claim>
         {
+            new(EnumBusinessClaimTypes.ID_USUARIO, user.Id),
             new(ClaimTypes.Name, user.UserName!),
             new(ClaimTypes.Email, user.Email!),
             new(EnumBusinessClaimTypes.NOMBRE_A_DESPLEGAR, user.NombreADesplegar!),

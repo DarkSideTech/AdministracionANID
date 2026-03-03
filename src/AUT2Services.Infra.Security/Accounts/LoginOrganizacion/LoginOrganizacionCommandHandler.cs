@@ -120,7 +120,7 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
 
             profile = new ProfileModel
             {
-                Token = jwtToken,
+                AccessToken = jwtToken,
                 RefreshToken = refreshTokenValue
             };
 
