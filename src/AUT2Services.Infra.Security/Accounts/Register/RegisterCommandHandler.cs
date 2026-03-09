@@ -137,15 +137,16 @@ public class RegisterCommandHandler : CommandHandler,
                 return CommandResponse;
             }
 
-            var id_Usuario = usuarioExistente.Id;
-
             if (usuarioExistente.EmailConfirmed.Equals(false) ||
                 usuarioExistente.RequiereValidacionEnrrolamiento.Equals(true))
             {
                 if (!usuarioExistente.EmailConfirmed)
                 {
-                    var confirmationEmailToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(await this.userManager.GenerateEmailConfirmationTokenAsync(usuarioExistente)));
+                    var emailToken = await this.userManager.GenerateEmailConfirmationTokenAsync(usuarioExistente);
+                    var confirmationEmailToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
+                    var confirmationId = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(usuarioExistente.Id));
 
+                    Console.WriteLine($"confirmationEmailToken: {confirmationEmailToken}, id: {confirmationId}");
                     if (string.IsNullOrEmpty(confirmationEmailToken))
                     {
                         AddError("No es posible generar el token de confirmacion del correo electronico del usuario");
@@ -176,7 +177,7 @@ public class RegisterCommandHandler : CommandHandler,
 								                        <h2 style=""color: #333333; margin: 0; font-size: 24px;"">Hola Nuevo Usuario</h2>
 								                        <div style=""margin-top: 30px; padding: 20px; background-color: #f8f9fa; border: 2px dashed #007bff; display: inline-block;"">
 									                        <span style=""font-size: 18px; font-weight: bold; color: #007bff; letter-spacing: 2px;"">
-										                        <a href=""{sendEmailOptions.APIValidateEmail}?email={usuarioExistente.Email}&validationtoken={confirmationEmailToken}"">Link para Validar Cuenta de Correo</a>. 
+										                        <a href=""{sendEmailOptions.APIValidateEmail}?id={confirmationId}&validationtoken={confirmationEmailToken}"">Link para Validar Cuenta de Correo</a>. 
 									                        </span>
 								                        </div>
 							                        </td>
@@ -206,14 +207,13 @@ public class RegisterCommandHandler : CommandHandler,
 
                     CommandResponse.Data = JsonConvert.SerializeObject(new EmailConfirmationTokenViewModel()
                     {
-                        Email = usuarioExistente.Email!,
+                        Id = confirmationId!,
                         ConfirmationToken = confirmationEmailToken
                     });
                     CommandResponse.Result = true;
                 }
                 else
                 {
-                    CommandResponse.Data = JsonConvert.SerializeObject(new ResponseSingleId() { Id = id_Usuario });
                     CommandResponse.Result = true;
                 }
 

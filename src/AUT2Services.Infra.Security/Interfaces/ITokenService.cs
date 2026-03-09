@@ -9,4 +9,5 @@ public interface ITokenService
     string GenerateRefreshToken();
     void WriteAuthTokenAsHttpOnlyCookie(string cookieName, string token, DateTime expiration);
     void DeleteAuthCookie(string cookieName);
+    string GetAuthCookie(string cookieName);
 }

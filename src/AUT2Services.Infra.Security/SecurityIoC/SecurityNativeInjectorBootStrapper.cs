@@ -1,5 +1,6 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Accounts.BaseEntity;
@@ -11,6 +12,7 @@ using AUT2Services.Infra.Security.Accounts.Register;
 using AUT2Services.Infra.Security.Accounts.ValidateEmail;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Services;
+using AUT2Services.Infra.Tools.ZendeskManager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,5 +44,6 @@ public class SecurityNativeInjectorBootStrapper
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserAccessor, UserAccessor>();
+        services.AddScoped<ITicketDataSender, ZendeskTicketSender>();
     }
 }

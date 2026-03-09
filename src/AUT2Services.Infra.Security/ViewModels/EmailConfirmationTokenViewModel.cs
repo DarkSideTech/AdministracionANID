@@ -2,6 +2,6 @@
 
 public class EmailConfirmationTokenViewModel
 {
-    public string Email { get; set; } = string.Empty;
+    public string Id { get; set; } = string.Empty;
     public string ConfirmationToken { get; set; } = string.Empty;
 }

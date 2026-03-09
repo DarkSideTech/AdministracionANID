@@ -1,8 +1,6 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Enumerations;
-using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Accounts.BaseEntity;
@@ -20,21 +18,15 @@ public class EmailConfirmationTokenCommandHandler : CommandHandler,
     private readonly UserManager<Usuario> userManager;
     private readonly AUT2ServicesContext aUT2ServicesContext;
     private readonly IMediatorHandler mediator;
-    private readonly IEntidadRepository entidadRepository;
-    private readonly IEmailMessageSender emailMessageSender;
 
     public EmailConfirmationTokenCommandHandler(
         UserManager<Usuario> userManager,
         AUT2ServicesContext aUT2ServicesContext,
-        IMediatorHandler mediator,
-        IEntidadRepository entidadRepository,
-        IEmailMessageSender emailMessageSender)
+        IMediatorHandler mediator)
     {
         this.userManager = userManager;
         this.aUT2ServicesContext = aUT2ServicesContext;
         this.mediator = mediator;
-        this.entidadRepository = entidadRepository;
-        this.emailMessageSender = emailMessageSender;
     }
 
     public async Task<CommandResponse> Handle(EmailConfirmationTokenCommand command, CancellationToken cancellationToken)
@@ -50,7 +42,7 @@ public class EmailConfirmationTokenCommandHandler : CommandHandler,
         using var transaction = await aUT2ServicesContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            var usuario = await this.userManager.FindByEmailAsync(command.Email);
+            var usuario = await this.userManager.FindByIdAsync(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(command.Id)));
             if (usuario is null)
             {
                 AddError("El usuario no existe, no se puede validar el correo electronico");

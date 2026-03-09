@@ -2,11 +2,16 @@
 using AUT2Services.Domain.Commands.Organizaciones.Commands;
 using AUT2Services.Domain.Commands.UnidadesOrganizacionales.Commands;
 using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Enumerations;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Core.Models;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
+using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Security.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.BaseEntity;
@@ -17,14 +22,20 @@ public class BaseEntityCommandHandler : CommandHandler,
 {
     private readonly IMediatorHandler mediator;
     private readonly IOrganizacionRepository organizacionRepository;
+    private readonly UserManager<Usuario> userManager;
+    private readonly ITicketDataSender ticketDataSender;
 
     public BaseEntityCommandHandler(
         IMediatorHandler mediator,
-        IOrganizacionRepository organizacionRepository
+        IOrganizacionRepository organizacionRepository,
+        UserManager<Usuario> userManager,
+        ITicketDataSender ticketDataSender
         )
     {
         this.mediator = mediator;
         this.organizacionRepository = organizacionRepository;
+        this.userManager = userManager;
+        this.ticketDataSender = ticketDataSender;
     }
 
     public async Task<CommandResponse> Handle(BaseEntityCommand command, CancellationToken cancellationToken)
@@ -34,6 +45,15 @@ public class BaseEntityCommandHandler : CommandHandler,
 
         if (!command.IsValid())
         {
+            return CommandResponse;
+        }
+
+        var user = await userManager.Users
+                .FirstOrDefaultAsync(x => x.Id == command.Id_Usuario.ToString());
+
+        if (user is null)
+        {
+            AddError("Usuario no existe, no es posible crear la estructura base");
             return CommandResponse;
         }
 
@@ -110,6 +130,21 @@ public class BaseEntityCommandHandler : CommandHandler,
             {
                 AddError($"{item.ErrorCode} {item.ErrorMessage}");
             }
+            return CommandResponse;
+        }
+
+        var ticket = new TicketDataModel()
+        {
+            Subject = "Registro Nuevo Usuario Extranjero",
+            Body = $"El usuario {user.NombreADesplegar} con la cuenta de correo {command.CorreoElectronico} se ha registrado y ya ha superado el proceso de validacion del correo electrónico, el siguiente aso es la autorizacion de este nuevo correo, por favor dirigirse al sistema de autorizaciones.",
+            Priority = EnumTicketPriority.NORMAL 
+        };
+
+        var resultSendTicketData = await ticketDataSender.SendTicketData(ticket);
+
+        if (!resultSendTicketData.Result)
+        {
+            AddError($"{resultSendTicketData.Data}");
             return CommandResponse;
         }
 

@@ -22,6 +22,7 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
     private readonly ITokenService tokenService;
     private readonly IOrganizacionRepository organizacionRepository;
     private readonly IUnidadOrganizacionalRepository unidadOrganizacionalRepository;
+    private readonly IUserAccessor userAccessor;
 
     public LoginOrganizacionCommandHandler(
         ISecurityRepository securityRepository,
@@ -29,7 +30,8 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
         IOptions<JwtOptions> jwtOptions,
         ITokenService tokenService,
         IOrganizacionRepository organizacionRepository,
-        IUnidadOrganizacionalRepository unidadOrganizacionalRepository)
+        IUnidadOrganizacionalRepository unidadOrganizacionalRepository,
+        IUserAccessor userAccessor)
     {
         this.securityRepository = securityRepository;
         this.userManager = userManager;
@@ -37,6 +39,7 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
         this.tokenService = tokenService;
         this.organizacionRepository = organizacionRepository;
         this.unidadOrganizacionalRepository = unidadOrganizacionalRepository;
+        this.userAccessor = userAccessor;
     }
 
     public async Task<CommandResponse> Handle(LoginOrganizacionCommand command, CancellationToken cancellationToken)
@@ -53,18 +56,9 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
         try
         {
             var user = await userManager.Users
-                .FirstOrDefaultAsync(x => x.Email == command.Email!);
+                .FirstOrDefaultAsync(x => x.Email == userAccessor.GetIdUsuario());
 
             if (user is null)
-            {
-                AddError("Usuario o clave no corresponden");
-                return CommandResponse;
-            }
-
-            var resultado = await userManager
-                .CheckPasswordAsync(user, command.Password!);
-
-            if (!resultado)
             {
                 AddError("Usuario o clave no corresponden");
                 return CommandResponse;

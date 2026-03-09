@@ -175,4 +175,14 @@ public class TokenService : ITokenService
     {
         httpContextAccessor.HttpContext!.Response.Cookies.Delete(cookieName);
     }
+
+    public string GetAuthCookie(string cookieName)
+    {
+        if (httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue("NombreDeTuCookie", out var value) == true)
+        {
+            return value;
+        }
+
+        return string.Empty;
+    }
 }

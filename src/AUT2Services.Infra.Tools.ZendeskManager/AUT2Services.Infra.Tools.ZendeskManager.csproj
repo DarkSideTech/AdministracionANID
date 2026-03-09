@@ -4,13 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.56.26068</AssemblyVersion>
-    <FileVersion>1.0.56.26068</FileVersion>
+    <AssemblyVersion>1.0.12.26068</AssemblyVersion>
+    <FileVersion>1.0.12.26068</FileVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.15.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AUT2Services.Domain.Core\AUT2Services.Domain.Core.csproj" />

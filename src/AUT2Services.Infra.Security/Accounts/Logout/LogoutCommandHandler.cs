@@ -43,18 +43,20 @@ public class LogoutCommandHandler : CommandHandler,
             tokenService.DeleteAuthCookie(EnumAuthCookie.REFRESH_TOKEN);
 
             var user = await userManager.Users
-                .FirstOrDefaultAsync(x => x.UserName == userAccessor.GetUsername());
+                .FirstOrDefaultAsync(x => x.Id == userAccessor.GetIdUsuario());
 
             if (user is null)
             {
-                AddError("Usuario no se encuentra logueado");
-                return CommandResponse;
+                user = await userManager.Users
+                    .FirstOrDefaultAsync(x => x.RefreshToken == tokenService.GetAuthCookie(EnumAuthCookie.REFRESH_TOKEN));
             }
 
-            user.RefreshToken = null;
-            user.RefreshTokenExpiresAtUtc = null;
-
-            await userManager.UpdateAsync(user);
+            if (user is not null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiresAtUtc = null;
+                await userManager.UpdateAsync(user);
+            }
         }
         catch (Exception ex)
         {

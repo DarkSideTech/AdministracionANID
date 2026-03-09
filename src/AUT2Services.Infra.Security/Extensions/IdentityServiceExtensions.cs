@@ -1,4 +1,5 @@
-﻿using AUT2Services.Domain.Security.Entities;
+﻿using AUT2Services.Domain.Core.Models;
+using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +16,9 @@ public class IdentityServiceExtensions
 {
     public static void AddIdentityServices(WebApplicationBuilder builder)
     {
+        builder.Services.Configure<ZendeskSendTicketOptions>(
+            builder.Configuration.GetSection(ZendeskSendTicketOptions.ZendeskTicketOptionsKey));
+
         builder.Services.AddIdentityCore<Usuario>(opt =>
         {
             opt.Password.RequireNonAlphanumeric = false;
@@ -27,29 +31,29 @@ public class IdentityServiceExtensions
             opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
-        {
-            var jwtOptions = builder.Configuration.GetSection(JwtOptions.JwtOptionsKey)
-                .Get<JwtOptions>() ?? throw new ArgumentException(nameof(JwtOptions));
-
-            options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtOptions.Issuer,
-                ValidAudience = jwtOptions.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
-            };
+                var jwtOptions = builder.Configuration.GetSection(JwtOptions.JwtOptionsKey)
+                    .Get<JwtOptions>() ?? throw new ArgumentException(nameof(JwtOptions));
 
-            options.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    context.Token = context.Request.Cookies["ACCESS_TOKEN"];
-                    return Task.CompletedTask;
-                }
-            };
-        });
+                    ValidateIssuer = true,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["ACCESS_TOKEN"];
+                        return Task.CompletedTask;
+                    }
+                };
+            });
     }
 }

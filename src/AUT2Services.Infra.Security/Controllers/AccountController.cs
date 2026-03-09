@@ -48,11 +48,11 @@ public partial class AccountController : ApiController
 
     [HttpGet("validateemail")]
     [AllowAnonymous]
-    public async void ValidateEmail(string email, string validationtoken)
+    public async Task ValidateEmail(string id, string validationtoken)
     {
         var validateEmailCommand = new EmailConfirmationTokenCommand()
         {
-            Email = email,
+            Id = id,
             ConfirmationToken = validationtoken
         };
 
@@ -97,7 +97,7 @@ public partial class AccountController : ApiController
     }
 
     [HttpPost("logout")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> Logout()
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.Logout());

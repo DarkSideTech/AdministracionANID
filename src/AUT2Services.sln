@@ -51,6 +51,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.5 Tools", "4.5 Tools", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AUT2Services.Infra.Tools.EmailManager", "AUT2Services.Infra.Tools.EmailManager\AUT2Services.Infra.Tools.EmailManager.csproj", "{87EE61E3-06B1-4F85-A93A-4EF0F703F122}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AUT2Services.Infra.Tools.ZendeskManager", "AUT2Services.Infra.Tools.ZendeskManager\AUT2Services.Infra.Tools.ZendeskManager.csproj", "{BB769139-10B8-4B36-9051-8CA8F35F0C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{87EE61E3-06B1-4F85-A93A-4EF0F703F122}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87EE61E3-06B1-4F85-A93A-4EF0F703F122}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EE61E3-06B1-4F85-A93A-4EF0F703F122}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB769139-10B8-4B36-9051-8CA8F35F0C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB769139-10B8-4B36-9051-8CA8F35F0C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB769139-10B8-4B36-9051-8CA8F35F0C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB769139-10B8-4B36-9051-8CA8F35F0C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{0074349E-6140-422D-854D-5B87C27BCCB7} = {2BAAF6D6-0784-4142-B0C8-A15EA54936D7}
 		{63A34264-96B5-44B7-9818-63C5BA4FA98E} = {3424A240-285F-4057-9E09-2023F743CC93}
 		{87EE61E3-06B1-4F85-A93A-4EF0F703F122} = {63A34264-96B5-44B7-9818-63C5BA4FA98E}
+		{BB769139-10B8-4B36-9051-8CA8F35F0C73} = {63A34264-96B5-44B7-9818-63C5BA4FA98E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E478FFE-E459-4521-BEAD-09EB430B14D7}
