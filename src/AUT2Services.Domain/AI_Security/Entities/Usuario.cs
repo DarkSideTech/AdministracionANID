@@ -15,5 +15,7 @@ public class Usuario : IdentityUser
     public string? InformacionAdicional { get; set; } = string.Empty;
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiresAtUtc { get; set; }
+
+    public List<RefreshToken> RefreshTokens { get; set; } = [];
 }
 

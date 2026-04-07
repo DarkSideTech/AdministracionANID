@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-01-21 15:35:09.219
+// Date Generated File : 2026-04-05 15:14:10.081
 // -------------------------------------------------
 using AUT2Services.Domain.Core.Enumerations;
 
@@ -12,6 +12,7 @@ public static class EnumAuthCookie
 {
     public const string ACCESS_TOKEN = nameof(ACCESS_TOKEN);
     public const string REFRESH_TOKEN = nameof(REFRESH_TOKEN);
+    public const string LOGIN_TYPE = nameof(LOGIN_TYPE);
 
     public static IList<string> ObtenerListaValores()
     {

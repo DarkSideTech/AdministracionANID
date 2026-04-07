@@ -120,13 +120,13 @@ public class UserAccessor : IUserAccessor
                 .FindFirstValue(EnumBusinessClaimTypes.NOMBRE_UNIDAD_ORGANIZACIONAL)!;
     }
 
-    public string GetAccessTokenType()
-    {
-        return _httpContextAccessor
-        .HttpContext!
-            .User
-                .FindFirstValue(EnumBusinessClaimTypes.ACCESS_TOKEN_TYPE)!;
-    }
+    //public string GetAccessTokenType()
+    //{
+    //    return _httpContextAccessor
+    //    .HttpContext!
+    //        .User
+    //            .FindFirstValue(EnumBusinessClaimTypes.ACCESS_TOKEN_TYPE)!;
+    //}
 
     public string GetProcesoNombre(string proceso)
     {

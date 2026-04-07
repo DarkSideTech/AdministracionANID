@@ -2,36 +2,43 @@
 using AUT2Services.Infra.Security.Accounts.LoginOrganizacion;
 using AUT2Services.Infra.Security.Accounts.RefreshToken;
 using AUT2Services.Infra.Security.Accounts.Register;
+using AUT2Services.Infra.Security.Accounts.ReSendEmailConfirmation;
+using AUT2Services.Infra.Security.Accounts.ValidateEmail;
+using AUT2Services.Infra.Security.Records;
 using AUT2Services.Infra.Security.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace AUT2Services.Infra.Security.Extensions;
 
 public static class AccountExtensions
 {
-    public static LoginCommand ToLoginCommand(this LoginViewModel viewModel)
+    public static LoginCommand ToLoginCommand(this LoginViewModel viewModel,HttpRequest request, HttpResponse response)
     {
         if (viewModel is null) return null;
 
         return new LoginCommand()
         {
             Email = viewModel.Email,
-            Password = viewModel.Password
+            Password = viewModel.Password,
+            Request = request,
+            Response = response
         };
     }
 
-    public static LoginOrganizacionCommand ToLoginOrganizacionCommand(this LoginOrganizacionViewModel viewModel)
+    public static LoginOrganizacionCommand ToLoginOrganizacionCommand(this LoginOrganizacionViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext httpContext)
     {
         if (viewModel is null) return null;
 
         return new LoginOrganizacionCommand()
         {
-            Email = viewModel.Email,
-            Password = viewModel.Password,
-            Organizacion = viewModel.Organizacion
+            Organizacion = viewModel.Organizacion,
+            Request = request,
+            Response = response,
+            Context = httpContext
         };
     }
 
-    public static RegisterCommand ToRegisterCommand(this RegisterViewModel viewModel)
+    public static RegisterCommand ToRegisterCommand(this RegisterViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         if (viewModel is null) return null;
 
@@ -51,18 +58,46 @@ public static class AccountExtensions
             SexoRegistral = viewModel.SexoRegistral,
             FechaDeNacimiento = viewModel.FechaDeNacimiento,
             Contraseña = viewModel.Contraseña,
-            TerminosYCondiciones = viewModel.TerminosYCondiciones
+            ConfirmaContraseña = viewModel.ConfirmaContraseña,
+            TerminosYCondiciones = viewModel.TerminosYCondiciones,
+            Request = request,
+            Response = response
         };
     }
 
-    public static RefreshTokenCommand ToRefreshTokenCommand(this RefreshTokenViewModel viewModel)
+    public static RefreshTokenCommand ToRefreshTokenCommand(this RefreshTokenViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         if (viewModel is null) return null;
 
         return new RefreshTokenCommand() 
         { 
-            RefreshToken = viewModel.RefreshToken 
+            Request = request,
+            Response = response
         };
     }
 
+    public static EmailConfirmationTokenCommand ToEmailConfirmationTokenCommand(this ConfirmEmailRequest requestRecord, HttpRequest request, HttpResponse response)
+    {
+        if (requestRecord is null) return null;
+
+        return new EmailConfirmationTokenCommand()
+        {
+            UserId = requestRecord.UserId,
+            Token = requestRecord.Token,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static ResendEmailConfirmationTokenCommand ToResendEmailConfirmationTokenCommand(this ResendEmailConfirmationTokenRequest requestRecord, HttpRequest request, HttpResponse response)
+    {
+        if (requestRecord is null) return null;
+
+        return new ResendEmailConfirmationTokenCommand()
+        {
+            Email = requestRecord.Email,
+            Request = request,
+            Response = response
+        };
+    }
 }

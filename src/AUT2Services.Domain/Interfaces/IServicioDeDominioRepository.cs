@@ -13,5 +13,5 @@ public interface IServicioDeDominioRepository
 
     Task<bool> UsuarioConRolValidaAsignacionDeRol(Guid id_Usuario, Guid id_Rol_ValidaAsignacionUsuario, Guid id_Organizacion, Guid id_Organizacion_ANID);
 
-    Task<bool> UsuarioConRolValidaEnnrrolamiento(Guid id_Usuario, Guid id_Rol_ValidaEnrrolamiento);
+    Task<bool> UsuarioConRolValidaEnrrolamiento(Guid id_Usuario, Guid id_Rol_ValidaEnrrolamiento);
 }

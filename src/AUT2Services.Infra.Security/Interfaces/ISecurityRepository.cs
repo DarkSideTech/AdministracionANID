@@ -8,6 +8,10 @@ public interface ISecurityRepository
 {
     Task<IEnumerable<SecurityClaims>> BuscarTodasLasPolicies(Guid id_Entidad);
 
+    Task<IList<string>> BuscarRolesPor_Id_Entidad(Guid id_Entidad);
+
+    Task<IList<string>> BuscarUnidadesOrganizacionalesPor_Id_Entidad(Guid id_Entidad);
+
     Task<Usuario> BuscarUsuario(string nombreUsuario);
 
     Task<int> BuscarUltimoIdAutorizacion();

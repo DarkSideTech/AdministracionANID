@@ -4,6 +4,5 @@ public class RefreshTokenCommandValidations : RefreshTokenValidations<RefreshTok
 {
     public RefreshTokenCommandValidations()
     {
-        Validate_RefreshToken();
     }
 }

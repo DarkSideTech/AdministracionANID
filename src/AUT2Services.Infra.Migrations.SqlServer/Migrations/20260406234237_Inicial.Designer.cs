@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
 {
     [DbContext(typeof(AUT2ServicesContext))]
-    [Migration("20251203143656_Inicial")]
+    [Migration("20260406234237_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -79,7 +79,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = new Guid("ecaf1074-722d-468f-81fa-69c2d7b88d68"),
                             Activo = true,
                             AutenticadorExternoBase = true,
-                            ClaveDeAcceso = "AQAAAAIAAYagAAAAEJ4PR5McQ5LU8RXggNqnBrS3qdIO54mYO8+1rkT1vSryd4FBlMVPKuLbopBp0XUJKw==",
+                            ClaveDeAcceso = "AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA==",
                             Id_Proveedor = new Guid("701c19bf-405c-4467-85f0-ddbc3786f9ee"),
                             Id_Usuario = new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"),
                             NombreADesplegar = "ADMINISTRADOR",
@@ -145,7 +145,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
                             CorreoElectronico = "",
                             EntidadBase = true,
-                            FechaCreacion = new DateTimeOffset(new DateTime(2025, 12, 3, 11, 36, 56, 571, DateTimeKind.Unspecified).AddTicks(1214), new TimeSpan(0, -3, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 19, 42, 37, 511, DateTimeKind.Unspecified).AddTicks(8787), new TimeSpan(0, -4, 0, 0, 0)),
                             FechaInicioAutorizacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaTerminoAutorizacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_UnidadOrganizacional = new Guid("198c164d-1cd8-4107-9db3-74b9fa33302c"),
@@ -262,7 +262,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         new
                         {
                             Id = new Guid("8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d"),
-                            FechaCreacion = new DateTimeOffset(new DateTime(2025, 12, 3, 14, 36, 56, 571, DateTimeKind.Unspecified).AddTicks(3775), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 37, 513, DateTimeKind.Unspecified).AddTicks(7764), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaInicioAsignacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaTerminoAsignacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
@@ -275,7 +275,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         new
                         {
                             Id = new Guid("bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61"),
-                            FechaCreacion = new DateTimeOffset(new DateTime(2025, 12, 3, 14, 36, 56, 571, DateTimeKind.Unspecified).AddTicks(5027), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 37, 513, DateTimeKind.Unspecified).AddTicks(9101), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaInicioAsignacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaTerminoAsignacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
@@ -288,7 +288,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         new
                         {
                             Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb55"),
-                            FechaCreacion = new DateTimeOffset(new DateTime(2025, 12, 3, 14, 36, 56, 571, DateTimeKind.Unspecified).AddTicks(5033), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 37, 513, DateTimeKind.Unspecified).AddTicks(9105), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaInicioAsignacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             FechaTerminoAsignacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
@@ -401,7 +401,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_MACRO",
                             Nombre = "Proceso de Postulacion",
-                            ProcesoBase = true,
+                            ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
                         },
@@ -409,65 +409,65 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("afc327c0-3970-40c7-9ef6-c0a3fdb42cb9"),
                             Activo = true,
-                            Codigo = "POS_CONVOCATORIA",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Postulaciones Convocatoria",
-                            Descripcion = "Proceso de Postulacion Convocatoria",
+                            Codigo = "POS_ACONCAGUA_SPI",
+                            ComoDesplegarUrlDeProceso = "REDIRECCION",
+                            Contexto = "Sistema Aconcagua SPI",
+                            Descripcion = "Sistema Aconcagua SPI",
                             IdMacro_Proceso = new Guid("233783de-9094-4030-907d-82d7c5abf10e"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Proceso de Postulacion Convocatoria",
+                            Nombre = "Sistema Aconcagua SPI",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://auth-qa01.anid.cl"
                         },
                         new
                         {
                             Id = new Guid("3f5cceaf-4c86-4495-90b4-aafe7c4ab509"),
                             Activo = true,
-                            Codigo = "POS_POSTULAR",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Postulaciones Postular",
-                            Descripcion = "Proceso de Postulacion Postular",
+                            Codigo = "POS_ACONCAGUA_GENERICO",
+                            ComoDesplegarUrlDeProceso = "REDIRECCION",
+                            Contexto = "Sistema Aconcagua generico",
+                            Descripcion = "Sistema Aconcagua Generico",
                             IdMacro_Proceso = new Guid("233783de-9094-4030-907d-82d7c5abf10e"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Proceso de Postulacion Postular",
+                            Nombre = "Sistema Aconcagua Generico",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "http://auth-qa05.anid.cl"
                         },
                         new
                         {
                             Id = new Guid("c6b401ab-5164-43cc-8ae4-28ca2c9edbbe"),
                             Activo = true,
-                            Codigo = "POS_PATROCINIO_INSTITUCIONAL",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Postulaciones Patrocinio Institucional",
-                            Descripcion = "Proceso de Postulacion Patrocinio Institucional",
+                            Codigo = "POS_GENESIS",
+                            ComoDesplegarUrlDeProceso = "REDIRECCION",
+                            Contexto = "Sistema Genesis",
+                            Descripcion = "Sistema Genesis",
                             IdMacro_Proceso = new Guid("233783de-9094-4030-907d-82d7c5abf10e"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Proceso de Postulacion Patrocinio Institucional",
+                            Nombre = "Sistema Genesis",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://splqa.anid.cl"
                         },
                         new
                         {
                             Id = new Guid("a6ef77f1-e26b-430d-9d94-eef157e4df65"),
                             Activo = true,
-                            Codigo = "POS_CARTAS_DE_RECOMENDACION",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Postulaciones Cartas de recomendación",
-                            Descripcion = "Proceso de Postulacion Cartas de recomendación",
+                            Codigo = "POS_MILENIO",
+                            ComoDesplegarUrlDeProceso = "REDIRECCION",
+                            Contexto = "Sistema de Postulaciones Milenio",
+                            Descripcion = "Proceso de Postulacion Milenio",
                             IdMacro_Proceso = new Guid("233783de-9094-4030-907d-82d7c5abf10e"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Proceso de Postulacion Cartas de recomendación",
+                            Nombre = "Proceso de Postulacion Milenio",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://post-im.conicyt.cl/Concursos"
                         },
                         new
                         {
@@ -475,13 +475,13 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Activo = true,
                             Codigo = "SELECCION_FORMALIZACION",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seleccion y Autorizacion",
-                            Descripcion = "Sistema de Seleccion y Autorizacion",
+                            Contexto = "Sistema de Seleccion y Formalizacion",
+                            Descripcion = "Sistema de Seleccion y Formalizacion",
                             IdMacro_Proceso = new Guid("00000000-0000-0000-0000-000000000000"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_MACRO",
-                            Nombre = "Sistema de Seleccion y Autorizacion",
-                            ProcesoBase = true,
+                            Nombre = "Sistema de Seleccion y Formalizacion",
+                            ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
                         },
@@ -489,46 +489,46 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("6bd742e3-0e0a-4990-b51f-661c710ba4b9"),
                             Activo = true,
-                            Codigo = "SFO_ADMISIBILIDAD",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seleccion y Autorizacion Admisibilidad",
-                            Descripcion = "Sistema de Seleccion y Autorizacion Admisibilidad",
+                            Codigo = "SFO_EVAL_SPI",
+                            ComoDesplegarUrlDeProceso = "VENTANA",
+                            Contexto = "Sistema Eval SPI",
+                            Descripcion = "Sistema Eval SPI",
                             IdMacro_Proceso = new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Seleccion y Autorizacion Admisibilidad",
+                            Nombre = "Sistema Eval SPI",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://faraondesa.anid.cl/desa2/Evaluacion_TESTING/index.php"
                         },
                         new
                         {
                             Id = new Guid("7faa600f-2f47-4168-9a65-3c6d47ef2241"),
                             Activo = true,
-                            Codigo = "SFO_EVALUACION",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seleccion y Autorizacion Evaluacion",
-                            Descripcion = "Sistema de Seleccion y Autorizacion Evaluacion",
+                            Codigo = "SFO_EVAL_BECAS",
+                            ComoDesplegarUrlDeProceso = "VENTANA",
+                            Contexto = "Sistema Eval Becas",
+                            Descripcion = "Sistema Eval Becas",
                             IdMacro_Proceso = new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Seleccion y Autorizacion Evaluacion",
+                            Nombre = "Sistema Eval Becas",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://servicios-qa.anid.cl/evalbecas"
                         },
                         new
                         {
                             Id = new Guid("5eeb676d-b3fc-4db7-9421-358a6c26d3dc"),
                             Activo = true,
-                            Codigo = "SFO_FALLO",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seleccion y Autorizacion Fallo",
-                            Descripcion = "Sistema de Seleccion y Autorizacion Fallo",
+                            Codigo = "SFO_EVAL_GENERICO",
+                            ComoDesplegarUrlDeProceso = "VENTANA",
+                            Contexto = "Sistema Eval Generico",
+                            Descripcion = "Sistema Eval Generico",
                             IdMacro_Proceso = new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Seleccion y Autorizacion Fallo",
+                            Nombre = "Sistema Eval Generico",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
@@ -547,52 +547,36 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Nombre = "Sistema de Seleccion y Autorizacion Firma de Convenio",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://servicios-qa.anid.cl/web/firma-convenio/#/login"
                         },
                         new
                         {
-                            Id = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            Id = new Guid("9679412f-ae9f-4d77-8629-7559d280ece2"),
                             Activo = true,
-                            Codigo = "SEGUIMIENTO_FINANCIERO",
+                            Codigo = "SFO_FALLO_BECA",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seguimiento Financiero",
-                            Descripcion = "Sistema de Seguimiento Financiero",
-                            IdMacro_Proceso = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaximaAsignacionDeRoles = 1,
-                            NivelDeProceso = "NIVEL_MACRO",
-                            Nombre = "Sistema de Seguimiento Financiero",
-                            ProcesoBase = true,
-                            Token = "",
-                            Url = "http://localhost:4210"
-                        },
-                        new
-                        {
-                            Id = new Guid("e256405c-0bda-479a-8a41-a043c672f9b1"),
-                            Activo = true,
-                            Codigo = "SFI_PROYECTOS_PRESUPUESTO",
-                            ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seguimiento Financiero Proyectos y Presupuesto",
-                            Descripcion = "Sistema de Seguimiento Financiero Proyectos y Presupuesto",
-                            IdMacro_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            Contexto = "Sistema Fallo Beca",
+                            Descripcion = "Sistema Fallo Beca",
+                            IdMacro_Proceso = new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Seguimiento Financiero Proyectos y Presupuesto",
+                            Nombre = "Sistema Fallo Beca",
                             ProcesoBase = false,
                             Token = "",
-                            Url = "http://localhost:4210"
+                            Url = "https://servicios-qa.anid.cl/web//fallo/#/public"
                         },
                         new
                         {
-                            Id = new Guid("2b597b09-55ad-4304-b57d-76bd2df5ac4c"),
+                            Id = new Guid("a6151eed-ea81-4edb-9c89-5bf7e260989f"),
                             Activo = true,
-                            Codigo = "SFI_RENDICIONES",
+                            Codigo = "SFO_FALLO_SPI",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seguimiento Financiero Rendiciones",
-                            Descripcion = "Sistema de Seguimiento Financiero Rendiciones",
-                            IdMacro_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            Contexto = "Sistema Fallo SPI",
+                            Descripcion = "Sistema Fallo SPI",
+                            IdMacro_Proceso = new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Seguimiento Financiero Rendiciones",
+                            Nombre = "Sistema Fallo SPI",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
@@ -609,7 +593,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_MACRO",
                             Nombre = "Sistema de Seguimiento Técnico",
-                            ProcesoBase = true,
+                            ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
                         },
@@ -617,14 +601,174 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("f2224186-ffcc-41ee-bbce-4bbd72504e22"),
                             Activo = true,
-                            Codigo = "STE_PROYECTOS_INFORMES",
+                            Codigo = "STE_SIAL_SPI",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Seguimiento Técnico Proyectos e Informes",
-                            Descripcion = "Sistema de Seguimiento Técnico Proyectos e Informes",
+                            Contexto = "Sistema SIAL SPI",
+                            Descripcion = "Sistema SIAL SPI",
                             IdMacro_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Seguimiento Técnico Proyectos e Informes",
+                            Nombre = "Sistema SIAL SPI",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("f3285b94-90a4-4610-8c65-2782d2e3a1a3"),
+                            Activo = true,
+                            Codigo = "STE_SyC_LEGACY_SIA",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema SyC Legacy SIA",
+                            Descripcion = "Sistema SyC Legacy SIA",
+                            IdMacro_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema SyC Legacy SIA",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("fa2e0bda-3063-4357-91b5-17f443b74ebd"),
+                            Activo = true,
+                            Codigo = "STE_SISFON_LUTHIEN_SPI_SCH",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema Sisfon Luthien SPI SCH",
+                            Descripcion = "Sistema Sisfon Luthien SPI SCH",
+                            IdMacro_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema Sisfon Luthien SPI SCH",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "172.16.4.107:22"
+                        },
+                        new
+                        {
+                            Id = new Guid("8ff51db1-44a5-4b9e-b0eb-0cd739cee604"),
+                            Activo = true,
+                            Codigo = "STE_SISTEMA_VERDE_SIA",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema Verde SIA",
+                            Descripcion = "Sistema Verde SIA",
+                            IdMacro_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema Verde SIA",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("e150709d-4fed-480b-8916-8b0837a775d3"),
+                            Activo = true,
+                            Codigo = "STE_GESTION_MILENIO",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema Gestion Milenio",
+                            Descripcion = "Sistema Gestion Milenio",
+                            IdMacro_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema Gestion Milenio",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("9cc3ac0d-503a-42b1-bc8e-10d20265e15b"),
+                            Activo = true,
+                            Codigo = "STE_SISTEMA_TERMINO_SIA",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema Termino SIA",
+                            Descripcion = "Sistema Termino SIA",
+                            IdMacro_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema Termino SIA",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            Activo = true,
+                            Codigo = "SEGUIMIENTO_FINANCIERO",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema de Seguimiento Financiero",
+                            Descripcion = "Sistema de Seguimiento Financiero",
+                            IdMacro_Proceso = new Guid("00000000-0000-0000-0000-000000000000"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_MACRO",
+                            Nombre = "Sistema de Seguimiento Financiero",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("e256405c-0bda-479a-8a41-a043c672f9b1"),
+                            Activo = true,
+                            Codigo = "SFI_SGDL_SPI",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema SDGL SPI",
+                            Descripcion = "Sistema SDGL SPI",
+                            IdMacro_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema SDGL SPI",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("2b597b09-55ad-4304-b57d-76bd2df5ac4c"),
+                            Activo = true,
+                            Codigo = "SFI_SISFON_LUTHIEN_SPI_SCH",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema Sisfon Luthien SPI SCH",
+                            Descripcion = "Sistema Sisfon Luthien SPI SCH",
+                            IdMacro_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema Sisfon Luthien SPI SCH",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "172.16.4.107:22"
+                        },
+                        new
+                        {
+                            Id = new Guid("d65b2a0d-0742-491b-be4f-c7c00219821d"),
+                            Activo = true,
+                            Codigo = "SFI_SYC_FINANCIERO_SIA",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema SyC Financiero SIA",
+                            Descripcion = "Sistema SyC Financiero SIA",
+                            IdMacro_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema SyC Financiero SIA",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c"),
+                            Activo = true,
+                            Codigo = "SFI_SISTEMA_TERMINO_SIA",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema Sistema Termino SIA",
+                            Descripcion = "Sistema Sistema Termino SIA",
+                            IdMacro_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema Sistema Termino SIA",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
@@ -633,15 +777,15 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
                             Activo = true,
-                            Codigo = "PRODUCTIVIDAD_CIENTÍFICA",
+                            Codigo = "VIN_SCIELO",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Productividad Científica",
-                            Descripcion = "Sistema de Productividad Científica",
+                            Contexto = "Sistema Scielo",
+                            Descripcion = "Sistema Scielo",
                             IdMacro_Proceso = new Guid("00000000-0000-0000-0000-000000000000"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_MACRO",
-                            Nombre = "Sistema de Productividad Científica",
-                            ProcesoBase = true,
+                            Nombre = "Sistema Scielo",
+                            ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
                         },
@@ -649,14 +793,14 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("eec159f1-9ba9-463d-8407-ec2951751c29"),
                             Activo = true,
-                            Codigo = "PSC_PORTAL_DEL_INVESTIGADOR",
+                            Codigo = "VIN_SCIELO",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Productividad Científica Portal del Investigador",
-                            Descripcion = "Sistema de Productividad Científica Portal del Investigador",
+                            Contexto = "Sistema Scielo",
+                            Descripcion = "Sistema Scielo",
                             IdMacro_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Productividad Científica Portal del Investigador",
+                            Nombre = "Sistema Scielo",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
@@ -665,14 +809,14 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("4bb69d17-cc38-4e52-ad36-42226aa5723d"),
                             Activo = true,
-                            Codigo = "PSC_REPOSITORIO_ANID",
+                            Codigo = "VIN_BEIC",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Productividad Científica Repositorio ANID",
-                            Descripcion = "Sistema de Productividad Científica Repositorio ANID",
+                            Contexto = "Sistema Beic",
+                            Descripcion = "Sistema Beic",
                             IdMacro_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Productividad Científica Repositorio ANID",
+                            Nombre = "Sistema Beic",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
@@ -681,46 +825,62 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         {
                             Id = new Guid("a4ebe253-17c4-4a98-a333-d6fee919a212"),
                             Activo = true,
-                            Codigo = "PSC_DATOS_ABIERTOS",
+                            Codigo = "VIN_PDI",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Productividad Científica Datos Abiertos",
-                            Descripcion = "Sistema de Productividad Científica Datos Abiertos",
+                            Contexto = "Sistema PDI",
+                            Descripcion = "Sistema PDI",
                             IdMacro_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Productividad Científica Datos Abiertos",
+                            Nombre = "Sistema PDI",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
                         },
                         new
                         {
-                            Id = new Guid("ed685882-0d73-4fe4-986c-b34f9641622c"),
+                            Id = new Guid("35e9a345-dda9-45fc-9a35-7cf27ec8e947"),
                             Activo = true,
-                            Codigo = "EXPEDIENTE",
+                            Codigo = "VIN_DATACIENCIA",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Expediente Electrónico",
-                            Descripcion = "Sistema de Expediente Electrónico",
-                            IdMacro_Proceso = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Contexto = "Sistema DataCiencia",
+                            Descripcion = "Sistema DataCiencia",
+                            IdMacro_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
                             MaximaAsignacionDeRoles = 1,
-                            NivelDeProceso = "NIVEL_MACRO",
-                            Nombre = "Sistema de Expediente Electrónico",
-                            ProcesoBase = true,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema DataCiencia",
+                            ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
                         },
                         new
                         {
-                            Id = new Guid("7f618ddf-cadc-4955-b97f-31ebb43cac6f"),
+                            Id = new Guid("9c4a10ea-d6f3-4a0c-b4b0-25fb0396c7ee"),
                             Activo = true,
-                            Codigo = "EXP_EXPEDIENTE_ELECTRONICO",
+                            Codigo = "VIN_REPOSITORIO",
                             ComoDesplegarUrlDeProceso = "IFRAME",
-                            Contexto = "Sistema de Expediente Electrónico Expediente",
-                            Descripcion = "Sistema de Expediente Electrónico Expediente",
-                            IdMacro_Proceso = new Guid("ed685882-0d73-4fe4-986c-b34f9641622c"),
+                            Contexto = "Sistema Repositorio",
+                            Descripcion = "Sistema Repositorio",
+                            IdMacro_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
                             MaximaAsignacionDeRoles = 1,
                             NivelDeProceso = "NIVEL_SISTEMA",
-                            Nombre = "Sistema de Expediente Electrónico Expediente",
+                            Nombre = "Sistema Repositorio",
+                            ProcesoBase = false,
+                            Token = "",
+                            Url = "http://localhost:4210"
+                        },
+                        new
+                        {
+                            Id = new Guid("587ec39b-e7d8-4c0f-9ac4-697940cf7b07"),
+                            Activo = true,
+                            Codigo = "VIN_DIODI",
+                            ComoDesplegarUrlDeProceso = "IFRAME",
+                            Contexto = "Sistema DIODI",
+                            Descripcion = "Sistema DIODI",
+                            IdMacro_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
+                            MaximaAsignacionDeRoles = 1,
+                            NivelDeProceso = "NIVEL_SISTEMA",
+                            Nombre = "Sistema DIODI",
                             ProcesoBase = false,
                             Token = "",
                             Url = "http://localhost:4210"
@@ -882,6 +1042,64 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         .HasName("PK_ValidacionEnrrolamiento_Id");
 
                     b.ToTable("ValidacionEnrrolamiento");
+                });
+
+            modelBuilder.Entity("AUT2Services.Domain.Security.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id_Entidad")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReplacedByTokenHash")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("RevocationReason")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("RevokedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SelectedOrganization")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("AUT2Services.Domain.Security.Entities.Rol", b =>
@@ -1137,7 +1355,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "2b12d04f-c167-4ad1-a42a-e2ecd30518d7",
                             AccessFailedCount = 10,
                             Activo = true,
-                            ConcurrencyStamp = "72e725ba-e2c5-42d3-8fb9-4b7949c73c47",
+                            ConcurrencyStamp = "e5edc734-b9a6-40f6-a23d-0f0df4730666",
                             Descripcion = "Administrador global",
                             Email = "administrador@security.com",
                             EmailConfirmed = true,
@@ -1148,7 +1366,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             NombreADesplegar = "Administrador",
                             NormalizedEmail = "ADMINISTRADOR@SECURITY.COM",
                             NormalizedUserName = "ADMINISTRADOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ4PR5McQ5LU8RXggNqnBrS3qdIO54mYO8+1rkT1vSryd4FBlMVPKuLbopBp0XUJKw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
                             RequiereValidacionEnrrolamiento = false,
@@ -1266,6 +1484,17 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AUT2Services.Domain.Security.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("AUT2Services.Domain.Security.Entities.Usuario", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("AUT2Services.Domain.Security.Entities.Rol", null)
@@ -1315,6 +1544,11 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AUT2Services.Domain.Security.Entities.Usuario", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

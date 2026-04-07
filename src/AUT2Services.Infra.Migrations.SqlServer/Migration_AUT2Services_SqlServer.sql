@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [AutenticadorExterno] (
@@ -30,7 +30,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [Entidad] (
@@ -50,7 +50,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [Organizacion] (
@@ -67,7 +67,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [PoliticaAsignada] (
@@ -87,7 +87,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [Proceso] (
@@ -110,7 +110,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [Proveedor] (
@@ -127,7 +127,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [Rol] (
@@ -149,7 +149,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [UnidadOrganizacional] (
@@ -166,7 +166,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [Usuario] (
@@ -202,7 +202,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [ValidacionEnrrolamiento] (
@@ -219,7 +219,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetRoleClaims] (
@@ -234,7 +234,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserClaims] (
@@ -249,7 +249,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserLogins] (
@@ -264,7 +264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserRoles] (
@@ -278,7 +278,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserTokens] (
@@ -293,33 +293,55 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
+)
+BEGIN
+    CREATE TABLE [RefreshTokens] (
+        [Id] int NOT NULL IDENTITY,
+        [SessionId] nvarchar(64) NOT NULL,
+        [TokenHash] nvarchar(128) NOT NULL,
+        [CreatedAtUtc] datetime2 NOT NULL,
+        [ExpiresAtUtc] datetime2 NOT NULL,
+        [RevokedAtUtc] datetime2 NULL,
+        [SelectedOrganization] nvarchar(256) NULL,
+        [ReplacedByTokenHash] nvarchar(128) NULL,
+        [RevocationReason] nvarchar(64) NULL,
+        [UserId] nvarchar(450) NOT NULL,
+        [Id_Entidad] uniqueidentifier NOT NULL,
+        CONSTRAINT [PK_RefreshTokens] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_RefreshTokens_Usuario_UserId] FOREIGN KEY ([UserId]) REFERENCES [Usuario] ([Id]) ON DELETE CASCADE
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'AutenticadorExternoBase', N'ClaveDeAcceso', N'Id_Proveedor', N'Id_Usuario', N'NombreADesplegar', N'NombreUsuario', N'ValidadorPrimario') AND [object_id] = OBJECT_ID(N'[AutenticadorExterno]'))
         SET IDENTITY_INSERT [AutenticadorExterno] ON;
     EXEC(N'INSERT INTO [AutenticadorExterno] ([Id], [Activo], [AutenticadorExternoBase], [ClaveDeAcceso], [Id_Proveedor], [Id_Usuario], [NombreADesplegar], [NombreUsuario], [ValidadorPrimario])
-    VALUES (''ecaf1074-722d-468f-81fa-69c2d7b88d68'', CAST(1 AS bit), CAST(1 AS bit), N''AQAAAAIAAYagAAAAEJ4PR5McQ5LU8RXggNqnBrS3qdIO54mYO8+1rkT1vSryd4FBlMVPKuLbopBp0XUJKw=='', ''701c19bf-405c-4467-85f0-ddbc3786f9ee'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', N''ADMINISTRADOR'', N''ADMINISTRADOR'', CAST(1 AS bit))');
+    VALUES (''ecaf1074-722d-468f-81fa-69c2d7b88d68'', CAST(1 AS bit), CAST(1 AS bit), N''AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA=='', ''701c19bf-405c-4467-85f0-ddbc3786f9ee'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', N''ADMINISTRADOR'', N''ADMINISTRADOR'', CAST(1 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'AutenticadorExternoBase', N'ClaveDeAcceso', N'Id_Proveedor', N'Id_Usuario', N'NombreADesplegar', N'NombreUsuario', N'ValidadorPrimario') AND [object_id] = OBJECT_ID(N'[AutenticadorExterno]'))
         SET IDENTITY_INSERT [AutenticadorExterno] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CorreoElectronico', N'EntidadBase', N'FechaCreacion', N'FechaInicioAutorizacion', N'FechaTerminoAutorizacion', N'Id_UnidadOrganizacional', N'Id_Usuario', N'Principal', N'TipoDeEntidad') AND [object_id] = OBJECT_ID(N'[Entidad]'))
         SET IDENTITY_INSERT [Entidad] ON;
     EXEC(N'INSERT INTO [Entidad] ([Id], [CorreoElectronico], [EntidadBase], [FechaCreacion], [FechaInicioAutorizacion], [FechaTerminoAutorizacion], [Id_UnidadOrganizacional], [Id_Usuario], [Principal], [TipoDeEntidad])
-    VALUES (''05507441-5792-4c46-9334-9a5faa99e20a'', N'''', CAST(1 AS bit), ''2025-12-03T11:36:56.5711214-03:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''198c164d-1cd8-4107-9db3-74b9fa33302c'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', CAST(1 AS bit), N''UNIDAD_ORGANIZACIONAL'')');
+    VALUES (''05507441-5792-4c46-9334-9a5faa99e20a'', N'''', CAST(1 AS bit), ''2026-04-06T19:42:37.5118787-04:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''198c164d-1cd8-4107-9db3-74b9fa33302c'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', CAST(1 AS bit), N''UNIDAD_ORGANIZACIONAL'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CorreoElectronico', N'EntidadBase', N'FechaCreacion', N'FechaInicioAutorizacion', N'FechaTerminoAutorizacion', N'Id_UnidadOrganizacional', N'Id_Usuario', N'Principal', N'TipoDeEntidad') AND [object_id] = OBJECT_ID(N'[Entidad]'))
         SET IDENTITY_INSERT [Entidad] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'Descripcion', N'IdOrganizacion', N'Nombre', N'OrganizacionBase') AND [object_id] = OBJECT_ID(N'[Organizacion]'))
@@ -332,56 +354,66 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'FechaCreacion', N'FechaInicioAsignacion', N'FechaTerminoAsignacion', N'Id_Entidad', N'Id_Proceso', N'Id_Rol', N'PoliticaAsignadaBase', N'RolAsignadoValidado', N'RolRequiereValidacion') AND [object_id] = OBJECT_ID(N'[PoliticaAsignada]'))
         SET IDENTITY_INSERT [PoliticaAsignada] ON;
     EXEC(N'INSERT INTO [PoliticaAsignada] ([Id], [FechaCreacion], [FechaInicioAsignacion], [FechaTerminoAsignacion], [Id_Entidad], [Id_Proceso], [Id_Rol], [PoliticaAsignadaBase], [RolAsignadoValidado], [RolRequiereValidacion])
-    VALUES (''60838d42-c2df-402c-9253-ab3ce52ffb55'', ''2025-12-03T14:36:56.5715033+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''856a08fd-4162-47cb-bf92-ff25029f3546'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
-    (''8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d'', ''2025-12-03T14:36:56.5713775+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
-    (''bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61'', ''2025-12-03T14:36:56.5715027+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''03b6b706-a24f-4505-9ef6-e3ae7d48c907'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit))');
+    VALUES (''60838d42-c2df-402c-9253-ab3ce52ffb55'', ''2026-04-06T23:42:37.5139105+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''856a08fd-4162-47cb-bf92-ff25029f3546'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d'', ''2026-04-06T23:42:37.5137764+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61'', ''2026-04-06T23:42:37.5139101+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''03b6b706-a24f-4505-9ef6-e3ae7d48c907'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'FechaCreacion', N'FechaInicioAsignacion', N'FechaTerminoAsignacion', N'Id_Entidad', N'Id_Proceso', N'Id_Rol', N'PoliticaAsignadaBase', N'RolAsignadoValidado', N'RolRequiereValidacion') AND [object_id] = OBJECT_ID(N'[PoliticaAsignada]'))
         SET IDENTITY_INSERT [PoliticaAsignada] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'ComoDesplegarUrlDeProceso', N'Contexto', N'Descripcion', N'IdMacro_Proceso', N'MaximaAsignacionDeRoles', N'NivelDeProceso', N'Nombre', N'ProcesoBase', N'Token', N'Url') AND [object_id] = OBJECT_ID(N'[Proceso]'))
         SET IDENTITY_INSERT [Proceso] ON;
     EXEC(N'INSERT INTO [Proceso] ([Id], [Activo], [Codigo], [ComoDesplegarUrlDeProceso], [Contexto], [Descripcion], [IdMacro_Proceso], [MaximaAsignacionDeRoles], [NivelDeProceso], [Nombre], [ProcesoBase], [Token], [Url])
-    VALUES (''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', CAST(1 AS bit), N''SEGUIMIENTO_FINANCIERO'', N''IFRAME'', N''Sistema de Seguimiento Financiero'', N''Sistema de Seguimiento Financiero'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Seguimiento Financiero'', CAST(1 AS bit), N'''', N''http://localhost:4210''),
-    (''233783de-9094-4030-907d-82d7c5abf10e'', CAST(1 AS bit), N''POSTULACION'', N''IFRAME'', N''Sistema de Postulaciones'', N''Proceso de Postulacion'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Proceso de Postulacion'', CAST(1 AS bit), N'''', N''http://localhost:4210''),
-    (''2b597b09-55ad-4304-b57d-76bd2df5ac4c'', CAST(1 AS bit), N''SFI_RENDICIONES'', N''IFRAME'', N''Sistema de Seguimiento Financiero Rendiciones'', N''Sistema de Seguimiento Financiero Rendiciones'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seguimiento Financiero Rendiciones'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''3f5cceaf-4c86-4495-90b4-aafe7c4ab509'', CAST(1 AS bit), N''POS_POSTULAR'', N''IFRAME'', N''Sistema de Postulaciones Postular'', N''Proceso de Postulacion Postular'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Proceso de Postulacion Postular'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''4bb69d17-cc38-4e52-ad36-42226aa5723d'', CAST(1 AS bit), N''PSC_REPOSITORIO_ANID'', N''IFRAME'', N''Sistema de Productividad Científica Repositorio ANID'', N''Sistema de Productividad Científica Repositorio ANID'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema de Productividad Científica Repositorio ANID'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''5eeb676d-b3fc-4db7-9421-358a6c26d3dc'', CAST(1 AS bit), N''SFO_FALLO'', N''IFRAME'', N''Sistema de Seleccion y Autorizacion Fallo'', N''Sistema de Seleccion y Autorizacion Fallo'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seleccion y Autorizacion Fallo'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''6bd742e3-0e0a-4990-b51f-661c710ba4b9'', CAST(1 AS bit), N''SFO_ADMISIBILIDAD'', N''IFRAME'', N''Sistema de Seleccion y Autorizacion Admisibilidad'', N''Sistema de Seleccion y Autorizacion Admisibilidad'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seleccion y Autorizacion Admisibilidad'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''7f618ddf-cadc-4955-b97f-31ebb43cac6f'', CAST(1 AS bit), N''EXP_EXPEDIENTE_ELECTRONICO'', N''IFRAME'', N''Sistema de Expediente Electrónico Expediente'', N''Sistema de Expediente Electrónico Expediente'', ''ed685882-0d73-4fe4-986c-b34f9641622c'', 1, N''NIVEL_SISTEMA'', N''Sistema de Expediente Electrónico Expediente'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''7faa600f-2f47-4168-9a65-3c6d47ef2241'', CAST(1 AS bit), N''SFO_EVALUACION'', N''IFRAME'', N''Sistema de Seleccion y Autorizacion Evaluacion'', N''Sistema de Seleccion y Autorizacion Evaluacion'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seleccion y Autorizacion Evaluacion'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''a4ebe253-17c4-4a98-a333-d6fee919a212'', CAST(1 AS bit), N''PSC_DATOS_ABIERTOS'', N''IFRAME'', N''Sistema de Productividad Científica Datos Abiertos'', N''Sistema de Productividad Científica Datos Abiertos'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema de Productividad Científica Datos Abiertos'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''a6ef77f1-e26b-430d-9d94-eef157e4df65'', CAST(1 AS bit), N''POS_CARTAS_DE_RECOMENDACION'', N''IFRAME'', N''Sistema de Postulaciones Cartas de recomendación'', N''Proceso de Postulacion Cartas de recomendación'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Proceso de Postulacion Cartas de recomendación'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', CAST(1 AS bit), N''SEGUIMIENTO_TECNICO'', N''IFRAME'', N''Sistema de Seguimiento Técnico'', N''Sistema de Seguimiento Técnico'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Seguimiento Técnico'', CAST(1 AS bit), N'''', N''http://localhost:4210''),
-    (''afc327c0-3970-40c7-9ef6-c0a3fdb42cb9'', CAST(1 AS bit), N''POS_CONVOCATORIA'', N''IFRAME'', N''Sistema de Postulaciones Convocatoria'', N''Proceso de Postulacion Convocatoria'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Proceso de Postulacion Convocatoria'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''c4a10de0-791c-45ec-820c-1a8802cd3e80'', CAST(1 AS bit), N''SELECCION_FORMALIZACION'', N''IFRAME'', N''Sistema de Seleccion y Autorizacion'', N''Sistema de Seleccion y Autorizacion'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Seleccion y Autorizacion'', CAST(1 AS bit), N'''', N''http://localhost:4210''),
-    (''c6b401ab-5164-43cc-8ae4-28ca2c9edbbe'', CAST(1 AS bit), N''POS_PATROCINIO_INSTITUCIONAL'', N''IFRAME'', N''Sistema de Postulaciones Patrocinio Institucional'', N''Proceso de Postulacion Patrocinio Institucional'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Proceso de Postulacion Patrocinio Institucional'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    VALUES (''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', CAST(1 AS bit), N''SEGUIMIENTO_FINANCIERO'', N''IFRAME'', N''Sistema de Seguimiento Financiero'', N''Sistema de Seguimiento Financiero'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Seguimiento Financiero'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c'', CAST(1 AS bit), N''SFI_SISTEMA_TERMINO_SIA'', N''IFRAME'', N''Sistema Sistema Termino SIA'', N''Sistema Sistema Termino SIA'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', 1, N''NIVEL_SISTEMA'', N''Sistema Sistema Termino SIA'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''233783de-9094-4030-907d-82d7c5abf10e'', CAST(1 AS bit), N''POSTULACION'', N''IFRAME'', N''Sistema de Postulaciones'', N''Proceso de Postulacion'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Proceso de Postulacion'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''2b597b09-55ad-4304-b57d-76bd2df5ac4c'', CAST(1 AS bit), N''SFI_SISFON_LUTHIEN_SPI_SCH'', N''IFRAME'', N''Sistema Sisfon Luthien SPI SCH'', N''Sistema Sisfon Luthien SPI SCH'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', 1, N''NIVEL_SISTEMA'', N''Sistema Sisfon Luthien SPI SCH'', CAST(0 AS bit), N'''', N''172.16.4.107:22''),
+    (''35e9a345-dda9-45fc-9a35-7cf27ec8e947'', CAST(1 AS bit), N''VIN_DATACIENCIA'', N''IFRAME'', N''Sistema DataCiencia'', N''Sistema DataCiencia'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema DataCiencia'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''3f5cceaf-4c86-4495-90b4-aafe7c4ab509'', CAST(1 AS bit), N''POS_ACONCAGUA_GENERICO'', N''REDIRECCION'', N''Sistema Aconcagua generico'', N''Sistema Aconcagua Generico'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Sistema Aconcagua Generico'', CAST(0 AS bit), N'''', N''http://auth-qa05.anid.cl''),
+    (''4bb69d17-cc38-4e52-ad36-42226aa5723d'', CAST(1 AS bit), N''VIN_BEIC'', N''IFRAME'', N''Sistema Beic'', N''Sistema Beic'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema Beic'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''587ec39b-e7d8-4c0f-9ac4-697940cf7b07'', CAST(1 AS bit), N''VIN_DIODI'', N''IFRAME'', N''Sistema DIODI'', N''Sistema DIODI'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema DIODI'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''5eeb676d-b3fc-4db7-9421-358a6c26d3dc'', CAST(1 AS bit), N''SFO_EVAL_GENERICO'', N''VENTANA'', N''Sistema Eval Generico'', N''Sistema Eval Generico'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema Eval Generico'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''6bd742e3-0e0a-4990-b51f-661c710ba4b9'', CAST(1 AS bit), N''SFO_EVAL_SPI'', N''VENTANA'', N''Sistema Eval SPI'', N''Sistema Eval SPI'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema Eval SPI'', CAST(0 AS bit), N'''', N''https://faraondesa.anid.cl/desa2/Evaluacion_TESTING/index.php''),
+    (''7faa600f-2f47-4168-9a65-3c6d47ef2241'', CAST(1 AS bit), N''SFO_EVAL_BECAS'', N''VENTANA'', N''Sistema Eval Becas'', N''Sistema Eval Becas'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema Eval Becas'', CAST(0 AS bit), N'''', N''https://servicios-qa.anid.cl/evalbecas''),
+    (''8ff51db1-44a5-4b9e-b0eb-0cd739cee604'', CAST(1 AS bit), N''STE_SISTEMA_VERDE_SIA'', N''IFRAME'', N''Sistema Verde SIA'', N''Sistema Verde SIA'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema Verde SIA'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''9679412f-ae9f-4d77-8629-7559d280ece2'', CAST(1 AS bit), N''SFO_FALLO_BECA'', N''IFRAME'', N''Sistema Fallo Beca'', N''Sistema Fallo Beca'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema Fallo Beca'', CAST(0 AS bit), N'''', N''https://servicios-qa.anid.cl/web//fallo/#/public''),
+    (''9c4a10ea-d6f3-4a0c-b4b0-25fb0396c7ee'', CAST(1 AS bit), N''VIN_REPOSITORIO'', N''IFRAME'', N''Sistema Repositorio'', N''Sistema Repositorio'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema Repositorio'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''9cc3ac0d-503a-42b1-bc8e-10d20265e15b'', CAST(1 AS bit), N''STE_SISTEMA_TERMINO_SIA'', N''IFRAME'', N''Sistema Termino SIA'', N''Sistema Termino SIA'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema Termino SIA'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''a4ebe253-17c4-4a98-a333-d6fee919a212'', CAST(1 AS bit), N''VIN_PDI'', N''IFRAME'', N''Sistema PDI'', N''Sistema PDI'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema PDI'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''a6151eed-ea81-4edb-9c89-5bf7e260989f'', CAST(1 AS bit), N''SFO_FALLO_SPI'', N''IFRAME'', N''Sistema Fallo SPI'', N''Sistema Fallo SPI'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema Fallo SPI'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''a6ef77f1-e26b-430d-9d94-eef157e4df65'', CAST(1 AS bit), N''POS_MILENIO'', N''REDIRECCION'', N''Sistema de Postulaciones Milenio'', N''Proceso de Postulacion Milenio'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Proceso de Postulacion Milenio'', CAST(0 AS bit), N'''', N''https://post-im.conicyt.cl/Concursos''),
+    (''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', CAST(1 AS bit), N''SEGUIMIENTO_TECNICO'', N''IFRAME'', N''Sistema de Seguimiento Técnico'', N''Sistema de Seguimiento Técnico'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Seguimiento Técnico'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''afc327c0-3970-40c7-9ef6-c0a3fdb42cb9'', CAST(1 AS bit), N''POS_ACONCAGUA_SPI'', N''REDIRECCION'', N''Sistema Aconcagua SPI'', N''Sistema Aconcagua SPI'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Sistema Aconcagua SPI'', CAST(0 AS bit), N'''', N''https://auth-qa01.anid.cl''),
+    (''c4a10de0-791c-45ec-820c-1a8802cd3e80'', CAST(1 AS bit), N''SELECCION_FORMALIZACION'', N''IFRAME'', N''Sistema de Seleccion y Formalizacion'', N''Sistema de Seleccion y Formalizacion'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Seleccion y Formalizacion'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''c6b401ab-5164-43cc-8ae4-28ca2c9edbbe'', CAST(1 AS bit), N''POS_GENESIS'', N''REDIRECCION'', N''Sistema Genesis'', N''Sistema Genesis'', ''233783de-9094-4030-907d-82d7c5abf10e'', 1, N''NIVEL_SISTEMA'', N''Sistema Genesis'', CAST(0 AS bit), N'''', N''https://splqa.anid.cl''),
     (''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', CAST(1 AS bit), N''ADMINISTRACION'', N''IFRAME'', N''Sistema de Administtracion de Permisos'', N''Manejo y asignacion de autorizaciones a los usuarios'', ''00000000-0000-0000-0000-000000000000'', 0, N''NIVEL_MACRO'', N''Sistema de Autorización'', CAST(1 AS bit), N'''', N''http://localhost:4210''),
-    (''e256405c-0bda-479a-8a41-a043c672f9b1'', CAST(1 AS bit), N''SFI_PROYECTOS_PRESUPUESTO'', N''IFRAME'', N''Sistema de Seguimiento Financiero Proyectos y Presupuesto'', N''Sistema de Seguimiento Financiero Proyectos y Presupuesto'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seguimiento Financiero Proyectos y Presupuesto'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''ed685882-0d73-4fe4-986c-b34f9641622c'', CAST(1 AS bit), N''EXPEDIENTE'', N''IFRAME'', N''Sistema de Expediente Electrónico'', N''Sistema de Expediente Electrónico'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Expediente Electrónico'', CAST(1 AS bit), N'''', N''http://localhost:4210''),
-    (''eec159f1-9ba9-463d-8407-ec2951751c29'', CAST(1 AS bit), N''PSC_PORTAL_DEL_INVESTIGADOR'', N''IFRAME'', N''Sistema de Productividad Científica Portal del Investigador'', N''Sistema de Productividad Científica Portal del Investigador'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema de Productividad Científica Portal del Investigador'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''f2224186-ffcc-41ee-bbce-4bbd72504e22'', CAST(1 AS bit), N''STE_PROYECTOS_INFORMES'', N''IFRAME'', N''Sistema de Seguimiento Técnico Proyectos e Informes'', N''Sistema de Seguimiento Técnico Proyectos e Informes'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seguimiento Técnico Proyectos e Informes'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''f78ccd33-9762-4beb-83bc-7f2b02a295d7'', CAST(1 AS bit), N''SFO_FIRMA_CONVENIO'', N''IFRAME'', N''Sistema de Seleccion y Autorizacion Firma de Convenio'', N''Sistema de Seleccion y Autorizacion Firma de Convenio'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seleccion y Autorizacion Firma de Convenio'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
-    (''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', CAST(1 AS bit), N''PRODUCTIVIDAD_CIENTÍFICA'', N''IFRAME'', N''Sistema de Productividad Científica'', N''Sistema de Productividad Científica'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema de Productividad Científica'', CAST(1 AS bit), N'''', N''http://localhost:4210'')');
+    (''d65b2a0d-0742-491b-be4f-c7c00219821d'', CAST(1 AS bit), N''SFI_SYC_FINANCIERO_SIA'', N''IFRAME'', N''Sistema SyC Financiero SIA'', N''Sistema SyC Financiero SIA'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', 1, N''NIVEL_SISTEMA'', N''Sistema SyC Financiero SIA'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''e150709d-4fed-480b-8916-8b0837a775d3'', CAST(1 AS bit), N''STE_GESTION_MILENIO'', N''IFRAME'', N''Sistema Gestion Milenio'', N''Sistema Gestion Milenio'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema Gestion Milenio'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''e256405c-0bda-479a-8a41-a043c672f9b1'', CAST(1 AS bit), N''SFI_SGDL_SPI'', N''IFRAME'', N''Sistema SDGL SPI'', N''Sistema SDGL SPI'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', 1, N''NIVEL_SISTEMA'', N''Sistema SDGL SPI'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''eec159f1-9ba9-463d-8407-ec2951751c29'', CAST(1 AS bit), N''VIN_SCIELO'', N''IFRAME'', N''Sistema Scielo'', N''Sistema Scielo'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', 1, N''NIVEL_SISTEMA'', N''Sistema Scielo'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''f2224186-ffcc-41ee-bbce-4bbd72504e22'', CAST(1 AS bit), N''STE_SIAL_SPI'', N''IFRAME'', N''Sistema SIAL SPI'', N''Sistema SIAL SPI'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema SIAL SPI'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''f3285b94-90a4-4610-8c65-2782d2e3a1a3'', CAST(1 AS bit), N''STE_SyC_LEGACY_SIA'', N''IFRAME'', N''Sistema SyC Legacy SIA'', N''Sistema SyC Legacy SIA'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema SyC Legacy SIA'', CAST(0 AS bit), N'''', N''http://localhost:4210''),
+    (''f78ccd33-9762-4beb-83bc-7f2b02a295d7'', CAST(1 AS bit), N''SFO_FIRMA_CONVENIO'', N''IFRAME'', N''Sistema de Seleccion y Autorizacion Firma de Convenio'', N''Sistema de Seleccion y Autorizacion Firma de Convenio'', ''c4a10de0-791c-45ec-820c-1a8802cd3e80'', 1, N''NIVEL_SISTEMA'', N''Sistema de Seleccion y Autorizacion Firma de Convenio'', CAST(0 AS bit), N'''', N''https://servicios-qa.anid.cl/web/firma-convenio/#/login''),
+    (''fa2e0bda-3063-4357-91b5-17f443b74ebd'', CAST(1 AS bit), N''STE_SISFON_LUTHIEN_SPI_SCH'', N''IFRAME'', N''Sistema Sisfon Luthien SPI SCH'', N''Sistema Sisfon Luthien SPI SCH'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', 1, N''NIVEL_SISTEMA'', N''Sistema Sisfon Luthien SPI SCH'', CAST(0 AS bit), N'''', N''172.16.4.107:22''),
+    (''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', CAST(1 AS bit), N''VIN_SCIELO'', N''IFRAME'', N''Sistema Scielo'', N''Sistema Scielo'', ''00000000-0000-0000-0000-000000000000'', 1, N''NIVEL_MACRO'', N''Sistema Scielo'', CAST(0 AS bit), N'''', N''http://localhost:4210'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'ComoDesplegarUrlDeProceso', N'Contexto', N'Descripcion', N'IdMacro_Proceso', N'MaximaAsignacionDeRoles', N'NivelDeProceso', N'Nombre', N'ProcesoBase', N'Token', N'Url') AND [object_id] = OBJECT_ID(N'[Proceso]'))
         SET IDENTITY_INSERT [Proceso] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'APIDeAutenticacion', N'Activo', N'Codigo', N'Descripcion', N'Nombre', N'ProveedorBase') AND [object_id] = OBJECT_ID(N'[Proveedor]'))
@@ -395,7 +427,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id_Rol', N'ActivaDetalleDeAutorizaciones', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'Nombre', N'NombreNormalizado', N'RequiereAccionParaSerAsignado', N'RequiereValidacionDeAsignacion', N'RolBase', N'ValidaAsignacionDeRoles', N'ValidaEnrrolamiento') AND [object_id] = OBJECT_ID(N'[Rol]'))
@@ -413,7 +445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'Descripcion', N'Id_Organizacion', N'Nombre', N'UnidadOrganizacionalBase') AND [object_id] = OBJECT_ID(N'[UnidadOrganizacional]'))
@@ -426,20 +458,20 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CantidadDeAccesosFallidos', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'CorreoElectronico', N'CorreoElectronicoConfirmado', N'EstadoDeUsuario', N'IdPersona', N'InformacionAdicional', N'LockoutEnabled', N'LockoutEnd', N'NombreADesplegar', N'CorreoElectronicoNormalizado', N'NombreUsuarioNormalizado', N'HashDeLaClave', N'NumeroDeTelefono', N'NumeroDeTelefonoConfirmado', N'RefreshToken', N'RefreshTokenExpiresAtUtc', N'RequiereValidacionEnrrolamiento', N'SecurityStamp', N'TipoDeUsuario', N'DobleFactorHabilitado', N'NombreUsuario', N'UsuarioBase') AND [object_id] = OBJECT_ID(N'[Usuario]'))
         SET IDENTITY_INSERT [Usuario] ON;
     EXEC(N'INSERT INTO [Usuario] ([Id], [CantidadDeAccesosFallidos], [Activo], [ConcurrencyStamp], [Descripcion], [CorreoElectronico], [CorreoElectronicoConfirmado], [EstadoDeUsuario], [IdPersona], [InformacionAdicional], [LockoutEnabled], [LockoutEnd], [NombreADesplegar], [CorreoElectronicoNormalizado], [NombreUsuarioNormalizado], [HashDeLaClave], [NumeroDeTelefono], [NumeroDeTelefonoConfirmado], [RefreshToken], [RefreshTokenExpiresAtUtc], [RequiereValidacionEnrrolamiento], [SecurityStamp], [TipoDeUsuario], [DobleFactorHabilitado], [NombreUsuario], [UsuarioBase])
-    VALUES (N''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', 10, CAST(1 AS bit), N''72e725ba-e2c5-42d3-8fb9-4b7949c73c47'', N''Administrador global'', N''administrador@security.com'', CAST(1 AS bit), N''REGISTRADO'', N'''', N'''', CAST(0 AS bit), NULL, N''Administrador'', N''ADMINISTRADOR@SECURITY.COM'', N''ADMINISTRADOR'', N''AQAAAAIAAYagAAAAEJ4PR5McQ5LU8RXggNqnBrS3qdIO54mYO8+1rkT1vSryd4FBlMVPKuLbopBp0XUJKw=='', N'''', CAST(1 AS bit), NULL, NULL, CAST(0 AS bit), N'''', N''NACIONAL'', CAST(0 AS bit), N''ADMINISTRADOR'', CAST(1 AS bit))');
+    VALUES (N''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', 10, CAST(1 AS bit), N''e5edc734-b9a6-40f6-a23d-0f0df4730666'', N''Administrador global'', N''administrador@security.com'', CAST(1 AS bit), N''REGISTRADO'', N'''', N'''', CAST(0 AS bit), NULL, N''Administrador'', N''ADMINISTRADOR@SECURITY.COM'', N''ADMINISTRADOR'', N''AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA=='', N'''', CAST(1 AS bit), NULL, NULL, CAST(0 AS bit), N'''', N''NACIONAL'', CAST(0 AS bit), N''ADMINISTRADOR'', CAST(1 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CantidadDeAccesosFallidos', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'CorreoElectronico', N'CorreoElectronicoConfirmado', N'EstadoDeUsuario', N'IdPersona', N'InformacionAdicional', N'LockoutEnabled', N'LockoutEnd', N'NombreADesplegar', N'CorreoElectronicoNormalizado', N'NombreUsuarioNormalizado', N'HashDeLaClave', N'NumeroDeTelefono', N'NumeroDeTelefonoConfirmado', N'RefreshToken', N'RefreshTokenExpiresAtUtc', N'RequiereValidacionEnrrolamiento', N'SecurityStamp', N'TipoDeUsuario', N'DobleFactorHabilitado', N'NombreUsuario', N'UsuarioBase') AND [object_id] = OBJECT_ID(N'[Usuario]'))
         SET IDENTITY_INSERT [Usuario] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
@@ -447,7 +479,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
@@ -455,7 +487,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
@@ -463,7 +495,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
@@ -471,7 +503,31 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
+)
+BEGIN
+    CREATE INDEX [IX_RefreshTokens_SessionId] ON [RefreshTokens] ([SessionId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260406234237_Inicial'
+)
+BEGIN
+    CREATE UNIQUE INDEX [IX_RefreshTokens_TokenHash] ON [RefreshTokens] ([TokenHash]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260406234237_Inicial'
+)
+BEGIN
+    CREATE INDEX [IX_RefreshTokens_UserId] ON [RefreshTokens] ([UserId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [RoleNameIndex] ON [Rol] ([NombreNormalizado]) WHERE [NombreNormalizado] IS NOT NULL');
@@ -479,7 +535,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     CREATE INDEX [EmailIndex] ON [Usuario] ([CorreoElectronicoNormalizado]);
@@ -487,7 +543,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [UserNameIndex] ON [Usuario] ([NombreUsuarioNormalizado]) WHERE [NombreUsuarioNormalizado] IS NOT NULL');
@@ -495,11 +551,11 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20251203143656_Inicial'
+    WHERE [MigrationId] = N'20260406234237_Inicial'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20251203143656_Inicial', N'9.0.8');
+    VALUES (N'20260406234237_Inicial', N'9.0.8');
 END;
 
 COMMIT;

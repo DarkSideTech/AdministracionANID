@@ -151,7 +151,7 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
         return result;
     }
 
-    public async Task<bool> UsuarioConRolValidaEnnrrolamiento(
+    public async Task<bool> UsuarioConRolValidaEnrrolamiento(
         Guid id_Usuario,
         Guid id_Rol_ValidaEnrrolamiento)
     {

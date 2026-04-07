@@ -328,15 +328,43 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SessionId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    TokenHash = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ExpiresAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RevokedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SelectedOrganization = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ReplacedByTokenHash = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    RevocationReason = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Id_Entidad = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Usuario_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Usuario",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AutenticadorExterno",
                 columns: new[] { "Id", "Activo", "AutenticadorExternoBase", "ClaveDeAcceso", "Id_Proveedor", "Id_Usuario", "NombreADesplegar", "NombreUsuario", "ValidadorPrimario" },
-                values: new object[] { new Guid("ecaf1074-722d-468f-81fa-69c2d7b88d68"), true, true, "AQAAAAIAAYagAAAAECdJ1ZnZCqaIsQ6GpLFpnLkW+Cg2cBy4XTdcpjto7RxHXfKjd0SOs884Ak8Ag9pw2Q==", new Guid("701c19bf-405c-4467-85f0-ddbc3786f9ee"), new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"), "ADMINISTRADOR", "ADMINISTRADOR", true });
+                values: new object[] { new Guid("ecaf1074-722d-468f-81fa-69c2d7b88d68"), true, true, "AQAAAAIAAYagAAAAEI6x2Zir3U9izF0j0aIsdPjRT/G72/zAZedaz0ieb0sdgpqH6ooegTLinxwcsIPliQ==", new Guid("701c19bf-405c-4467-85f0-ddbc3786f9ee"), new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"), "ADMINISTRADOR", "ADMINISTRADOR", true });
 
             migrationBuilder.InsertData(
                 table: "Entidad",
                 columns: new[] { "Id", "CorreoElectronico", "EntidadBase", "FechaCreacion", "FechaInicioAutorizacion", "FechaTerminoAutorizacion", "Id_UnidadOrganizacional", "Id_Usuario", "Principal", "TipoDeEntidad" },
-                values: new object[] { new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), "", true, new DateTimeOffset(new DateTime(2025, 12, 3, 11, 36, 50, 732, DateTimeKind.Unspecified).AddTicks(8716), new TimeSpan(0, -3, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("198c164d-1cd8-4107-9db3-74b9fa33302c"), new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"), true, "UNIDAD_ORGANIZACIONAL" });
+                values: new object[] { new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), "", true, new DateTimeOffset(new DateTime(2026, 4, 6, 19, 42, 27, 433, DateTimeKind.Unspecified).AddTicks(847), new TimeSpan(0, -4, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("198c164d-1cd8-4107-9db3-74b9fa33302c"), new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"), true, "UNIDAD_ORGANIZACIONAL" });
 
             migrationBuilder.InsertData(
                 table: "Organizacion",
@@ -348,9 +376,9 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
                 columns: new[] { "Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion" },
                 values: new object[,]
                 {
-                    { new Guid("60838d42-c2df-402c-9253-ab3ce52ffb55"), new DateTimeOffset(new DateTime(2025, 12, 3, 14, 36, 50, 733, DateTimeKind.Unspecified).AddTicks(2148), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), new Guid("856a08fd-4162-47cb-bf92-ff25029f3546"), true, true, false },
-                    { new Guid("8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d"), new DateTimeOffset(new DateTime(2025, 12, 3, 14, 36, 50, 733, DateTimeKind.Unspecified).AddTicks(1052), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"), true, true, false },
-                    { new Guid("bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61"), new DateTimeOffset(new DateTime(2025, 12, 3, 14, 36, 50, 733, DateTimeKind.Unspecified).AddTicks(2144), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), new Guid("03b6b706-a24f-4505-9ef6-e3ae7d48c907"), true, true, false }
+                    { new Guid("60838d42-c2df-402c-9253-ab3ce52ffb55"), new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 27, 435, DateTimeKind.Unspecified).AddTicks(291), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), new Guid("856a08fd-4162-47cb-bf92-ff25029f3546"), true, true, false },
+                    { new Guid("8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d"), new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 27, 434, DateTimeKind.Unspecified).AddTicks(9061), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"), true, true, false },
+                    { new Guid("bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61"), new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 27, 435, DateTimeKind.Unspecified).AddTicks(282), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)), new Guid("05507441-5792-4c46-9334-9a5faa99e20a"), new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), new Guid("03b6b706-a24f-4505-9ef6-e3ae7d48c907"), true, true, false }
                 });
 
             migrationBuilder.InsertData(
@@ -358,28 +386,38 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
                 columns: new[] { "Id", "Activo", "Codigo", "ComoDesplegarUrlDeProceso", "Contexto", "Descripcion", "IdMacro_Proceso", "MaximaAsignacionDeRoles", "NivelDeProceso", "Nombre", "ProcesoBase", "Token", "Url" },
                 values: new object[,]
                 {
-                    { new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), true, "SEGUIMIENTO_FINANCIERO", "IFRAME", "Sistema de Seguimiento Financiero", "Sistema de Seguimiento Financiero", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Seguimiento Financiero", true, "", "http://localhost:4210" },
-                    { new Guid("233783de-9094-4030-907d-82d7c5abf10e"), true, "POSTULACION", "IFRAME", "Sistema de Postulaciones", "Proceso de Postulacion", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Proceso de Postulacion", true, "", "http://localhost:4210" },
-                    { new Guid("2b597b09-55ad-4304-b57d-76bd2df5ac4c"), true, "SFI_RENDICIONES", "IFRAME", "Sistema de Seguimiento Financiero Rendiciones", "Sistema de Seguimiento Financiero Rendiciones", new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), 1, "NIVEL_SISTEMA", "Sistema de Seguimiento Financiero Rendiciones", false, "", "http://localhost:4210" },
-                    { new Guid("3f5cceaf-4c86-4495-90b4-aafe7c4ab509"), true, "POS_POSTULAR", "IFRAME", "Sistema de Postulaciones Postular", "Proceso de Postulacion Postular", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Proceso de Postulacion Postular", false, "", "http://localhost:4210" },
-                    { new Guid("4bb69d17-cc38-4e52-ad36-42226aa5723d"), true, "PSC_REPOSITORIO_ANID", "IFRAME", "Sistema de Productividad Científica Repositorio ANID", "Sistema de Productividad Científica Repositorio ANID", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema de Productividad Científica Repositorio ANID", false, "", "http://localhost:4210" },
-                    { new Guid("5eeb676d-b3fc-4db7-9421-358a6c26d3dc"), true, "SFO_FALLO", "IFRAME", "Sistema de Seleccion y Autorizacion Fallo", "Sistema de Seleccion y Autorizacion Fallo", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema de Seleccion y Autorizacion Fallo", false, "", "http://localhost:4210" },
-                    { new Guid("6bd742e3-0e0a-4990-b51f-661c710ba4b9"), true, "SFO_ADMISIBILIDAD", "IFRAME", "Sistema de Seleccion y Autorizacion Admisibilidad", "Sistema de Seleccion y Autorizacion Admisibilidad", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema de Seleccion y Autorizacion Admisibilidad", false, "", "http://localhost:4210" },
-                    { new Guid("7f618ddf-cadc-4955-b97f-31ebb43cac6f"), true, "EXP_EXPEDIENTE_ELECTRONICO", "IFRAME", "Sistema de Expediente Electrónico Expediente", "Sistema de Expediente Electrónico Expediente", new Guid("ed685882-0d73-4fe4-986c-b34f9641622c"), 1, "NIVEL_SISTEMA", "Sistema de Expediente Electrónico Expediente", false, "", "http://localhost:4210" },
-                    { new Guid("7faa600f-2f47-4168-9a65-3c6d47ef2241"), true, "SFO_EVALUACION", "IFRAME", "Sistema de Seleccion y Autorizacion Evaluacion", "Sistema de Seleccion y Autorizacion Evaluacion", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema de Seleccion y Autorizacion Evaluacion", false, "", "http://localhost:4210" },
-                    { new Guid("a4ebe253-17c4-4a98-a333-d6fee919a212"), true, "PSC_DATOS_ABIERTOS", "IFRAME", "Sistema de Productividad Científica Datos Abiertos", "Sistema de Productividad Científica Datos Abiertos", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema de Productividad Científica Datos Abiertos", false, "", "http://localhost:4210" },
-                    { new Guid("a6ef77f1-e26b-430d-9d94-eef157e4df65"), true, "POS_CARTAS_DE_RECOMENDACION", "IFRAME", "Sistema de Postulaciones Cartas de recomendación", "Proceso de Postulacion Cartas de recomendación", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Proceso de Postulacion Cartas de recomendación", false, "", "http://localhost:4210" },
-                    { new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), true, "SEGUIMIENTO_TECNICO", "IFRAME", "Sistema de Seguimiento Técnico", "Sistema de Seguimiento Técnico", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Seguimiento Técnico", true, "", "http://localhost:4210" },
-                    { new Guid("afc327c0-3970-40c7-9ef6-c0a3fdb42cb9"), true, "POS_CONVOCATORIA", "IFRAME", "Sistema de Postulaciones Convocatoria", "Proceso de Postulacion Convocatoria", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Proceso de Postulacion Convocatoria", false, "", "http://localhost:4210" },
-                    { new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), true, "SELECCION_FORMALIZACION", "IFRAME", "Sistema de Seleccion y Autorizacion", "Sistema de Seleccion y Autorizacion", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Seleccion y Autorizacion", true, "", "http://localhost:4210" },
-                    { new Guid("c6b401ab-5164-43cc-8ae4-28ca2c9edbbe"), true, "POS_PATROCINIO_INSTITUCIONAL", "IFRAME", "Sistema de Postulaciones Patrocinio Institucional", "Proceso de Postulacion Patrocinio Institucional", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Proceso de Postulacion Patrocinio Institucional", false, "", "http://localhost:4210" },
+                    { new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), true, "SEGUIMIENTO_FINANCIERO", "IFRAME", "Sistema de Seguimiento Financiero", "Sistema de Seguimiento Financiero", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Seguimiento Financiero", false, "", "http://localhost:4210" },
+                    { new Guid("0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c"), true, "SFI_SISTEMA_TERMINO_SIA", "IFRAME", "Sistema Sistema Termino SIA", "Sistema Sistema Termino SIA", new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), 1, "NIVEL_SISTEMA", "Sistema Sistema Termino SIA", false, "", "http://localhost:4210" },
+                    { new Guid("233783de-9094-4030-907d-82d7c5abf10e"), true, "POSTULACION", "IFRAME", "Sistema de Postulaciones", "Proceso de Postulacion", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Proceso de Postulacion", false, "", "http://localhost:4210" },
+                    { new Guid("2b597b09-55ad-4304-b57d-76bd2df5ac4c"), true, "SFI_SISFON_LUTHIEN_SPI_SCH", "IFRAME", "Sistema Sisfon Luthien SPI SCH", "Sistema Sisfon Luthien SPI SCH", new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), 1, "NIVEL_SISTEMA", "Sistema Sisfon Luthien SPI SCH", false, "", "172.16.4.107:22" },
+                    { new Guid("35e9a345-dda9-45fc-9a35-7cf27ec8e947"), true, "VIN_DATACIENCIA", "IFRAME", "Sistema DataCiencia", "Sistema DataCiencia", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema DataCiencia", false, "", "http://localhost:4210" },
+                    { new Guid("3f5cceaf-4c86-4495-90b4-aafe7c4ab509"), true, "POS_ACONCAGUA_GENERICO", "REDIRECCION", "Sistema Aconcagua generico", "Sistema Aconcagua Generico", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Sistema Aconcagua Generico", false, "", "http://auth-qa05.anid.cl" },
+                    { new Guid("4bb69d17-cc38-4e52-ad36-42226aa5723d"), true, "VIN_BEIC", "IFRAME", "Sistema Beic", "Sistema Beic", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema Beic", false, "", "http://localhost:4210" },
+                    { new Guid("587ec39b-e7d8-4c0f-9ac4-697940cf7b07"), true, "VIN_DIODI", "IFRAME", "Sistema DIODI", "Sistema DIODI", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema DIODI", false, "", "http://localhost:4210" },
+                    { new Guid("5eeb676d-b3fc-4db7-9421-358a6c26d3dc"), true, "SFO_EVAL_GENERICO", "VENTANA", "Sistema Eval Generico", "Sistema Eval Generico", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema Eval Generico", false, "", "http://localhost:4210" },
+                    { new Guid("6bd742e3-0e0a-4990-b51f-661c710ba4b9"), true, "SFO_EVAL_SPI", "VENTANA", "Sistema Eval SPI", "Sistema Eval SPI", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema Eval SPI", false, "", "https://faraondesa.anid.cl/desa2/Evaluacion_TESTING/index.php" },
+                    { new Guid("7faa600f-2f47-4168-9a65-3c6d47ef2241"), true, "SFO_EVAL_BECAS", "VENTANA", "Sistema Eval Becas", "Sistema Eval Becas", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema Eval Becas", false, "", "https://servicios-qa.anid.cl/evalbecas" },
+                    { new Guid("8ff51db1-44a5-4b9e-b0eb-0cd739cee604"), true, "STE_SISTEMA_VERDE_SIA", "IFRAME", "Sistema Verde SIA", "Sistema Verde SIA", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema Verde SIA", false, "", "http://localhost:4210" },
+                    { new Guid("9679412f-ae9f-4d77-8629-7559d280ece2"), true, "SFO_FALLO_BECA", "IFRAME", "Sistema Fallo Beca", "Sistema Fallo Beca", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema Fallo Beca", false, "", "https://servicios-qa.anid.cl/web//fallo/#/public" },
+                    { new Guid("9c4a10ea-d6f3-4a0c-b4b0-25fb0396c7ee"), true, "VIN_REPOSITORIO", "IFRAME", "Sistema Repositorio", "Sistema Repositorio", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema Repositorio", false, "", "http://localhost:4210" },
+                    { new Guid("9cc3ac0d-503a-42b1-bc8e-10d20265e15b"), true, "STE_SISTEMA_TERMINO_SIA", "IFRAME", "Sistema Termino SIA", "Sistema Termino SIA", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema Termino SIA", false, "", "http://localhost:4210" },
+                    { new Guid("a4ebe253-17c4-4a98-a333-d6fee919a212"), true, "VIN_PDI", "IFRAME", "Sistema PDI", "Sistema PDI", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema PDI", false, "", "http://localhost:4210" },
+                    { new Guid("a6151eed-ea81-4edb-9c89-5bf7e260989f"), true, "SFO_FALLO_SPI", "IFRAME", "Sistema Fallo SPI", "Sistema Fallo SPI", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema Fallo SPI", false, "", "http://localhost:4210" },
+                    { new Guid("a6ef77f1-e26b-430d-9d94-eef157e4df65"), true, "POS_MILENIO", "REDIRECCION", "Sistema de Postulaciones Milenio", "Proceso de Postulacion Milenio", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Proceso de Postulacion Milenio", false, "", "https://post-im.conicyt.cl/Concursos" },
+                    { new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), true, "SEGUIMIENTO_TECNICO", "IFRAME", "Sistema de Seguimiento Técnico", "Sistema de Seguimiento Técnico", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Seguimiento Técnico", false, "", "http://localhost:4210" },
+                    { new Guid("afc327c0-3970-40c7-9ef6-c0a3fdb42cb9"), true, "POS_ACONCAGUA_SPI", "REDIRECCION", "Sistema Aconcagua SPI", "Sistema Aconcagua SPI", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Sistema Aconcagua SPI", false, "", "https://auth-qa01.anid.cl" },
+                    { new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), true, "SELECCION_FORMALIZACION", "IFRAME", "Sistema de Seleccion y Formalizacion", "Sistema de Seleccion y Formalizacion", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Seleccion y Formalizacion", false, "", "http://localhost:4210" },
+                    { new Guid("c6b401ab-5164-43cc-8ae4-28ca2c9edbbe"), true, "POS_GENESIS", "REDIRECCION", "Sistema Genesis", "Sistema Genesis", new Guid("233783de-9094-4030-907d-82d7c5abf10e"), 1, "NIVEL_SISTEMA", "Sistema Genesis", false, "", "https://splqa.anid.cl" },
                     { new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"), true, "ADMINISTRACION", "IFRAME", "Sistema de Administtracion de Permisos", "Manejo y asignacion de autorizaciones a los usuarios", new Guid("00000000-0000-0000-0000-000000000000"), 0, "NIVEL_MACRO", "Sistema de Autorización", true, "", "http://localhost:4210" },
-                    { new Guid("e256405c-0bda-479a-8a41-a043c672f9b1"), true, "SFI_PROYECTOS_PRESUPUESTO", "IFRAME", "Sistema de Seguimiento Financiero Proyectos y Presupuesto", "Sistema de Seguimiento Financiero Proyectos y Presupuesto", new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), 1, "NIVEL_SISTEMA", "Sistema de Seguimiento Financiero Proyectos y Presupuesto", false, "", "http://localhost:4210" },
-                    { new Guid("ed685882-0d73-4fe4-986c-b34f9641622c"), true, "EXPEDIENTE", "IFRAME", "Sistema de Expediente Electrónico", "Sistema de Expediente Electrónico", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Expediente Electrónico", true, "", "http://localhost:4210" },
-                    { new Guid("eec159f1-9ba9-463d-8407-ec2951751c29"), true, "PSC_PORTAL_DEL_INVESTIGADOR", "IFRAME", "Sistema de Productividad Científica Portal del Investigador", "Sistema de Productividad Científica Portal del Investigador", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema de Productividad Científica Portal del Investigador", false, "", "http://localhost:4210" },
-                    { new Guid("f2224186-ffcc-41ee-bbce-4bbd72504e22"), true, "STE_PROYECTOS_INFORMES", "IFRAME", "Sistema de Seguimiento Técnico Proyectos e Informes", "Sistema de Seguimiento Técnico Proyectos e Informes", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema de Seguimiento Técnico Proyectos e Informes", false, "", "http://localhost:4210" },
-                    { new Guid("f78ccd33-9762-4beb-83bc-7f2b02a295d7"), true, "SFO_FIRMA_CONVENIO", "IFRAME", "Sistema de Seleccion y Autorizacion Firma de Convenio", "Sistema de Seleccion y Autorizacion Firma de Convenio", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema de Seleccion y Autorizacion Firma de Convenio", false, "", "http://localhost:4210" },
-                    { new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), true, "PRODUCTIVIDAD_CIENTÍFICA", "IFRAME", "Sistema de Productividad Científica", "Sistema de Productividad Científica", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema de Productividad Científica", true, "", "http://localhost:4210" }
+                    { new Guid("d65b2a0d-0742-491b-be4f-c7c00219821d"), true, "SFI_SYC_FINANCIERO_SIA", "IFRAME", "Sistema SyC Financiero SIA", "Sistema SyC Financiero SIA", new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), 1, "NIVEL_SISTEMA", "Sistema SyC Financiero SIA", false, "", "http://localhost:4210" },
+                    { new Guid("e150709d-4fed-480b-8916-8b0837a775d3"), true, "STE_GESTION_MILENIO", "IFRAME", "Sistema Gestion Milenio", "Sistema Gestion Milenio", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema Gestion Milenio", false, "", "http://localhost:4210" },
+                    { new Guid("e256405c-0bda-479a-8a41-a043c672f9b1"), true, "SFI_SGDL_SPI", "IFRAME", "Sistema SDGL SPI", "Sistema SDGL SPI", new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"), 1, "NIVEL_SISTEMA", "Sistema SDGL SPI", false, "", "http://localhost:4210" },
+                    { new Guid("eec159f1-9ba9-463d-8407-ec2951751c29"), true, "VIN_SCIELO", "IFRAME", "Sistema Scielo", "Sistema Scielo", new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), 1, "NIVEL_SISTEMA", "Sistema Scielo", false, "", "http://localhost:4210" },
+                    { new Guid("f2224186-ffcc-41ee-bbce-4bbd72504e22"), true, "STE_SIAL_SPI", "IFRAME", "Sistema SIAL SPI", "Sistema SIAL SPI", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema SIAL SPI", false, "", "http://localhost:4210" },
+                    { new Guid("f3285b94-90a4-4610-8c65-2782d2e3a1a3"), true, "STE_SyC_LEGACY_SIA", "IFRAME", "Sistema SyC Legacy SIA", "Sistema SyC Legacy SIA", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema SyC Legacy SIA", false, "", "http://localhost:4210" },
+                    { new Guid("f78ccd33-9762-4beb-83bc-7f2b02a295d7"), true, "SFO_FIRMA_CONVENIO", "IFRAME", "Sistema de Seleccion y Autorizacion Firma de Convenio", "Sistema de Seleccion y Autorizacion Firma de Convenio", new Guid("c4a10de0-791c-45ec-820c-1a8802cd3e80"), 1, "NIVEL_SISTEMA", "Sistema de Seleccion y Autorizacion Firma de Convenio", false, "", "https://servicios-qa.anid.cl/web/firma-convenio/#/login" },
+                    { new Guid("fa2e0bda-3063-4357-91b5-17f443b74ebd"), true, "STE_SISFON_LUTHIEN_SPI_SCH", "IFRAME", "Sistema Sisfon Luthien SPI SCH", "Sistema Sisfon Luthien SPI SCH", new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"), 1, "NIVEL_SISTEMA", "Sistema Sisfon Luthien SPI SCH", false, "", "172.16.4.107:22" },
+                    { new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"), true, "VIN_SCIELO", "IFRAME", "Sistema Scielo", "Sistema Scielo", new Guid("00000000-0000-0000-0000-000000000000"), 1, "NIVEL_MACRO", "Sistema Scielo", false, "", "http://localhost:4210" }
                 });
 
             migrationBuilder.InsertData(
@@ -412,7 +450,7 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "Id", "CantidadDeAccesosFallidos", "Activo", "ConcurrencyStamp", "Descripcion", "CorreoElectronico", "CorreoElectronicoConfirmado", "EstadoDeUsuario", "IdPersona", "InformacionAdicional", "LockoutEnabled", "LockoutEnd", "NombreADesplegar", "CorreoElectronicoNormalizado", "NombreUsuarioNormalizado", "HashDeLaClave", "NumeroDeTelefono", "NumeroDeTelefonoConfirmado", "RefreshToken", "RefreshTokenExpiresAtUtc", "RequiereValidacionEnrrolamiento", "SecurityStamp", "TipoDeUsuario", "DobleFactorHabilitado", "NombreUsuario", "UsuarioBase" },
-                values: new object[] { "2b12d04f-c167-4ad1-a42a-e2ecd30518d7", 10, true, "33ef92f3-eac5-4019-923e-d1bf66d701ed", "Administrador global", "administrador@security.com", true, "REGISTRADO", "", "", false, null, "Administrador", "ADMINISTRADOR@SECURITY.COM", "ADMINISTRADOR", "AQAAAAIAAYagAAAAECdJ1ZnZCqaIsQ6GpLFpnLkW+Cg2cBy4XTdcpjto7RxHXfKjd0SOs884Ak8Ag9pw2Q==", "", true, null, null, false, "", "NACIONAL", false, "ADMINISTRADOR", true });
+                values: new object[] { "2b12d04f-c167-4ad1-a42a-e2ecd30518d7", 10, true, "a9f4ebf7-5ec4-450f-ab46-a263fe780995", "Administrador global", "administrador@security.com", true, "REGISTRADO", "", "", false, null, "Administrador", "ADMINISTRADOR@SECURITY.COM", "ADMINISTRADOR", "AQAAAAIAAYagAAAAEI6x2Zir3U9izF0j0aIsdPjRT/G72/zAZedaz0ieb0sdgpqH6ooegTLinxwcsIPliQ==", "", true, null, null, false, "", "NACIONAL", false, "ADMINISTRADOR", true });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -433,6 +471,22 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_SessionId",
+                table: "RefreshTokens",
+                column: "SessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_TokenHash",
+                table: "RefreshTokens",
+                column: "TokenHash",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -487,6 +541,9 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
 
             migrationBuilder.DropTable(
                 name: "Proveedor");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "UnidadOrganizacional");

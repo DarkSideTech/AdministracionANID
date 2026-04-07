@@ -3,19 +3,25 @@ using AUT2Services.Domain.Core.Enumerations;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Core.Models;
+using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Accounts.BaseEntity;
+using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Models;
+using AUT2Services.Infra.Security.Records;
+using AUT2Services.Infra.Security.Services;
 using AUT2Services.Infra.Security.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Text;
 
 namespace AUT2Services.Infra.Security.Accounts.Register;
@@ -28,7 +34,9 @@ public class RegisterCommandHandler : CommandHandler,
     private readonly IConfiguration configuration;
     private readonly IEntidadRepository entidadRepository;
     private readonly IEmailMessageSender emailSender;
+    private readonly ICsrfService csrfService;
     private readonly SendEmailOptions sendEmailOptions;
+    private readonly JwtOptions jwtOptions;
 
     public RegisterCommandHandler(
         UserManager<Usuario> userManager,
@@ -37,7 +45,9 @@ public class RegisterCommandHandler : CommandHandler,
         IConfiguration configuration,
         IEntidadRepository entidadRepository,
         IOptions<SendEmailOptions> sendEmailOptions,
-        IEmailMessageSender emailSender)
+        IEmailMessageSender emailSender,
+        IOptions<JwtOptions> jwtOptions,
+        ICsrfService csrfService)
     {
         this.userManager = userManager;
         this.configuration = configuration;
@@ -45,7 +55,9 @@ public class RegisterCommandHandler : CommandHandler,
         this.mediator = mediator;
         this.entidadRepository = entidadRepository;
         this.emailSender = emailSender;
+        this.csrfService = csrfService;
         this.sendEmailOptions = sendEmailOptions.Value;
+        this.jwtOptions = jwtOptions.Value;
     }
 
     public async Task<CommandResponse> Handle(RegisterCommand command, CancellationToken cancellationToken)
@@ -58,46 +70,51 @@ public class RegisterCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
-        if (await userManager.Users.AnyAsync(x => x.Email == command.CorreoElectronico, cancellationToken: cancellationToken))
+        if (!csrfService.IsRequestValid(command.Request))
         {
-            AddError("El Correo Electronico ya fue registrado por otro usuario");
+            AddError("Invalid CSRF token.");
             return CommandResponse;
         }
 
-        if (await userManager.Users.AnyAsync(x => x.UserName == command.CorreoElectronico, cancellationToken: cancellationToken))
+        if (command.Contraseña != command.ConfirmaContraseña)
         {
-            AddError("El Nombre De Usuario ya fue registrado por otro usuario");
+            AddError("La contraseña no corresponde.");
             return CommandResponse;
         }
 
-        using var transaction = await aUT2ServicesContext.Database.BeginTransactionAsync(cancellationToken);
-        try
+        var existingUser = await userManager.FindByEmailAsync(command.CorreoElectronico!);
+        if (existingUser is not null)
         {
-            var userName = string.IsNullOrEmpty(command.NombreUsuario) ? command.CorreoElectronico : command.NombreUsuario;
-            var nombreADesplegar = $"{command.PrimerNombre!.Trim()} {command.PrimerApellido!.Trim()}";
+            AddError("Correo electrónico ya registrado.");
+            return CommandResponse;
+        }
 
-            var nuevoUsuario = new Usuario
-            {
-                UserName = userName,
-                NormalizedUserName = userName!.ToUpper(),
-                Email = command.CorreoElectronico,
-                NormalizedEmail = command.CorreoElectronico!.ToUpper(),
-                EmailConfirmed = command.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL),
-                PhoneNumber = command.NumeroDeTelefono ?? string.Empty,
-                PhoneNumberConfirmed = false,
-                TwoFactorEnabled = false,
-                AccessFailedCount = int.Parse(configuration["MaximaCantidadIntentosFallidos"] ?? "5"),
-                IdPersona = command.IdPersona,
-                NombreADesplegar = nombreADesplegar,
-                Descripcion = command.Descripcion,
-                TipoDeUsuario = command.TipoDeUsuario,
-                Activo = true,
-                UsuarioBase = false,
-                RequiereValidacionEnrrolamiento = !command.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL),
-                EstadoDeUsuario = command.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL) ?
-                    EnumEstadoDeUsuario.REGISTRADO
-                    : EnumEstadoDeUsuario.PROCESO_REGISTRO,
-                InformacionAdicional = JsonConvert.SerializeObject(new InformacionAdicionalModel()
+        Usuario? usuarioExistente = null;
+        var userName = string.IsNullOrEmpty(command.NombreUsuario) ? command.CorreoElectronico : command.NombreUsuario;
+        var nombreADesplegar = $"{command.PrimerNombre!.Trim()} {command.PrimerApellido!.Trim()}";
+
+        var nuevoUsuario = new Usuario
+        {
+            UserName = userName,
+            NormalizedUserName = userName!.ToUpper(),
+            Email = command.CorreoElectronico,
+            NormalizedEmail = command.CorreoElectronico!.ToUpper(),
+            EmailConfirmed = command.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL),
+            PhoneNumber = command.NumeroDeTelefono ?? string.Empty,
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false,
+            AccessFailedCount = jwtOptions.MaximaCantidadIntentosFallidos,
+            IdPersona = command.IdPersona,
+            NombreADesplegar = nombreADesplegar,
+            Descripcion = command.Descripcion,
+            TipoDeUsuario = command.TipoDeUsuario,
+            Activo = true,
+            UsuarioBase = false,
+            RequiereValidacionEnrrolamiento = !command.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL),
+            EstadoDeUsuario = command.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL) ?
+                EnumEstadoDeUsuario.REGISTRADO
+                : EnumEstadoDeUsuario.PROCESO_REGISTRO,
+                    InformacionAdicional = JsonConvert.SerializeObject(new InformacionAdicionalModel()
                     {
                         Nacionalidad = command.Nacionalidad,
                         DocumentoDeIdentidad = command.DocumentoDeIdentidad,
@@ -112,24 +129,23 @@ public class RegisterCommandHandler : CommandHandler,
                         FechaDeNacimiento = command.FechaDeNacimiento,
                         TerminosYCondiciones = command.TerminosYCondiciones
                     }),
-            };
+                };
 
-            var resultado = await userManager.CreateAsync(nuevoUsuario, command.Contraseña!);
-
-            if (resultado is null || !resultado.Succeeded)
+        using var transaction = await aUT2ServicesContext.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            var usuarioNuevo = await userManager.CreateAsync(nuevoUsuario, command.Contraseña!);
+            if (!usuarioNuevo.Succeeded)
             {
-                AddError("No es posible crear el nuevo usuario");
-
-                foreach (var item in resultado!.Errors)
+                foreach (var item in usuarioNuevo.Errors)
                 {
-                    AddError($"{item.Code} {item.Description}");
+                    AddError($"{item.Code} - {item.Description}");
                 }
-
                 await transaction.RollbackAsync(cancellationToken);
                 return CommandResponse;
             }
 
-            var usuarioExistente = await userManager.FindByEmailAsync(command.CorreoElectronico);
+            usuarioExistente = await userManager.FindByEmailAsync(command.CorreoElectronico);
             if (usuarioExistente == null)
             {
                 AddError("El usuario buscado no existe, no se puede seguir con el registro del usuario");
@@ -154,6 +170,12 @@ public class RegisterCommandHandler : CommandHandler,
                         return CommandResponse;
                     }
 
+                    var emailConfirmationUrl = QueryHelpers.AddQueryString(sendEmailOptions.APIValidateEmail, new Dictionary<string, string?>
+                    {
+                        ["userId"] = confirmationId,
+                        ["token"] = confirmationEmailToken
+                    });
+
                     string emailBody = string.Format($@"
                         <!DOCTYPE html>
                         <html lang=""es"">
@@ -177,7 +199,7 @@ public class RegisterCommandHandler : CommandHandler,
 								                        <h2 style=""color: #333333; margin: 0; font-size: 24px;"">Hola Nuevo Usuario</h2>
 								                        <div style=""margin-top: 30px; padding: 20px; background-color: #f8f9fa; border: 2px dashed #007bff; display: inline-block;"">
 									                        <span style=""font-size: 18px; font-weight: bold; color: #007bff; letter-spacing: 2px;"">
-										                        <a href=""{sendEmailOptions.APIValidateEmail}?id={confirmationId}&validationtoken={confirmationEmailToken}"">Link para Validar Cuenta de Correo</a>. 
+										                        <a href=""{sendEmailOptions.APIValidateEmail}?validationtoken={emailConfirmationUrl}"">Link para Validar Cuenta de Correo</a>. 
 									                        </span>
 								                        </div>
 							                        </td>
@@ -270,6 +292,13 @@ public class RegisterCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
+        CommandResponse.Data = JsonConvert.SerializeObject(new RegisterResponse(
+            Email: usuarioExistente.Email ?? command.CorreoElectronico,
+            RequiresEmailConfirmation: usuarioExistente.TipoDeUsuario!.Equals(EnumTipoDeUsuario.NACIONAL),
+            Message: "Usuario registrado. Confirma tu correo electrónico antes de iniciar sesión.",
+            ConfirmationUrl: sendEmailOptions.APIValidateEmail
+        ));
+        CommandResponse.Result = true;
         return CommandResponse;
     }
 }

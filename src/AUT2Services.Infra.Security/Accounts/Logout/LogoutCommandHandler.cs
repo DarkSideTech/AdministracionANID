@@ -1,30 +1,26 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
+using AUT2Services.Infra.Data.Context;
+using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
-using AUT2Services.Infra.Security.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AUT2Services.Infra.Security.Accounts.Logout;
 
-public class LogoutCommandHandler : CommandHandler,
+public class LogoutCommandHandler(
+    ITokenService tokenService,
+    ICsrfService csrfService,
+    AUT2ServicesContext aUT2ServicesContext,
+    ICurrentUserService currentUserService) : CommandHandler,
     IRequestHandler<LogoutCommand, CommandResponse>
 {
-    private readonly UserManager<Usuario> userManager;
-    private readonly ITokenService tokenService;
-    private readonly IUserAccessor userAccessor;
-
-    public LogoutCommandHandler(
-        UserManager<Usuario> userManager,
-        ITokenService tokenService,
-        IUserAccessor userAccessor)
-    {
-        this.userManager = userManager;
-        this.tokenService = tokenService;
-        this.userAccessor = userAccessor;
-    }
+    private readonly ITokenService tokenService = tokenService;
+    private readonly ICsrfService csrfService = csrfService;
+    private readonly AUT2ServicesContext aUT2ServicesContext = aUT2ServicesContext;
+    private readonly ICurrentUserService currentUserService = currentUserService;
 
     public async Task<CommandResponse> Handle(LogoutCommand command, CancellationToken cancellationToken)
     {
@@ -35,27 +31,38 @@ public class LogoutCommandHandler : CommandHandler,
         {
             return CommandResponse;
         }
-        var profile = new ProfileModel();
 
         try
         {
-            tokenService.DeleteAuthCookie(EnumAuthCookie.ACCESS_TOKEN);
-            tokenService.DeleteAuthCookie(EnumAuthCookie.REFRESH_TOKEN);
-
-            var user = await userManager.Users
-                .FirstOrDefaultAsync(x => x.Id == userAccessor.GetIdUsuario());
-
-            if (user is null)
+            if (!csrfService.IsRequestValid(command.Request))
             {
-                user = await userManager.Users
-                    .FirstOrDefaultAsync(x => x.RefreshToken == tokenService.GetAuthCookie(EnumAuthCookie.REFRESH_TOKEN));
+                AddError("Invalid CSRF token.");
+                return CommandResponse;
             }
 
-            if (user is not null)
+            if (command.Request.Cookies.TryGetValue(EnumAuthCookieNames.RefreshToken, out var tokenValue))
             {
-                user.RefreshToken = null;
-                user.RefreshTokenExpiresAtUtc = null;
-                await userManager.UpdateAsync(user);
+                var tokenHash = tokenService.HashRefreshToken(tokenValue);
+                var refreshToken = await aUT2ServicesContext.RefreshTokens.FirstOrDefaultAsync(x => x.TokenHash == tokenHash);
+                if (refreshToken is not null)
+                {
+                    await tokenService.RevokeSessionAsync(refreshToken.SessionId, EnumRefreshTokenRevocationReasons.Logout);
+                }
+            }
+            else
+            {
+                var claimsPrincipal = currentUserService.GetClaimsPrincipal();
+                if (claimsPrincipal is null)
+                {
+                    AddError("Usuario no esta logueado.");
+                    return CommandResponse;
+                }
+
+                var sessionId = claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sid)?.Value;
+                if (!string.IsNullOrWhiteSpace(sessionId))
+                {
+                    await tokenService.RevokeSessionAsync(sessionId, EnumRefreshTokenRevocationReasons.Logout);
+                }
             }
         }
         catch (Exception ex)

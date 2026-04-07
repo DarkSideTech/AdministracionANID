@@ -1,13 +1,14 @@
 ﻿using AUT2Services.Domain.Security.Entities;
+using AUT2Services.Infra.Security.Records;
 
 namespace AUT2Services.Infra.Security.Interfaces;
 
 public interface ITokenService
 {
-    Task<(string jwtToken, DateTime expiresAtUtc)> GenerateJwtTokenLoginOrganizacion(Usuario user, Guid id_Entidad);
-    (string jwtToken, DateTime expiresAtUtc) GenerateJwtTokenLogin(Usuario user);
-    string GenerateRefreshToken();
-    void WriteAuthTokenAsHttpOnlyCookie(string cookieName, string token, DateTime expiration);
-    void DeleteAuthCookie(string cookieName);
-    string GetAuthCookie(string cookieName);
+    Task<AccessTokenResult> GenerateAccessTokenAsync(Usuario user, string sessionId, Guid? idEntidad = null);
+    RefreshTokenIssuanceResult CreateRefreshToken(string sessionId, string? selectedOrganization = null);
+    Task<IList<OrganizacionesPorUsuario>> BuscarOrganizacionesPorIdUsuario(string idUsuario);
+    string HashRefreshToken(string refreshToken);
+    Task<UserDto> CreateUserDtoAsync(Usuario user, Guid id_Entidad);
+    Task RevokeSessionAsync(string sessionId, string reason);
 }

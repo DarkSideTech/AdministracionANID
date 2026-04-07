@@ -46,6 +46,9 @@ public class RegisterViewModel
     [DisplayName("Contraseña")]
     public string? Contraseña { get; set; } = string.Empty;
 
+    [DisplayName("ConfirmaContraseña")]
+    public string? ConfirmaContraseña { get; set; } = string.Empty;
+
     [DisplayName("TerminosYCondiciones")]
     public bool? TerminosYCondiciones { get; set; } = true;
 }

@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-01-21 15:35:09.316
+// Date Generated File : 2026-04-05 15:14:10.212
 // -------------------------------------------------
 using AUT2Services.Domain.Core.Data;
 using AUT2Services.Domain.Core.Domain;
@@ -47,6 +47,8 @@ public sealed class AUT2ServicesContext : IdentityDbContext<Usuario, Rol, string
     public DbSet<Organizacion> Organizacion { get; set; }
     public DbSet<PoliticaAsignada> PoliticaAsignada { get; set; }
     public DbSet<Proceso> Proceso { get; set; }
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Ignore<ValidationResult>();
@@ -83,7 +85,7 @@ public sealed class AUT2ServicesContext : IdentityDbContext<Usuario, Rol, string
         // performed through the DbContext will be committed
         var success = await SaveChangesAsync() > 0;
 
-        this.ChangeTracker.Clear();
+        //this.ChangeTracker.Clear();
         return success;
     }
 }

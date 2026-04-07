@@ -1,5 +1,6 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Infra.Security.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace AUT2Services.Infra.Security.Accounts.Register;
 
@@ -23,6 +24,7 @@ public class RegisterCommand : Command
     public bool? RequiereValidacionEnrrolamiento { get; set; } = false;
     public string? EstadoDeUsuario { get; set; } = string.Empty;
     public string? Contraseña { get; set; } = string.Empty;
+    public string? ConfirmaContraseña { get; set; } = string.Empty;
     public string? Nacionalidad { get; set; } = string.Empty;
     public string? DocumentoDeIdentidad { get; set; } = string.Empty;
     public string? NumeroDeDocumento { get; set; } = string.Empty;
@@ -35,5 +37,6 @@ public class RegisterCommand : Command
     public string? SexoRegistral { get; set; } = string.Empty;
     public DateTime? FechaDeNacimiento { get; set; } = DateTime.MinValue;
     public bool? TerminosYCondiciones { get; set; } = true;
-
+    public required HttpRequest Request { get; set; }
+    public required HttpResponse Response { get; set; }
 }

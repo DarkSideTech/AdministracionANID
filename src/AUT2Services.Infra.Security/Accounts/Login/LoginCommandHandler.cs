@@ -1,34 +1,34 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.Enumerations;
+using AUT2Services.Domain.Entities;
+using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
+using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Interfaces;
-using AUT2Services.Infra.Security.Models;
-using Microsoft.AspNetCore.Http;
+using AUT2Services.Infra.Security.Records;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.Login;
 
-public class LoginCommandHandler : CommandHandler,
+public class LoginCommandHandler(
+    UserManager<Usuario> userManager,
+    SignInManager<Usuario> signInManager,
+    ITokenService tokenService,
+    AUT2ServicesContext aUT2ServicesContext,
+    IAuthCookieService authCookieService,
+    ICsrfService csrfService,
+    IEntidadRepository entidadRepository
+    ) : CommandHandler,
     IRequestHandler<LoginCommand, CommandResponse>
 {
-    private readonly UserManager<Usuario> userManager;
-    private readonly ITokenService tokenService;
-    private readonly JwtOptions jwtOptions;
-
-    public LoginCommandHandler(
-        UserManager<Usuario> userManager,
-        ITokenService tokenService,
-        IOptions<JwtOptions> jwtOptions
-        )
-    {
-        this.userManager = userManager;
-        this.tokenService = tokenService;
-        this.jwtOptions = jwtOptions.Value;
-    }
+    private readonly UserManager<Usuario> userManager = userManager;
+    private readonly SignInManager<Usuario> signInManager = signInManager;
+    private readonly ITokenService tokenService = tokenService;
+    private readonly AUT2ServicesContext aUT2ServicesContext = aUT2ServicesContext;
+    private readonly IAuthCookieService authCookieService = authCookieService;
+    private readonly ICsrfService csrfService = csrfService;
+    private readonly IEntidadRepository entidadRepository = entidadRepository;
 
     public async Task<CommandResponse> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
@@ -39,47 +39,65 @@ public class LoginCommandHandler : CommandHandler,
         {
             return CommandResponse;
         }
-        var profile = new ProfileModel();
+
+        AccessTokenResult? accessTokenResult = null;
+        Entidad? entidad = null;
+        Usuario? usuario = null;
 
         try
         {
-            var user = await userManager.Users
-                .FirstOrDefaultAsync(x => x.Email == command.Email!);
+            if (!csrfService.IsRequestValid(command.Request))
+            {
+                AddError("Invalid CSRF token.");
+                return CommandResponse;
+            }
 
+            var user = await userManager.FindByEmailAsync(command.Email!);
             if (user is null)
             {
-                AddError("Usuario o clave no corresponden");
+                AddError("Credenciales no válidas.");
+                return CommandResponse;
+            }
+            else
+            {
+                usuario = user;
+            }
+
+            var result = await signInManager.CheckPasswordSignInAsync(usuario, command.Password!, false);
+            if (result.IsNotAllowed)
+            {
+                AddError("Debes confirmar tu correo electrónico antes de iniciar sesión.");
+                return CommandResponse;
+            }
+            if (!result.Succeeded)
+            {
+                AddError("Credenciales no válidas.");
                 return CommandResponse;
             }
 
-            var resultado = await userManager
-                .CheckPasswordAsync(user, command.Password!);
+            entidad = await entidadRepository.BuscarPor_Id_Usuario_TipoDeEntidad_Persona(Guid.Parse(usuario.Id));
 
-            if (!resultado)
+            if (entidad is null)
             {
-                AddError("Usuario o clave no corresponden");
+                AddError($"La entidad asociada al usuario no existe");
                 return CommandResponse;
             }
 
-            var (jwtToken, expirationDateInUtc) = tokenService.GenerateJwtTokenLogin(user);
-            var refreshTokenValue = tokenService.GenerateRefreshToken();
+            var sessionId = Guid.NewGuid().ToString("N");
+            accessTokenResult = await tokenService.GenerateAccessTokenAsync(usuario, sessionId, entidad.Id);
+            var refreshToken = tokenService.CreateRefreshToken(sessionId);
+            refreshToken.RefreshToken.UserId = usuario.Id;
 
-            var refreshTokenExpirationDateInUtc = DateTime.UtcNow.AddMinutes(this.jwtOptions.ExpirationRefreshTokenTimeInMinutes);
+            aUT2ServicesContext.RefreshTokens.Add(refreshToken.RefreshToken);
+            await aUT2ServicesContext.SaveChangesAsync(cancellationToken);
 
-            user.RefreshToken = refreshTokenValue;
-            user.RefreshTokenExpiresAtUtc = refreshTokenExpirationDateInUtc;
-
-            await userManager.UpdateAsync(user);
-
-            tokenService.WriteAuthTokenAsHttpOnlyCookie(EnumAuthCookie.ACCESS_TOKEN, jwtToken, expirationDateInUtc);
-            tokenService.WriteAuthTokenAsHttpOnlyCookie(EnumAuthCookie.REFRESH_TOKEN, user.RefreshToken, refreshTokenExpirationDateInUtc);
-
-            profile = new ProfileModel
-            {
-                AccessToken = jwtToken,
-                RefreshToken = refreshTokenValue
-            };
-
+            authCookieService.AppendAuthCookies(
+                command.Response,
+                accessTokenResult, 
+                refreshToken.RefreshToken.ExpiresAtUtc, 
+                refreshToken.PlainTextToken
+            );
+            csrfService.EnsureTokenCookie(command.Response);
         }
         catch (Exception ex)
         {
@@ -88,7 +106,21 @@ public class LoginCommandHandler : CommandHandler,
             CommandResponse.Result = false;
         }
 
-        CommandResponse.Data = JsonConvert.SerializeObject(profile);
+        if (usuario is null)
+        {
+            AddError("Usuario o clave no corresponden");
+            return CommandResponse;
+        }
+
+        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
+            AccessTokenExpiracion: accessTokenResult!.ExpiresAtUtc,
+            OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
+            User: await tokenService.CreateUserDtoAsync(usuario, entidad!.Id),
+            ProcesosActivos: null,
+            CodigoOrganizacionSeleccionada: null,
+            IdEntidadSeleccionada: null,
+            SeleccionOrganizacionRequerida: true
+        ));
         CommandResponse.Result = true;
 
         return CommandResponse;

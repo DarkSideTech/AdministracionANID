@@ -9,8 +9,8 @@ namespace AUT2Services.Domain.Core.Enumerations
             return type
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                 .Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(T))
-                .Select(x => (T)x.GetRawConstantValue())
-                .ToList();
+                .Select(x => (T)x.GetRawConstantValue()!)
+                .ToList()!;
         }
     }
 }

@@ -4,16 +4,16 @@ namespace AUT2Services.Infra.Security.Accounts.ValidateEmail;
 
 public abstract class EmailConfirmationTokenValidations<T> : AbstractValidator<T> where T : EmailConfirmationTokenCommand
 {
-    protected void Validate_Id()
+    protected void Validate_UserId()
     {
-        RuleFor(rf => rf.Id)
+        RuleFor(rf => rf.UserId)
             .NotEmpty()
                 .WithMessage("El valor ingresado para el campo CorreoElectronico no puede estar vacio");
     }
 
-    protected void Validate_ConfirmationToken()
+    protected void Validate_Token()
     {
-        RuleFor(rf => rf.ConfirmationToken)
+        RuleFor(rf => rf.Token)
             .NotEmpty()
                 .WithMessage("El valor ingresado no puede estar vacio");
     }

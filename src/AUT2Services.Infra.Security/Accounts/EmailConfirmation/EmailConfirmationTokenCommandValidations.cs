@@ -4,7 +4,7 @@ public class EmailConfirmationTokenCommandValidations : EmailConfirmationTokenVa
 {
     public EmailConfirmationTokenCommandValidations()
     {
-        Validate_Id();
-        Validate_ConfirmationToken();
+        Validate_UserId();
+        Validate_Token();
     }
 }

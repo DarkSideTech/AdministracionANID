@@ -3,9 +3,6 @@ using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AUT2Services.Infra.Data.Extensions;
 
@@ -78,6 +75,25 @@ public static class IncludeBaseData
     public static void SeedBaseData(ModelBuilder modelBuilder)
     {
         SeedDataSecurity(modelBuilder);
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.SessionId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.TokenHash).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.SelectedOrganization).HasMaxLength(256);
+            entity.Property(x => x.ReplacedByTokenHash).HasMaxLength(128);
+            entity.Property(x => x.RevocationReason).HasMaxLength(64);
+            entity.Property(x => x.UserId).IsRequired();
+            entity.Property(x => x.Id_Entidad).IsRequired();
+            entity.HasIndex(x => x.TokenHash).IsUnique();
+            entity.HasIndex(x => x.SessionId);
+
+            entity.HasOne(x => x.User)
+                .WithMany(x => x.RefreshTokens)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 
     public static void SeedDataSecurity(ModelBuilder modelBuilder)
@@ -95,6 +111,24 @@ public static class IncludeBaseData
 
     public static void ConfigureBaseDataSecurity(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.SessionId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.TokenHash).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.ReplacedByTokenHash).HasMaxLength(128);
+            entity.Property(x => x.RevocationReason).HasMaxLength(64);
+            entity.Property(x => x.UserId).IsRequired();
+            entity.HasIndex(x => x.TokenHash).IsUnique();
+            entity.HasIndex(x => x.SessionId);
+
+            entity.HasOne(x => x.User)
+                .WithMany(x => x.RefreshTokens)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+
         modelBuilder.Entity<Rol>(entity =>
         {
             entity.ToTable(name: "Rol");

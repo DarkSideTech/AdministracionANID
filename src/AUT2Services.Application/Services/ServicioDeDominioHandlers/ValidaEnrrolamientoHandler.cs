@@ -26,7 +26,7 @@ public partial class ServicioDeDominioServiceApp
             return result;
         }
 
-        var usuarioValidaEnrrolamiento = await servicioDeDominioRepository.UsuarioConRolValidaEnnrrolamiento(
+        var usuarioValidaEnrrolamiento = await servicioDeDominioRepository.UsuarioConRolValidaEnrrolamiento(
             (Guid)command.Id_Usuario_Valida_Enrrolamiento!,
             Guid.Parse(rolValidaEnrrolamiento.Id));
 

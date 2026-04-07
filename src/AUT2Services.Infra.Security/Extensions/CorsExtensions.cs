@@ -4,16 +4,27 @@ namespace AUT2Services.Infra.Security.Extensions;
 
 public class CorsExtensions
 {
-    public static void AddCorsConfiguration(IServiceCollection services, string[] allowedOrigins)
+    public static void AddCorsConfiguration(IServiceCollection services, string[] allowedOrigins, bool environment_develop)
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("AllowMultiplesApp",
-                builder => builder
-                    .WithOrigins(allowedOrigins) // URL de las app
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+            options.AddPolicy("AllowDinamicRules", policy =>
+            {
+                if (environment_develop)
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                }
+                else
+                {
+                    policy
+                        .WithOrigins(allowedOrigins)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                }
+            });
         });
     }
 }

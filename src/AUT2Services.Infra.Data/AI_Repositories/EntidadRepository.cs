@@ -2,11 +2,12 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-01-21 15:35:09.320
+// Date Generated File : 2026-04-05 15:14:10.216
 // -------------------------------------------------
  
 using AUT2Services.Domain.Core.Data;
 using AUT2Services.Domain.Entities;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +63,7 @@ public class EntidadRepository : IEntidadRepository
                 .FirstOrDefaultAsync(data => 
                 data.Id_Usuario.Equals(id_Usuario)
                 && data.Id_UnidadOrganizacional.Equals(id_UnidadOrganizacional)
-	            && data.Principal.Equals(true)
+                && data.Principal.Equals(true)
                 ); 
     } 
 
@@ -101,6 +102,19 @@ public class EntidadRepository : IEntidadRepository
                 data.Id_UnidadOrganizacional.Equals(id_UnidadOrganizacional)
                 ) 
                 .ToListAsync(); 
+    } 
+
+    public async Task<Entidad> BuscarPor_Id_Usuario_TipoDeEntidad_Persona( 
+            Guid id_Usuario 
+        ) 
+    {
+        return await DbSet 
+                .AsNoTracking() 
+                .FirstOrDefaultAsync(data => 
+                data.Id_Usuario.Equals(id_Usuario)
+                && data.TipoDeEntidad.Equals(EnumTipoDeEntidad.PERSONA)
+                && data.Principal.Equals(true)
+                ); 
     } 
 
     public void Dispose()

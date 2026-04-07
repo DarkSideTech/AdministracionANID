@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.474.26068</AssemblyVersion>
-    <FileVersion>1.0.474.26068</FileVersion>
+    <AssemblyVersion>1.0.543.26097</AssemblyVersion>
+    <FileVersion>1.0.543.26097</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AUT2Services.Domain\AUT2Services.Domain.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Data\AUT2Services.Infra.Data.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Tools.EmailManager\AUT2Services.Infra.Tools.EmailManager.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Tools.ZendeskManager\AUT2Services.Infra.Tools.ZendeskManager.csproj" />

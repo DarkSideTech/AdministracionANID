@@ -4,13 +4,13 @@ namespace AUT2Services.Services.API.Configurations;
 
 public static class CorsConfigurations
 {
-    public static IServiceCollection AddCorsConfiguration(this WebApplicationBuilder builder)
+    public static IServiceCollection AddCorsConfiguration(this WebApplicationBuilder builder, bool environment_develop)
     {
         if (builder.Services == null) throw new ArgumentNullException(nameof(builder.Services));
 
         var allowedCorsOrigins = builder.Configuration.GetSection("JwtOptions:AllowedCorsOrigins").Get<string[]>();
 
-        CorsExtensions.AddCorsConfiguration(builder.Services, allowedCorsOrigins!);
+        CorsExtensions.AddCorsConfiguration(builder.Services, allowedCorsOrigins!, environment_develop);
 
         return builder.Services;
     }

@@ -1,46 +1,33 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Entities;
-using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
+using AUT2Services.Infra.Data.Context;
+using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
-using AUT2Services.Infra.Security.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using AUT2Services.Infra.Security.Records;
 using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.LoginOrganizacion;
 
-public class LoginOrganizacionCommandHandler : CommandHandler,
+public class LoginOrganizacionCommandHandler(
+    ISecurityRepository securityRepository,
+    ITokenService tokenService,
+    IOrganizacionRepository organizacionRepository,
+    IAuthCookieService authCookieService,
+    ICsrfService csrfService,
+    AUT2ServicesContext aUT2ServicesContext,
+    ICurrentUserService currentUserService) : CommandHandler,
     IRequestHandler<LoginOrganizacionCommand, CommandResponse>
 {
-    private readonly UserManager<Usuario> userManager;
-    private readonly JwtOptions jwtOptions;
-    private readonly ISecurityRepository securityRepository;
-    private readonly ITokenService tokenService;
-    private readonly IOrganizacionRepository organizacionRepository;
-    private readonly IUnidadOrganizacionalRepository unidadOrganizacionalRepository;
-    private readonly IUserAccessor userAccessor;
-
-    public LoginOrganizacionCommandHandler(
-        ISecurityRepository securityRepository,
-        UserManager<Usuario> userManager,
-        IOptions<JwtOptions> jwtOptions,
-        ITokenService tokenService,
-        IOrganizacionRepository organizacionRepository,
-        IUnidadOrganizacionalRepository unidadOrganizacionalRepository,
-        IUserAccessor userAccessor)
-    {
-        this.securityRepository = securityRepository;
-        this.userManager = userManager;
-        this.jwtOptions = jwtOptions.Value;
-        this.tokenService = tokenService;
-        this.organizacionRepository = organizacionRepository;
-        this.unidadOrganizacionalRepository = unidadOrganizacionalRepository;
-        this.userAccessor = userAccessor;
-    }
+    private readonly ISecurityRepository securityRepository = securityRepository;
+    private readonly ITokenService tokenService = tokenService;
+    private readonly IOrganizacionRepository organizacionRepository = organizacionRepository;
+    private readonly IAuthCookieService authCookieService = authCookieService;
+    private readonly ICsrfService csrfService = csrfService;
+    private readonly AUT2ServicesContext aUT2ServicesContext = aUT2ServicesContext;
+    private readonly ICurrentUserService currentUserService = currentUserService;
 
     public async Task<CommandResponse> Handle(LoginOrganizacionCommand command, CancellationToken cancellationToken)
     {
@@ -51,34 +38,39 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
         {
             return CommandResponse;
         }
-        var profile = new ProfileModel();
+
+        AccessTokenResult? accessTokenResult = null;
+        Entidad? entidad = null;
+        Organizacion? organizacion = null;
+        Usuario? usuario = null;
 
         try
         {
-            var user = await userManager.Users
-                .FirstOrDefaultAsync(x => x.Email == userAccessor.GetIdUsuario());
-
-            if (user is null)
+            if (!csrfService.IsRequestValid(command.Request))
             {
-                AddError("Usuario o clave no corresponden");
+                AddError("Invalid CSRF token.");
                 return CommandResponse;
             }
 
-            Entidad entidad = null;
-            Organizacion organizacion = null;
-
-            if (string.IsNullOrEmpty(command.Organizacion))
+            var user = await currentUserService.GetUserAsync(command.Context.RequestAborted);
+            if (user is null || string.IsNullOrWhiteSpace(currentUserService.SessionId))
             {
-                AddError("Debe ingresar una organizacion valida");
+                authCookieService.ClearAuthCookies(command.Response);
+                AddError("Usuario no autorizado.");
                 return CommandResponse;
             }
             else
+            {
+                usuario = user;
+            }
+
+            if (string.IsNullOrEmpty(command.Organizacion))
             {
                 organizacion = await organizacionRepository.BuscarPor_Codigo(command.Organizacion!);
 
                 if (organizacion is null)
                 {
-                    AddError("Usuario o clave no corresponden");
+                    AddError($"La organizacion no existe");
                     return CommandResponse;
                 }
 
@@ -87,37 +79,27 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
 
             if (entidad is null)
             {
-                AddError("Usuario o clave no corresponden");
+                AddError($"La entidad asociada al usuario no existe");
                 return CommandResponse;
             }
 
-            var unidadorganizacional = await unidadOrganizacionalRepository.BuscarPor_Id(entidad.Id_UnidadOrganizacional);
+            await tokenService.RevokeSessionAsync(currentUserService.SessionId, EnumRefreshTokenRevocationReasons.SecondLogin);
 
-            if (unidadorganizacional is null)
-            {
-                AddError("Usuario o clave no corresponden");
-                return CommandResponse;
-            }
+            var sessionId = Guid.NewGuid().ToString("N");
+            accessTokenResult = await tokenService.GenerateAccessTokenAsync(usuario, sessionId, entidad.Id);
+            var refreshToken = tokenService.CreateRefreshToken(sessionId, organizacion!.Codigo);
+            refreshToken.RefreshToken.UserId = usuario.Id;
 
-            var (jwtToken, expirationDateInUtc) = await tokenService.GenerateJwtTokenLoginOrganizacion(user, entidad.Id);
-            var refreshTokenValue = tokenService.GenerateRefreshToken();
+            aUT2ServicesContext.RefreshTokens.Add(refreshToken.RefreshToken);
+            await aUT2ServicesContext.SaveChangesAsync(cancellationToken);
 
-            var refreshTokenExpirationDateInUtc = DateTime.UtcNow.AddMinutes(this.jwtOptions.ExpirationRefreshTokenTimeInMinutes);
-
-            user.RefreshToken = refreshTokenValue;
-            user.RefreshTokenExpiresAtUtc = refreshTokenExpirationDateInUtc;
-
-            await userManager.UpdateAsync(user);
-
-            tokenService.WriteAuthTokenAsHttpOnlyCookie(EnumAuthCookie.ACCESS_TOKEN, jwtToken, expirationDateInUtc);
-            tokenService.WriteAuthTokenAsHttpOnlyCookie(EnumAuthCookie.REFRESH_TOKEN, user.RefreshToken, refreshTokenExpirationDateInUtc);
-
-            profile = new ProfileModel
-            {
-                AccessToken = jwtToken,
-                RefreshToken = refreshTokenValue
-            };
-
+            authCookieService.AppendAuthCookies(
+                command.Response,
+                accessTokenResult,
+                refreshToken.RefreshToken.ExpiresAtUtc,
+                refreshToken.PlainTextToken
+            );
+            csrfService.EnsureTokenCookie(command.Response);
         }
         catch (Exception ex)
         {
@@ -126,7 +108,15 @@ public class LoginOrganizacionCommandHandler : CommandHandler,
             CommandResponse.Result = false;
         }
 
-        CommandResponse.Data = JsonConvert.SerializeObject(profile);
+        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
+            AccessTokenExpiracion: accessTokenResult!.ExpiresAtUtc,
+            OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
+            User: await tokenService.CreateUserDtoAsync(usuario, entidad!.Id),
+            ProcesosActivos: await currentUserService.GetProcesosActivosAsync(cancellationToken) ?? null,
+            CodigoOrganizacionSeleccionada: organizacion!.Codigo,
+            IdEntidadSeleccionada: entidad.Id.ToString(),
+            SeleccionOrganizacionRequerida: false
+        ));
         CommandResponse.Result = true;
 
         return CommandResponse;

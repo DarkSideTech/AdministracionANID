@@ -2,11 +2,12 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-01-21 15:35:09.320
+// Date Generated File : 2026-04-05 15:14:10.216
 // -------------------------------------------------
  
 using AUT2Services.Domain.Core.Data;
 using AUT2Services.Domain.Entities;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;

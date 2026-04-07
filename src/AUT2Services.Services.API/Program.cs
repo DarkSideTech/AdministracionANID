@@ -23,7 +23,7 @@ builder.AddDependencyInjectionConfiguration();
 builder.Services.AddSwaggerConfiguration();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-builder.AddCorsConfiguration();
+builder.AddCorsConfiguration(builder.Environment.IsDevelopment());
 
 //builder.Services.AddEndpointsApiExplorer(); // Essential for Minimal APIs with Swagger
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -60,7 +60,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseCors("AllowMultiplesApp");
+app.UseCors("AllowDinamicRules");
 
 app.UseAuthentication();
 app.UseAuthorization();

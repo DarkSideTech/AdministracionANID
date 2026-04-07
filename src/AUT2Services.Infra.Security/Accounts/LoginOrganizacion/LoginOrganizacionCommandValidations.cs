@@ -4,8 +4,6 @@ public class LoginOrganizacionCommandValidations : LoginOrganizacionValidations<
 {
     public LoginOrganizacionCommandValidations()
     {
-        Validate_UserName();
-        Validate_Password();
         Validate_Organizacion();
     }
 }

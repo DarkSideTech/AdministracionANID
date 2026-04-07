@@ -1,13 +1,10 @@
-﻿using AUT2Services.Domain.Core.Commands;
-using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.Core.Models;
-using AUT2Services.Domain.DTOs;
-using AUT2Services.Infra.Security.Accounts.ValidateEmail;
+﻿using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
+using AUT2Services.Infra.Security.Records;
 using AUT2Services.Infra.Security.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AUT2Services.Infra.Security.Controllers;
 
@@ -15,114 +12,90 @@ namespace AUT2Services.Infra.Security.Controllers;
 [Route("api/account")]
 public partial class AccountController : ApiController
 {
-    private readonly IMediatorHandler mediator;
     private readonly IAccountServiceApp accountServiceApp;
-    private readonly SendEmailOptions sendEmailOptions;
+    private readonly ICsrfService csrfService;
 
     public AccountController(
-        IMediatorHandler mediator,
         IAccountServiceApp accountServiceApp,
-        IOptions<SendEmailOptions> sendEmailOptions)
+        ICsrfService csrfService)
     {
-        this.mediator = mediator;
         this.accountServiceApp = accountServiceApp;
-        this.sendEmailOptions = sendEmailOptions.Value;
+        this.csrfService = csrfService;
+    }
+
+    [HttpGet("csrf")]
+    [AllowAnonymous]
+    public IActionResult Csrf()
+    {
+        Request.Cookies.TryGetValue(EnumCsrfNames.Cookie, out var existingToken);
+        csrfService.EnsureTokenCookie(Response, existingToken);
+        return NoContent();
     }
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register(RegisterViewModel dataViewModel)
+    public async Task<IActionResult> Register(RegisterViewModel viewModel)
     {
-        CommandResponse result = null!;
-        try
-        {
-            result = await accountServiceApp.RegisterAsync(dataViewModel);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(result);
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.RegisterAsync(viewModel, Request, Response));
     }
-
-    [HttpGet("validateemail")]
-    [AllowAnonymous]
-    public async Task ValidateEmail(string id, string validationtoken)
-    {
-        var validateEmailCommand = new EmailConfirmationTokenCommand()
-        {
-            Id = id,
-            ConfirmationToken = validationtoken
-        };
-
-        var result = await mediator.SendCommand(validateEmailCommand);
-
-        if (result.Result)
-        {
-            Redirect(sendEmailOptions.URLEmailValidate);
-        }
-        else 
-        { 
-            Redirect(sendEmailOptions.URLEmailNotValidate);
-        }
-   }
 
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginViewModel viewModel)
     {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.LoginAsync(viewModel));
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.LoginAsync(viewModel, Request, Response));
     }
 
     [HttpPost("loginOrganizacion")]
     [Authorize]
     public async Task<IActionResult> LoginOrganizacion(LoginOrganizacionViewModel viewModel)
     {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.LoginOrganizacionAsync(viewModel));
+        var context = HttpContext;
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.LoginOrganizacionAsync(viewModel, Request, Response, context));
     }
 
     [HttpPost("refreshtoken")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> RefreshToken(RefreshTokenViewModel viewModel)
     {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.RefreshTokenAsync(viewModel));
-    }
-
-    [HttpGet("validarSesion")]
-    [Authorize]
-    public IActionResult ValidarSesion()
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(new { isAuthenticated = true, message = "Sesión válida" });
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.RefreshTokenAsync(viewModel, Request, Response));
     }
 
     [HttpPost("logout")]
     [AllowAnonymous]
     public async Task<IActionResult> Logout()
     {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.Logout());
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.Logout(Request, Response));
     }
 
-    [HttpGet("procesosautorizados")]
-    [Authorize]
-    public IEnumerable<string> ProcesosAutorizados()
+    [HttpPost("ConfirmEmail")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ValidateEmail([FromBody] ConfirmEmailRequest confirmEmailRequest)
     {
-        return accountServiceApp.ProcesosAutorizados();
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ConfirmEmailAsync(confirmEmailRequest, Request, Response));
     }
 
-    [HttpGet("rolesporproceso")]
-    [Authorize]
-    public IEnumerable<string> RolesPorProceso(string proceso)
+    [HttpPost("ResendConfirmationEmail")]
+    [AllowAnonymous]
+    [EnableRateLimiting("ResendConfirmationEmail")]
+    public async Task<IActionResult> ResendConfirmationEmail([FromBody] ResendEmailConfirmationTokenRequest resendEmailConfirmationTokenRequest)
     {
-        return accountServiceApp.RolesPorProceso(proceso);
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ResendEmailConfirmationTokenAsync(resendEmailConfirmationTokenRequest, Request, Response));
     }
 
-    [HttpGet("datosusuario")]
     [Authorize]
-    public DatosUsuarioDTO DatosUsuario()
+    [HttpGet("yo")]
+    public async Task<IActionResult> yo()
     {
-        return accountServiceApp.DatosUsuario();
+        var context = HttpContext;
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.YoAsync(Request, Response, context));
+    }
+
+    [AllowAnonymous]
+    [HttpGet("currentuser")]
+    public async Task<IActionResult> CurrentUser()
+    {
+        var context = HttpContext;
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.CurrentUserAsync(Request, Response, context));
     }
 }
-
-

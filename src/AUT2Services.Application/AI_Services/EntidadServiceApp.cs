@@ -2,7 +2,7 @@
 // Dark Side Tech
 // Solution Name : AUT2Services
 // Domain : Administracion version 1.17
-// Date Generated File : 2026-03-02 21:15:49.919
+// Date Generated File : 2026-04-05 14:21:10.428
 // -------------------------------------------------
 using AUT2Services.Application.Extensions;
 using AUT2Services.Application.Interfaces;
@@ -104,6 +104,15 @@ public class EntidadServiceApp : IEntidadServiceApp
     {
         return (await _entidadRepository.BuscarPor_Id_UnidadOrganizacional( 
             id_UnidadOrganizacional 
+        )).ToViewModel(); 
+    } 
+
+    public async Task<EntidadViewModel> BuscarPor_Id_Usuario_TipoEntidad_Persona( 
+        Guid id_Usuario 
+        )
+    {
+        return (await _entidadRepository.BuscarPor_Id_Usuario_TipoDeEntidad_Persona( 
+            id_Usuario 
         )).ToViewModel(); 
     } 
 

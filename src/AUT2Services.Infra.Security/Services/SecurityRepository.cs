@@ -93,6 +93,7 @@ public class SecurityRepository : ISecurityRepository
                 NombreRol = rol.NormalizedName ?? "Missing Data",
                 CodigoProceso = proceso.Codigo ?? "Missing Data",
                 NombreProceso = proceso.Nombre ?? "Missing Data",
+                NivelDeProceso = proceso.NivelDeProceso ?? "Missing Data",
                 Token = proceso.Token ?? "Missing Data",
                 Url = proceso.Url ?? "Missing Data",
                 ComoDesplegarUrl = proceso.ComoDesplegarUrlDeProceso ?? "Missing Data"
@@ -108,7 +109,7 @@ public class SecurityRepository : ISecurityRepository
                 {
                     result.Add(new SecurityClaims
                     {
-                        ClaimType = politica.CodigoProceso,
+                        ClaimType = $"{EnumBusinessClaimTypes.PROCESO}{EnumPartialBusinessClaimTypes._ROL}",
                         ClaimValue = politica.NombreRol
                     });
 
@@ -124,6 +125,12 @@ public class SecurityRepository : ISecurityRepository
                         {
                             ClaimType = $"{EnumBusinessClaimTypes.PROCESO}{EnumPartialBusinessClaimTypes._NOMBRE}",
                             ClaimValue = politica.NombreProceso
+                        });
+
+                        result.Add(new SecurityClaims
+                        {
+                            ClaimType = $"{EnumBusinessClaimTypes.PROCESO}{EnumPartialBusinessClaimTypes._NIVEL_DE_PROCESO}",
+                            ClaimValue = politica.NivelDeProceso
                         });
 
                         result.Add(new SecurityClaims
@@ -152,6 +159,81 @@ public class SecurityRepository : ISecurityRepository
         catch (Exception ex)
         {
             logger.LogError($"Error al momento de obtener las policies desde la base de datos: {ex.Message}");
+            throw;
+        }
+        return result;
+    }
+
+    public async Task<IList<string>> BuscarRolesPor_Id_Entidad(Guid id_Entidad)
+    {
+        IList<string> result = [];
+
+        var rolesAsignados =
+            from entidad in db.Entidad
+
+            join politicaAsignada in db.PoliticaAsignada
+                on entidad.Id equals politicaAsignada.Id_Entidad
+
+            join rol in db.Roles
+                on politicaAsignada.Id_Rol.ToString() equals rol.Id
+
+            where
+                entidad.Id == id_Entidad
+                && politicaAsignada.RolAsignadoValidado
+                && (politicaAsignada.FechaInicioAsignacion <= DateTimeOffset.Now
+                    && politicaAsignada.FechaTerminoAsignacion >= DateTimeOffset.Now)
+
+            select rol.NormalizedName ?? "Missing Data";
+
+        try
+        {
+            await Task.Run(() =>
+            {
+                result = [.. rolesAsignados.AsNoTracking()];
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError($"Error al momento de obtener los roles para una entidad: {ex.Message}");
+            throw;
+        }
+        return result;
+    }
+
+    public async Task<IList<string>> BuscarUnidadesOrganizacionalesPor_Id_Entidad(Guid id_Entidad)
+    {
+        IList<string> result = [];
+
+        var unidadesOrganizacionalesAsignadas =
+            from entidad in db.Entidad
+
+            join unidadOrganizacional in db.UnidadOrganizacional
+                on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+
+            join politicaAsignada in db.PoliticaAsignada
+                on entidad.Id equals politicaAsignada.Id_Entidad
+
+            join rol in db.Roles
+                on politicaAsignada.Id_Rol.ToString() equals rol.Id
+
+            where
+                entidad.Id == id_Entidad
+                && politicaAsignada.RolAsignadoValidado
+                && (politicaAsignada.FechaInicioAsignacion <= DateTimeOffset.Now
+                    && politicaAsignada.FechaTerminoAsignacion >= DateTimeOffset.Now)
+
+            select unidadOrganizacional.Codigo ?? "Missing Data";
+
+        try
+        {
+            await Task.Run(() =>
+            {
+                result = [.. unidadesOrganizacionalesAsignadas.AsNoTracking()];
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError($"Error al momento de obtener los roles para una entidad: {ex.Message}");
             throw;
         }
         return result;
@@ -188,6 +270,50 @@ public class SecurityRepository : ISecurityRepository
     {
         db.Dispose();
     }
+
+    public async Task<Entidad> BuscarRolesPorUsuarioEntidad(Guid id_Usuario, Guid id_Entidad)
+    {
+        Entidad? result = null;
+
+        var perfilPrincipal =
+            from organizacion in db.Organizacion
+
+            join unidadOrganizacional in db.UnidadOrganizacional
+                on organizacion.Id equals unidadOrganizacional.Id_Organizacion
+
+            join entidad in db.Entidad
+                on unidadOrganizacional.Id equals entidad.Id_UnidadOrganizacional
+
+            where
+                entidad.Id == id_Entidad
+                && entidad.Principal
+                && entidad.Id_Usuario == id_Usuario
+
+            select new
+            {
+                Entidad = entidad
+            };
+
+        try
+        {
+            Action action = () =>
+            {
+                result = perfilPrincipal
+                                .AsNoTracking()
+                                .FirstOrDefault()!
+                                .Entidad;
+            };
+            await Task.Run(action);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError($"Error al momento de obtener el perfil principal asociado al usuario y la entidad: {ex.Message}");
+            throw;
+        }
+        return result;
+
+    }
+
 
     public async Task<Usuario?> BuscarUsuarioPor_RefreshToken(string refreshToken)
     {

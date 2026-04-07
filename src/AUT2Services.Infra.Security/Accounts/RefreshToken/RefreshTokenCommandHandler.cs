@@ -1,11 +1,13 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.Enumerations;
+using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
-using AUT2Services.Infra.Security.Accounts.Logout;
+using AUT2Services.Infra.Data.Context;
+using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
-using AUT2Services.Infra.Security.Models;
+using AUT2Services.Infra.Security.Records;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.RefreshToken;
@@ -16,22 +18,38 @@ public class RefreshTokenCommandHandler : CommandHandler,
     private readonly UserManager<Usuario> userManager;
     private readonly ITokenService tokenService;
     private readonly ISecurityRepository securityRepository;
-    private readonly IUserAccessor userAccessor;
     private readonly IMediatorHandler mediator;
+    private readonly IUserAccessor userAccessor;
+    private readonly IServicioDeDominioRepository servicioDeDominioRepository;
+    private readonly ICsrfService csrfService;
+    private readonly AUT2ServicesContext aUT2ServicesContext;
+    private readonly IAuthCookieService authCookieService;
+    private readonly ICurrentUserService currentUserService;
 
     public RefreshTokenCommandHandler(
         UserManager<Usuario> userManager,
         ITokenService tokenService,
         ISecurityRepository securityRepository,
+        IMediatorHandler mediator,
         IUserAccessor userAccessor,
-        IMediatorHandler mediator
+        IServicioDeDominioRepository servicioDeDominioRepository,
+        ICsrfService csrfService,
+        AUT2ServicesContext aUT2ServicesContext,
+        IAuthCookieService authCookieService,
+        ICurrentUserService currentUserService
         )
     {
         this.userManager = userManager;
         this.tokenService = tokenService;
         this.securityRepository = securityRepository;
-        this.userAccessor = userAccessor;
         this.mediator = mediator;
+        this.userAccessor = userAccessor;
+        this.servicioDeDominioRepository = servicioDeDominioRepository;
+        this.csrfService = csrfService;
+        this.aUT2ServicesContext = aUT2ServicesContext;
+        this.authCookieService = authCookieService;
+        this.currentUserService = currentUserService;
+        this.tokenService = tokenService;
     }
 
     public async Task<CommandResponse> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
@@ -43,81 +61,115 @@ public class RefreshTokenCommandHandler : CommandHandler,
         {
             return CommandResponse;
         }
-        var profile = new ProfileModel();
+
+        AccessTokenResult? accessToken = null!;
+        Usuario? usuario = null!;
+        Domain.Security.Entities.RefreshToken? existingRefreshToken = null!;
 
         try
         {
-            var user = await securityRepository.BuscarUsuarioPor_RefreshToken(command.RefreshToken!);
-
-            if (user is null)
+            if (!csrfService.IsRequestValid(command.Request))
             {
-                AddError("Falta el token de actualización.");
+                AddError("Invalid CSRF token.");
                 return CommandResponse;
             }
 
-            if (user.RefreshTokenExpiresAtUtc < DateTime.UtcNow)
+            if (!command.Request.Cookies.TryGetValue(EnumAuthCookieNames.RefreshToken, out var tokenValue))
             {
-                AddError("El token de actualización ha expirado.");
+                AddError("No se encuentra el RefreshToken.");
+                return CommandResponse;
+            }
 
-                var logoutCommand = new LogoutCommand() {};
-                var commandResult = await mediator.SendCommand(logoutCommand);
-                if (!commandResult.Result)
+            var tokenHash = tokenService.HashRefreshToken(tokenValue);
+            existingRefreshToken = await aUT2ServicesContext.RefreshTokens
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.TokenHash == tokenHash, cancellationToken: cancellationToken);
+
+            if (existingRefreshToken is null)
+            {
+                authCookieService.ClearAuthCookies(command.Response);
+                AddError("Token de actualización no válido.");
+                return CommandResponse;
+            }
+
+            if (existingRefreshToken.IsExpired)
+            {
+                authCookieService.ClearAuthCookies(command.Response);
+                AddError("RefreshToken ha expirado.");
+                return CommandResponse;
+            }
+
+            if (existingRefreshToken.RevokedAtUtc is not null)
+            {
+                if (string.Equals(existingRefreshToken.RevocationReason, EnumRefreshTokenRevocationReasons.Rotated, StringComparison.Ordinal))
                 {
-                    CommandResponse.ValidationResult.Errors.AddRange(commandResult.ValidationResult.Errors);
+                    await tokenService.RevokeSessionAsync(existingRefreshToken.SessionId, EnumRefreshTokenRevocationReasons.ReuseDetected);
+                    authCookieService.ClearAuthCookies(command.Response);
+                    csrfService.EnsureTokenCookie(command.Response);
+                    AddError("Se ha detectado la reutilización del token de actualización. Sesión revocada.");
+                    return CommandResponse;
                 }
+
+                authCookieService.ClearAuthCookies(command.Response);
+                AddError("RefreshToken no válido.");
                 return CommandResponse;
             }
 
-            string jwtToken = string.Empty;
-            DateTime expirationDateInUtc = DateTime.MinValue;
-
-            switch (userAccessor.GetAccessTokenType())
+            if (existingRefreshToken.User is null)
             {
-                case EnumAccessTokenType.LOGIN:
-                    (jwtToken, expirationDateInUtc) = tokenService.GenerateJwtTokenLogin(user);
-                    break;
-                case EnumAccessTokenType.LOGIN_ORGANIZATION:
-                    (jwtToken, expirationDateInUtc) = await tokenService.GenerateJwtTokenLoginOrganizacion(user, Guid.Parse(userAccessor.GetIdEntidad()));
-                    break;
-                default:
-                    AddError("la informacion del usuario logueado no esta disponible");
-                    var logoutCommand = new LogoutCommand() { };
-                    var commandResult = await mediator.SendCommand(logoutCommand);
-                    if (!commandResult.Result)
-                    {
-                        CommandResponse.ValidationResult.Errors.AddRange(commandResult.ValidationResult.Errors);
-                    }
-                    return CommandResponse;
+                authCookieService.ClearAuthCookies(command.Response);
+                AddError("RefreshToken no válido, No Existe.");
+                return CommandResponse;
             }
 
-            user.RefreshToken = tokenService.GenerateRefreshToken();
-            user.RefreshTokenExpiresAtUtc = (DateTime)user.RefreshTokenExpiresAtUtc!;
-
-            await userManager.UpdateAsync(user);
-
-            tokenService.WriteAuthTokenAsHttpOnlyCookie(EnumAuthCookie.ACCESS_TOKEN, jwtToken, expirationDateInUtc);
-            tokenService.WriteAuthTokenAsHttpOnlyCookie(EnumAuthCookie.REFRESH_TOKEN, user.RefreshToken, (DateTime)user.RefreshTokenExpiresAtUtc);
-
-            profile = new ProfileModel
+            if (!existingRefreshToken.User.EmailConfirmed)
             {
-                AccessToken = jwtToken,
-                RefreshToken = user.RefreshToken,
-            };
+                await tokenService.RevokeSessionAsync(existingRefreshToken.SessionId, EnumRefreshTokenRevocationReasons.Logout);
+                authCookieService.ClearAuthCookies(command.Response);
+                csrfService.EnsureTokenCookie(command.Response);
+                AddError("Debes confirmar tu correo electrónico antes de actualizar la sesión.");
+                return CommandResponse;
+            }
+
+            var rotatedRefreshToken = tokenService.CreateRefreshToken(existingRefreshToken.SessionId, existingRefreshToken.SelectedOrganization);
+            existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
+            existingRefreshToken.RevocationReason = EnumRefreshTokenRevocationReasons.Rotated;
+            existingRefreshToken.ReplacedByTokenHash = rotatedRefreshToken.RefreshToken.TokenHash;
+
+            rotatedRefreshToken.RefreshToken.UserId = existingRefreshToken.UserId;
+            aUT2ServicesContext.RefreshTokens.Add(rotatedRefreshToken.RefreshToken);
+            await aUT2ServicesContext.SaveChangesAsync();
+
+            accessToken = await tokenService.GenerateAccessTokenAsync(
+                existingRefreshToken.User,
+                existingRefreshToken.SessionId,
+                existingRefreshToken.Id_Entidad);
+
+            authCookieService.AppendAuthCookies(
+                command.Response,
+                accessToken,
+                rotatedRefreshToken.RefreshToken.ExpiresAtUtc,
+                rotatedRefreshToken.PlainTextToken);
+
+            csrfService.EnsureTokenCookie(command.Response);
+
         }
         catch (Exception ex)
         {
-            AddError($"Error al momento de obtener los datos del usuario, message [{ex.Message}]");
-            var logoutCommand = new LogoutCommand() { };
-            var commandResult = await mediator.SendCommand(logoutCommand);
-            if (!commandResult.Result)
-            {
-                CommandResponse.ValidationResult.Errors.AddRange(commandResult.ValidationResult.Errors);
-            }
+            AddError($"Error al momento de validar y generar el refreshtoken, message [{ex.Message}]");
             CommandResponse.Data = string.Empty;
             CommandResponse.Result = false;
         }
 
-        CommandResponse.Data = JsonConvert.SerializeObject(profile);
+        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
+            AccessTokenExpiracion: accessToken.ExpiresAtUtc,
+            OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
+            User: await tokenService.CreateUserDtoAsync(existingRefreshToken!.User!, (Guid)existingRefreshToken.Id_Entidad!),
+            ProcesosActivos: await currentUserService.GetProcesosActivosAsync(cancellationToken) ?? null,
+            CodigoOrganizacionSeleccionada: existingRefreshToken.SelectedOrganization,
+            IdEntidadSeleccionada: existingRefreshToken.Id_Entidad.ToString(),
+            SeleccionOrganizacionRequerida: string.IsNullOrWhiteSpace(existingRefreshToken.SelectedOrganization)
+            ));
         CommandResponse.Result = true;
 
         return CommandResponse;
