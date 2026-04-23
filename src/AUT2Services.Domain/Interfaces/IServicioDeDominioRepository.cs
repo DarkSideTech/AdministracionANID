@@ -7,7 +7,7 @@ public interface IServicioDeDominioRepository
 
     Task<IEnumerable<UnidadOrganizacionalDTO>> BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion(Guid id_Usuario, Guid id_Organizacion);
 
-    Task<EntidadDTO> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(Guid id_Usuario, Guid id_Organizaciona);
+    Task<EntidadDTO?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(Guid id_Usuario, Guid id_Organizaciona);
 
     Task<IEnumerable<OrganizacionPorUsuarioDTO>> BuscarOrganizacionesPor_Id_Usuario(Guid id_Usuario);
 

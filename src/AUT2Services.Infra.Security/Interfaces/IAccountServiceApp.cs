@@ -1,5 +1,4 @@
 ﻿using AUT2Services.Domain.Core.Commands;
-using AUT2Services.Domain.DTOs;
 using AUT2Services.Infra.Security.Records;
 using AUT2Services.Infra.Security.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +9,11 @@ public interface IAccountServiceApp
 {
     Task<CommandResponse> LoginAsync(LoginViewModel login, HttpRequest request, HttpResponse response);
 
+    Task<CommandResponse> LoginClaveUnicaAsync(LoginClaveUnicaViewModel login, HttpRequest request, HttpResponse response);
+
     Task<CommandResponse> LoginOrganizacionAsync(LoginOrganizacionViewModel login, HttpRequest request, HttpResponse response, HttpContext httpContext);
+
+    Task<CommandResponse> CambioUnidadOrganizacionalEntidadRolAsync(CambioUnidadOrganizacionalEntidadRolViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext httpContext);
 
     Task<CommandResponse> RefreshTokenAsync(RefreshTokenViewModel viewModel, HttpRequest request, HttpResponse response);
 
@@ -26,7 +29,13 @@ public interface IAccountServiceApp
 
     Task<CommandResponse> CurrentUserAsync(HttpRequest request, HttpResponse response, HttpContext context);
 
-    IEnumerable<string> ProcesosAutorizados();
-    IEnumerable<string> RolesPorProceso(string proceso);
-    DatosUsuarioDTO DatosUsuario();
+    Task<CommandResponse> ModificaUsuarioAsync(ModificaUsuarioViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ModificaCorreoElectronicoAsync(ModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> SolicitaCambioClaveAsync(SolicitaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ReenviaCodigoCambioClaveAsync(ReenviaCodigoCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ConfirmaCambioClaveAsync(ConfirmaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response);
 }

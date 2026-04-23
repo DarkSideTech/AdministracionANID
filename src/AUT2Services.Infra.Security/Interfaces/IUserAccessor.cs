@@ -13,7 +13,6 @@ public interface IUserAccessor
     string GetNombreOrganizacion();
     string GetCodigoUnidadOrganizacional();
     string GetNombreUnidadOrganizacional();
-    //string GetAccessTokenType();
     string GetProcesoNombre(string proceso);
     string GetProcesoUrl(string proceso);
     string GetProcesoComoDesplegarUrl(string proceso);

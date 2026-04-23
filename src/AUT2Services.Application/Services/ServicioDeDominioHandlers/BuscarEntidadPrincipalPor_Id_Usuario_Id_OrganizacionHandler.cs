@@ -4,9 +4,9 @@ namespace AUT2Services.Application.Services.ServicioDeDominioHandlers;
 
 public partial class ServicioDeDominioServiceApp
 {
-    public async Task<EntidadViewModel> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(Guid id_Usuario, Guid id_Organizacion)
+    public async Task<EntidadViewModel?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(Guid id_Usuario, Guid id_Organizacion)
     {
-        EntidadViewModel result = null;
+        EntidadViewModel? result = null;
 
         var resultGet = await servicioDeDominioRepository.BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(
             id_Usuario,

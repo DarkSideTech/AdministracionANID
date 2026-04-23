@@ -35,10 +35,10 @@ public partial class  OrganizacionCommandHandler :
                 return CommandResponse;
             }
  
-        existOrganizacion.AddDomainEvent(new OrganizacionEventEliminadoPor_Codigo(
-            existOrganizacion.Id, 
-            existOrganizacion.Codigo 
-        ));
+        AddDeleteDomainEvent(command, existOrganizacion, new OrganizacionEventEliminadoPor_Codigo(
+            existOrganizacion.Id,
+            existOrganizacion.Codigo
+        ), existOrganizacion);
 
         _organizacionRepository.Eliminar(existOrganizacion);
 

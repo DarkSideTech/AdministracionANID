@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AUT2Services.Infra.Security.Models;
+﻿namespace AUT2Services.Infra.Security.Models;
 
 public sealed class EmailValidationOptions
 {

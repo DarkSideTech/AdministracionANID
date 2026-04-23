@@ -13,7 +13,7 @@ public class PoliticaAsignadaEventAsignacionFinalizada : Event
 {
     public PoliticaAsignadaEventAsignacionFinalizada(
         Guid id, 
-            DateTimeOffset fechaTerminoAsignacion 
+        DateTimeOffset? fechaTerminoAsignacion 
         )
     {
         Id = id;
@@ -23,6 +23,6 @@ public class PoliticaAsignadaEventAsignacionFinalizada : Event
     }
 
     public Guid Id { get; private set; } = Guid.Empty;
-    public DateTimeOffset FechaTerminoAsignacion  { get; private set; } = DateTimeOffset.MinValue; 
+    public DateTimeOffset? FechaTerminoAsignacion  { get; private set; }
 }
 

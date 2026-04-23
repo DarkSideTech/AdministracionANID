@@ -10,7 +10,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Events.ValidacionEnrrolamientos.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.ValidacionEnrrolamientos.Handlers
 {
@@ -44,15 +44,14 @@ namespace AUT2Services.Domain.Commands.ValidacionEnrrolamientos.Handlers
          
             newValidacionEnrrolamiento.CambiarActivo(true);
 
-            newValidacionEnrrolamiento.AddDomainEvent(new ValidacionEnrrolamientoEventActivado(
+            AddUpdateDomainEvent(command, newValidacionEnrrolamiento, new ValidacionEnrrolamientoEventActivado(
                     newValidacionEnrrolamiento.Id, 
                     newValidacionEnrrolamiento.Activo 
-                    )
-                );
+                    ), existValidacionEnrrolamiento, newValidacionEnrrolamiento);
 
             _validacionEnrrolamientoRepository.Modificar(newValidacionEnrrolamiento);
         
-            CommandResponse.Data = JsonConvert.SerializeObject(new ValidacionEnrrolamientoDTO(){
+            CommandResponse.Data = new ValidacionEnrrolamientoDTO(){
                     Id = newValidacionEnrrolamiento.Id, 
                     IdValidado_Usuario = newValidacionEnrrolamiento.IdValidado_Usuario, 
                     IdValidaEnrrolamiento_Usuario = newValidacionEnrrolamiento.IdValidaEnrrolamiento_Usuario, 
@@ -60,7 +59,7 @@ namespace AUT2Services.Domain.Commands.ValidacionEnrrolamientos.Handlers
                     FechaValidacion = newValidacionEnrrolamiento.FechaValidacion, 
                     FechaRegistro = newValidacionEnrrolamiento.FechaRegistro, 
                     Activo = newValidacionEnrrolamiento.Activo 
-                });
+                };
             CommandResponse.Result = true;
 
             return await Commit(_validacionEnrrolamientoRepository.UnitOfWork);

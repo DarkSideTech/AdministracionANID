@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.Proveedores.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.Proveedores.Handlers;
 
@@ -48,18 +48,18 @@ public partial class ProveedorCommandHandler :
 
                 newProveedor.CambiarActivo(true);
 
-        newProveedor.AddDomainEvent(new ProveedorEventCreado(
+        AddCreateDomainEvent(command, newProveedor, new ProveedorEventCreado(
             newProveedor.Id, 
         newProveedor.Codigo, 
         newProveedor.Nombre, 
         newProveedor.Descripcion, 
         newProveedor.APIDeAutenticacion 
             )
-        );
+        , newProveedor);
 
         _proveedorRepository.Crear(newProveedor);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ProveedorDTO(){
+        CommandResponse.Data = new ProveedorDTO(){
             Id = newProveedor.Id, 
             Codigo = newProveedor.Codigo, 
             Nombre = newProveedor.Nombre, 
@@ -67,7 +67,7 @@ public partial class ProveedorCommandHandler :
             APIDeAutenticacion = newProveedor.APIDeAutenticacion, 
             ProveedorBase = newProveedor.ProveedorBase, 
             Activo = newProveedor.Activo 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_proveedorRepository.UnitOfWork);

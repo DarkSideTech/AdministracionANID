@@ -2,6 +2,6 @@
 
 public class OrganizacionPorUsuarioDTO
 {
-    public string Codigo_Organizacion { get; set; }
-    public string Nombre_Organizacion { get; set; }
+    public string Codigo_Organizacion { get; set; } = string.Empty;
+    public string Nombre_Organizacion { get; set; } = string.Empty;
 }

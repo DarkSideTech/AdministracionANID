@@ -1,4 +1,5 @@
-﻿using AUT2Services.Infra.Security.Interfaces;
+using AUT2Services.Domain.Core.Time;
+using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -7,7 +8,8 @@ namespace AUT2Services.Infra.Security.Services;
 
 public sealed class MemoryEmailConfirmationThrottleService(
     IMemoryCache memoryCache,
-    IOptions<EmailValidationOptions> options) : IEmailConfirmationThrottleService
+    IOptions<EmailValidationOptions> options,
+    IClock clock) : IEmailConfirmationThrottleService
 {
     public bool CanSend(string email, out DateTimeOffset? nextAllowedAtUtc)
     {
@@ -21,7 +23,7 @@ public sealed class MemoryEmailConfirmationThrottleService(
         }
 
         var cooldown = TimeSpan.FromMinutes(Math.Max(1, options.Value.ResendCooldownMinutes));
-        nextAllowedAtUtc = DateTimeOffset.UtcNow.Add(cooldown);
+        nextAllowedAtUtc = clock.UtcNow.Add(cooldown);
 
         memoryCache.Set(cacheKey, nextAllowedAtUtc.Value, nextAllowedAtUtc.Value);
         return true;

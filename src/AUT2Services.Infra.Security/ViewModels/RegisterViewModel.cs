@@ -7,6 +7,9 @@ public class RegisterViewModel
     [DisplayName("CorreoElectronico")]
     public string? CorreoElectronico { get; set; } = string.Empty;
 
+    [DisplayName("NumeroDeTelefono")]
+    public string? NumeroDeTelefono { get; set; } = string.Empty;
+
     [DisplayName("Nacionalidad")]
     public string? Nacionalidad { get; set; } = string.Empty;
 
@@ -41,7 +44,7 @@ public class RegisterViewModel
     public string? SexoRegistral { get; set; } = string.Empty;
 
     [DisplayName("FechaDeNacimiento")]
-    public DateTime? FechaDeNacimiento { get; set; } = DateTime.MinValue;
+    public DateOnly? FechaDeNacimiento { get; set; }
 
     [DisplayName("Contraseña")]
     public string? Contraseña { get; set; } = string.Empty;

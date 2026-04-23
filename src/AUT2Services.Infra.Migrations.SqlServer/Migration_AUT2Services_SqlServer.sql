@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [AutenticadorExterno] (
@@ -30,7 +30,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [Entidad] (
@@ -39,8 +39,8 @@ BEGIN
         [Id_Usuario] uniqueidentifier NOT NULL,
         [TipoDeEntidad] nvarchar(100) NOT NULL,
         [CorreoElectronico] nvarchar(max) NOT NULL,
-        [FechaInicioAutorizacion] datetimeoffset NOT NULL,
-        [FechaTerminoAutorizacion] datetimeoffset NOT NULL,
+        [FechaInicioAutorizacion] datetimeoffset NULL,
+        [FechaTerminoAutorizacion] datetimeoffset NULL,
         [FechaCreacion] datetimeoffset NOT NULL,
         [Principal] bit NOT NULL,
         [EntidadBase] bit NOT NULL,
@@ -50,7 +50,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [Organizacion] (
@@ -67,7 +67,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [PoliticaAsignada] (
@@ -75,8 +75,8 @@ BEGIN
         [Id_Entidad] uniqueidentifier NOT NULL,
         [Id_Rol] uniqueidentifier NOT NULL,
         [Id_Proceso] uniqueidentifier NOT NULL,
-        [FechaInicioAsignacion] datetimeoffset NOT NULL,
-        [FechaTerminoAsignacion] datetimeoffset NOT NULL,
+        [FechaInicioAsignacion] datetimeoffset NULL,
+        [FechaTerminoAsignacion] datetimeoffset NULL,
         [FechaCreacion] datetimeoffset NOT NULL,
         [RolRequiereValidacion] bit NOT NULL,
         [RolAsignadoValidado] bit NOT NULL,
@@ -87,7 +87,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [Proceso] (
@@ -110,7 +110,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [Proveedor] (
@@ -127,7 +127,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [Rol] (
@@ -149,7 +149,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [UnidadOrganizacional] (
@@ -166,7 +166,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [Usuario] (
@@ -181,7 +181,7 @@ BEGIN
         [EstadoDeUsuario] nvarchar(max) NULL,
         [InformacionAdicional] nvarchar(max) NULL,
         [RefreshToken] nvarchar(max) NULL,
-        [RefreshTokenExpiresAtUtc] datetime2 NULL,
+        [RefreshTokenExpiresAtUtc] datetimeoffset NULL,
         [NombreUsuario] nvarchar(256) NULL,
         [NombreUsuarioNormalizado] nvarchar(256) NULL,
         [CorreoElectronico] nvarchar(256) NULL,
@@ -202,7 +202,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [ValidacionEnrrolamiento] (
@@ -219,7 +219,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetRoleClaims] (
@@ -234,7 +234,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserClaims] (
@@ -249,7 +249,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserLogins] (
@@ -264,7 +264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserRoles] (
@@ -278,7 +278,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [AspNetUserTokens] (
@@ -293,16 +293,16 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE TABLE [RefreshTokens] (
         [Id] int NOT NULL IDENTITY,
         [SessionId] nvarchar(64) NOT NULL,
         [TokenHash] nvarchar(128) NOT NULL,
-        [CreatedAtUtc] datetime2 NOT NULL,
-        [ExpiresAtUtc] datetime2 NOT NULL,
-        [RevokedAtUtc] datetime2 NULL,
+        [CreatedAtUtc] datetimeoffset NULL,
+        [ExpiresAtUtc] datetimeoffset NULL,
+        [RevokedAtUtc] datetimeoffset NULL,
         [SelectedOrganization] nvarchar(256) NULL,
         [ReplacedByTokenHash] nvarchar(128) NULL,
         [RevocationReason] nvarchar(64) NULL,
@@ -315,33 +315,33 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'AutenticadorExternoBase', N'ClaveDeAcceso', N'Id_Proveedor', N'Id_Usuario', N'NombreADesplegar', N'NombreUsuario', N'ValidadorPrimario') AND [object_id] = OBJECT_ID(N'[AutenticadorExterno]'))
         SET IDENTITY_INSERT [AutenticadorExterno] ON;
     EXEC(N'INSERT INTO [AutenticadorExterno] ([Id], [Activo], [AutenticadorExternoBase], [ClaveDeAcceso], [Id_Proveedor], [Id_Usuario], [NombreADesplegar], [NombreUsuario], [ValidadorPrimario])
-    VALUES (''ecaf1074-722d-468f-81fa-69c2d7b88d68'', CAST(1 AS bit), CAST(1 AS bit), N''AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA=='', ''701c19bf-405c-4467-85f0-ddbc3786f9ee'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', N''ADMINISTRADOR'', N''ADMINISTRADOR'', CAST(1 AS bit))');
+    VALUES (''ecaf1074-722d-468f-81fa-69c2d7b88d68'', CAST(1 AS bit), CAST(1 AS bit), N''AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg=='', ''701c19bf-405c-4467-85f0-ddbc3786f9ee'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', N''ADMINISTRADOR'', N''ADMINISTRADOR'', CAST(1 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'AutenticadorExternoBase', N'ClaveDeAcceso', N'Id_Proveedor', N'Id_Usuario', N'NombreADesplegar', N'NombreUsuario', N'ValidadorPrimario') AND [object_id] = OBJECT_ID(N'[AutenticadorExterno]'))
         SET IDENTITY_INSERT [AutenticadorExterno] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CorreoElectronico', N'EntidadBase', N'FechaCreacion', N'FechaInicioAutorizacion', N'FechaTerminoAutorizacion', N'Id_UnidadOrganizacional', N'Id_Usuario', N'Principal', N'TipoDeEntidad') AND [object_id] = OBJECT_ID(N'[Entidad]'))
         SET IDENTITY_INSERT [Entidad] ON;
     EXEC(N'INSERT INTO [Entidad] ([Id], [CorreoElectronico], [EntidadBase], [FechaCreacion], [FechaInicioAutorizacion], [FechaTerminoAutorizacion], [Id_UnidadOrganizacional], [Id_Usuario], [Principal], [TipoDeEntidad])
-    VALUES (''05507441-5792-4c46-9334-9a5faa99e20a'', N'''', CAST(1 AS bit), ''2026-04-06T19:42:37.5118787-04:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''198c164d-1cd8-4107-9db3-74b9fa33302c'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', CAST(1 AS bit), N''UNIDAD_ORGANIZACIONAL'')');
+    VALUES (''05507441-5792-4c46-9334-9a5faa99e20a'', N'''', CAST(1 AS bit), ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''198c164d-1cd8-4107-9db3-74b9fa33302c'', ''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', CAST(1 AS bit), N''PERSONA'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CorreoElectronico', N'EntidadBase', N'FechaCreacion', N'FechaInicioAutorizacion', N'FechaTerminoAutorizacion', N'Id_UnidadOrganizacional', N'Id_Usuario', N'Principal', N'TipoDeEntidad') AND [object_id] = OBJECT_ID(N'[Entidad]'))
         SET IDENTITY_INSERT [Entidad] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'Descripcion', N'IdOrganizacion', N'Nombre', N'OrganizacionBase') AND [object_id] = OBJECT_ID(N'[Organizacion]'))
@@ -354,22 +354,34 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'FechaCreacion', N'FechaInicioAsignacion', N'FechaTerminoAsignacion', N'Id_Entidad', N'Id_Proceso', N'Id_Rol', N'PoliticaAsignadaBase', N'RolAsignadoValidado', N'RolRequiereValidacion') AND [object_id] = OBJECT_ID(N'[PoliticaAsignada]'))
         SET IDENTITY_INSERT [PoliticaAsignada] ON;
     EXEC(N'INSERT INTO [PoliticaAsignada] ([Id], [FechaCreacion], [FechaInicioAsignacion], [FechaTerminoAsignacion], [Id_Entidad], [Id_Proceso], [Id_Rol], [PoliticaAsignadaBase], [RolAsignadoValidado], [RolRequiereValidacion])
-    VALUES (''60838d42-c2df-402c-9253-ab3ce52ffb55'', ''2026-04-06T23:42:37.5139105+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''856a08fd-4162-47cb-bf92-ff25029f3546'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
-    (''8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d'', ''2026-04-06T23:42:37.5137764+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
-    (''bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61'', ''2026-04-06T23:42:37.5139101+00:00'', ''0001-01-01T00:00:00.0000000+00:00'', ''9999-12-31T23:59:59.9999999+00:00'', ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''03b6b706-a24f-4505-9ef6-e3ae7d48c907'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit))');
+    VALUES (''60838d42-c2df-402c-9253-ab3ce52ffb55'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''856a08fd-4162-47cb-bf92-ff25029f3546'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb56'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''fcd2dcf8-7230-4fdd-9651-b4efeb60d11f'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb57'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''eec159f1-9ba9-463d-8407-ec2951751c29'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb58'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''4bb69d17-cc38-4e52-ad36-42226aa5723d'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb59'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''35e9a345-dda9-45fc-9a35-7cf27ec8e947'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb5a'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''06001a21-9b5f-47a3-ae8b-c749e531f9b1'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb5b'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''e256405c-0bda-479a-8a41-a043c672f9b1'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb5c'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''2b597b09-55ad-4304-b57d-76bd2df5ac4c'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb5d'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb5e'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''aeaeb19b-2206-4870-9a99-f5d40a982b2e'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb5f'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''f2224186-ffcc-41ee-bbce-4bbd72504e22'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb60'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''f3285b94-90a4-4610-8c65-2782d2e3a1a3'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''60838d42-c2df-402c-9253-ab3ce52ffb61'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''e150709d-4fed-480b-8916-8b0837a775d3'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit)),
+    (''bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''03b6b706-a24f-4505-9ef6-e3ae7d48c907'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'FechaCreacion', N'FechaInicioAsignacion', N'FechaTerminoAsignacion', N'Id_Entidad', N'Id_Proceso', N'Id_Rol', N'PoliticaAsignadaBase', N'RolAsignadoValidado', N'RolRequiereValidacion') AND [object_id] = OBJECT_ID(N'[PoliticaAsignada]'))
         SET IDENTITY_INSERT [PoliticaAsignada] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'ComoDesplegarUrlDeProceso', N'Contexto', N'Descripcion', N'IdMacro_Proceso', N'MaximaAsignacionDeRoles', N'NivelDeProceso', N'Nombre', N'ProcesoBase', N'Token', N'Url') AND [object_id] = OBJECT_ID(N'[Proceso]'))
@@ -413,7 +425,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'APIDeAutenticacion', N'Activo', N'Codigo', N'Descripcion', N'Nombre', N'ProveedorBase') AND [object_id] = OBJECT_ID(N'[Proveedor]'))
@@ -427,25 +439,25 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id_Rol', N'ActivaDetalleDeAutorizaciones', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'Nombre', N'NombreNormalizado', N'RequiereAccionParaSerAsignado', N'RequiereValidacionDeAsignacion', N'RolBase', N'ValidaAsignacionDeRoles', N'ValidaEnrrolamiento') AND [object_id] = OBJECT_ID(N'[Rol]'))
         SET IDENTITY_INSERT [Rol] ON;
     EXEC(N'INSERT INTO [Rol] ([Id_Rol], [ActivaDetalleDeAutorizaciones], [Activo], [ConcurrencyStamp], [Descripcion], [Nombre], [NombreNormalizado], [RequiereAccionParaSerAsignado], [RequiereValidacionDeAsignacion], [RolBase], [ValidaAsignacionDeRoles], [ValidaEnrrolamiento])
-    VALUES (N''03b6b706-a24f-4505-9ef6-e3ae7d48c907'', CAST(0 AS bit), CAST(1 AS bit), NULL, N'''', N''VALIDA_ASIGNACION_ROLES'', N''VALIDA_ASIGNACION_ROLES'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
-    (N''36957ec2-2857-4101-a81b-f0340bf8eff2'', CAST(0 AS bit), CAST(1 AS bit), NULL, N'''', N''ADMINISTRADOR_ENTIDAD'', N''ADMINISTRADOR_ENTIDAD'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
-    (N''856a08fd-4162-47cb-bf92-ff25029f3546'', CAST(0 AS bit), CAST(1 AS bit), NULL, N'''', N''VALIDA_ENRROLAMIENTO'', N''VALIDA_ENRROLAMIENTO'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
-    (N''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(0 AS bit), CAST(1 AS bit), NULL, N'''', N''ADMINISTRADOR'', N''ADMINISTRADOR'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
-    (N''e198ec28-2b1b-48b0-8d5e-eb946d596e90'', CAST(0 AS bit), CAST(1 AS bit), NULL, N'''', N''USUARIO'', N''USUARIO'', CAST(0 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
-    (N''e3093727-b36b-45af-a495-7c3d0804c0e9'', CAST(0 AS bit), CAST(1 AS bit), NULL, N'''', N''ADMINISTRADOR_UNIDAD'', N''ADMINISTRADOR_UNIDAD'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit))');
+    VALUES (N''03b6b706-a24f-4505-9ef6-e3ae7d48c907'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002004'', N'''', N''VALIDA_ASIGNACION_ROLES'', N''VALIDA_ASIGNACION_ROLES'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
+    (N''36957ec2-2857-4101-a81b-f0340bf8eff2'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002002'', N'''', N''ADMINISTRADOR_ENTIDAD'', N''ADMINISTRADOR_ENTIDAD'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
+    (N''856a08fd-4162-47cb-bf92-ff25029f3546'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002005'', N'''', N''VALIDA_ENRROLAMIENTO'', N''VALIDA_ENRROLAMIENTO'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
+    (N''c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002001'', N'''', N''ADMINISTRADOR'', N''ADMINISTRADOR'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
+    (N''e198ec28-2b1b-48b0-8d5e-eb946d596e90'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002006'', N'''', N''USUARIO'', N''USUARIO'', CAST(0 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit)),
+    (N''e3093727-b36b-45af-a495-7c3d0804c0e9'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002003'', N'''', N''ADMINISTRADOR_UNIDAD'', N''ADMINISTRADOR_UNIDAD'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id_Rol', N'ActivaDetalleDeAutorizaciones', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'Nombre', N'NombreNormalizado', N'RequiereAccionParaSerAsignado', N'RequiereValidacionDeAsignacion', N'RolBase', N'ValidaAsignacionDeRoles', N'ValidaEnrrolamiento') AND [object_id] = OBJECT_ID(N'[Rol]'))
         SET IDENTITY_INSERT [Rol] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Activo', N'Codigo', N'Descripcion', N'Id_Organizacion', N'Nombre', N'UnidadOrganizacionalBase') AND [object_id] = OBJECT_ID(N'[UnidadOrganizacional]'))
@@ -458,20 +470,20 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CantidadDeAccesosFallidos', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'CorreoElectronico', N'CorreoElectronicoConfirmado', N'EstadoDeUsuario', N'IdPersona', N'InformacionAdicional', N'LockoutEnabled', N'LockoutEnd', N'NombreADesplegar', N'CorreoElectronicoNormalizado', N'NombreUsuarioNormalizado', N'HashDeLaClave', N'NumeroDeTelefono', N'NumeroDeTelefonoConfirmado', N'RefreshToken', N'RefreshTokenExpiresAtUtc', N'RequiereValidacionEnrrolamiento', N'SecurityStamp', N'TipoDeUsuario', N'DobleFactorHabilitado', N'NombreUsuario', N'UsuarioBase') AND [object_id] = OBJECT_ID(N'[Usuario]'))
         SET IDENTITY_INSERT [Usuario] ON;
     EXEC(N'INSERT INTO [Usuario] ([Id], [CantidadDeAccesosFallidos], [Activo], [ConcurrencyStamp], [Descripcion], [CorreoElectronico], [CorreoElectronicoConfirmado], [EstadoDeUsuario], [IdPersona], [InformacionAdicional], [LockoutEnabled], [LockoutEnd], [NombreADesplegar], [CorreoElectronicoNormalizado], [NombreUsuarioNormalizado], [HashDeLaClave], [NumeroDeTelefono], [NumeroDeTelefonoConfirmado], [RefreshToken], [RefreshTokenExpiresAtUtc], [RequiereValidacionEnrrolamiento], [SecurityStamp], [TipoDeUsuario], [DobleFactorHabilitado], [NombreUsuario], [UsuarioBase])
-    VALUES (N''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', 10, CAST(1 AS bit), N''e5edc734-b9a6-40f6-a23d-0f0df4730666'', N''Administrador global'', N''administrador@security.com'', CAST(1 AS bit), N''REGISTRADO'', N'''', N'''', CAST(0 AS bit), NULL, N''Administrador'', N''ADMINISTRADOR@SECURITY.COM'', N''ADMINISTRADOR'', N''AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA=='', N'''', CAST(1 AS bit), NULL, NULL, CAST(0 AS bit), N'''', N''NACIONAL'', CAST(0 AS bit), N''ADMINISTRADOR'', CAST(1 AS bit))');
+    VALUES (N''2b12d04f-c167-4ad1-a42a-e2ecd30518d7'', 10, CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d001001'', N''Administrador global'', N''administrador@security.com'', CAST(1 AS bit), N''REGISTRADO'', N'''', N'''', CAST(0 AS bit), NULL, N''Administrador'', N''ADMINISTRADOR@SECURITY.COM'', N''ADMINISTRADOR'', N''AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg=='', N'''', CAST(1 AS bit), NULL, NULL, CAST(0 AS bit), N'''', N''NACIONAL'', CAST(0 AS bit), N''ADMINISTRADOR'', CAST(1 AS bit))');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CantidadDeAccesosFallidos', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'CorreoElectronico', N'CorreoElectronicoConfirmado', N'EstadoDeUsuario', N'IdPersona', N'InformacionAdicional', N'LockoutEnabled', N'LockoutEnd', N'NombreADesplegar', N'CorreoElectronicoNormalizado', N'NombreUsuarioNormalizado', N'HashDeLaClave', N'NumeroDeTelefono', N'NumeroDeTelefonoConfirmado', N'RefreshToken', N'RefreshTokenExpiresAtUtc', N'RequiereValidacionEnrrolamiento', N'SecurityStamp', N'TipoDeUsuario', N'DobleFactorHabilitado', N'NombreUsuario', N'UsuarioBase') AND [object_id] = OBJECT_ID(N'[Usuario]'))
         SET IDENTITY_INSERT [Usuario] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
@@ -479,7 +491,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
@@ -487,7 +499,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
@@ -495,7 +507,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
@@ -503,7 +515,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_RefreshTokens_SessionId] ON [RefreshTokens] ([SessionId]);
@@ -511,7 +523,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_RefreshTokens_TokenHash] ON [RefreshTokens] ([TokenHash]);
@@ -519,7 +531,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [IX_RefreshTokens_UserId] ON [RefreshTokens] ([UserId]);
@@ -527,7 +539,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [RoleNameIndex] ON [Rol] ([NombreNormalizado]) WHERE [NombreNormalizado] IS NOT NULL');
@@ -535,7 +547,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     CREATE INDEX [EmailIndex] ON [Usuario] ([CorreoElectronicoNormalizado]);
@@ -543,7 +555,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [UserNameIndex] ON [Usuario] ([NombreUsuarioNormalizado]) WHERE [NombreUsuarioNormalizado] IS NOT NULL');
@@ -551,11 +563,266 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260406234237_Inicial'
+    WHERE [MigrationId] = N'20260408205144_Inicial'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260406234237_Inicial', N'9.0.8');
+    VALUES (N'20260408205144_Inicial', N'10.0.5');
+END;
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE TABLE [AuditAggregateCursor] (
+        [AggregateId] uniqueidentifier NOT NULL,
+        [LastRevision] bigint NOT NULL,
+        [UpdatedAtUtc] datetimeoffset NOT NULL,
+        CONSTRAINT [PK_AuditAggregateCursor] PRIMARY KEY ([AggregateId])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE TABLE [AuditOutbox] (
+        [Id] uniqueidentifier NOT NULL,
+        [CorrelationId] uniqueidentifier NOT NULL,
+        [AggregateId] uniqueidentifier NOT NULL,
+        [AggregateType] nvarchar(150) NOT NULL,
+        [AggregateRevision] bigint NOT NULL,
+        [EventType] nvarchar(200) NOT NULL,
+        [CommandType] nvarchar(200) NOT NULL,
+        [OperationType] int NOT NULL,
+        [ActorUserId] nvarchar(100) NULL,
+        [ActorUsername] nvarchar(256) NULL,
+        [ActorEmail] nvarchar(256) NULL,
+        [RequestPath] nvarchar(512) NULL,
+        [OccurredAtUtc] datetimeoffset NOT NULL,
+        [PersistedAtUtc] datetimeoffset NOT NULL,
+        [SnapshotJson] nvarchar(max) NULL,
+        [DispatchStatus] smallint NOT NULL DEFAULT CAST(0 AS smallint),
+        [DispatchAttempts] int NOT NULL DEFAULT 0,
+        [LastDispatchAttemptUtc] datetimeoffset NULL,
+        [DispatchedAtUtc] datetimeoffset NULL,
+        [LastError] nvarchar(max) NULL,
+        [SchemaVersion] smallint NOT NULL DEFAULT CAST(1 AS smallint),
+        CONSTRAINT [PK_AuditOutbox] PRIMARY KEY ([Id])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE TABLE [AuditOutboxChange] (
+        [Id] uniqueidentifier NOT NULL,
+        [AuditOutboxMessageId] uniqueidentifier NOT NULL,
+        [Order] int NOT NULL,
+        [Path] nvarchar(200) NOT NULL,
+        [ValueType] nvarchar(512) NULL,
+        [NewValueJson] nvarchar(max) NULL,
+        CONSTRAINT [PK_AuditOutboxChange] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_AuditOutboxChange_AuditOutbox_AuditOutboxMessageId] FOREIGN KEY ([AuditOutboxMessageId]) REFERENCES [AuditOutbox] ([Id]) ON DELETE CASCADE
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutbox_ActorUserId_OccurredAtUtc] ON [AuditOutbox] ([ActorUserId], [OccurredAtUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE UNIQUE INDEX [IX_AuditOutbox_AggregateId_AggregateRevision] ON [AuditOutbox] ([AggregateId], [AggregateRevision]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutbox_AggregateId_OccurredAtUtc_Id] ON [AuditOutbox] ([AggregateId], [OccurredAtUtc], [Id]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutbox_CorrelationId] ON [AuditOutbox] ([CorrelationId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutbox_DispatchStatus_PersistedAtUtc_Id] ON [AuditOutbox] ([DispatchStatus], [PersistedAtUtc], [Id]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutbox_EventType_OccurredAtUtc] ON [AuditOutbox] ([EventType], [OccurredAtUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutboxChange_AuditOutboxMessageId] ON [AuditOutboxChange] ([AuditOutboxMessageId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    CREATE INDEX [IX_AuditOutboxChange_Path] ON [AuditOutboxChange] ([Path]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260411163556_AddAuditTraceability'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20260411163556_AddAuditTraceability', N'10.0.5');
+END;
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260412004336_AddAuditAggregateCursorConcurrencyToken'
+)
+BEGIN
+    ALTER TABLE [AuditAggregateCursor] ADD [ConcurrencyToken] uniqueidentifier NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000';
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260412004336_AddAuditAggregateCursorConcurrencyToken'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'FechaCreacion', N'FechaInicioAsignacion', N'FechaTerminoAsignacion', N'Id_Entidad', N'Id_Proceso', N'Id_Rol', N'PoliticaAsignadaBase', N'RolAsignadoValidado', N'RolRequiereValidacion') AND [object_id] = OBJECT_ID(N'[PoliticaAsignada]'))
+        SET IDENTITY_INSERT [PoliticaAsignada] ON;
+    EXEC(N'INSERT INTO [PoliticaAsignada] ([Id], [FechaCreacion], [FechaInicioAsignacion], [FechaTerminoAsignacion], [Id_Entidad], [Id_Proceso], [Id_Rol], [PoliticaAsignadaBase], [RolAsignadoValidado], [RolRequiereValidacion])
+    VALUES (''60838d42-c2df-402c-9253-ab3ce52ffb62'', ''2026-04-07T23:04:30.0000000+00:00'', NULL, NULL, ''05507441-5792-4c46-9334-9a5faa99e20a'', ''d1889c7c-c5dc-4d9a-a2fe-34cdf956b145'', ''e198ec28-2b1b-48b0-8d5e-eb946d596e91'', CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit))');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'FechaCreacion', N'FechaInicioAsignacion', N'FechaTerminoAsignacion', N'Id_Entidad', N'Id_Proceso', N'Id_Rol', N'PoliticaAsignadaBase', N'RolAsignadoValidado', N'RolRequiereValidacion') AND [object_id] = OBJECT_ID(N'[PoliticaAsignada]'))
+        SET IDENTITY_INSERT [PoliticaAsignada] OFF;
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260412004336_AddAuditAggregateCursorConcurrencyToken'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id_Rol', N'ActivaDetalleDeAutorizaciones', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'Nombre', N'NombreNormalizado', N'RequiereAccionParaSerAsignado', N'RequiereValidacionDeAsignacion', N'RolBase', N'ValidaAsignacionDeRoles', N'ValidaEnrrolamiento') AND [object_id] = OBJECT_ID(N'[Rol]'))
+        SET IDENTITY_INSERT [Rol] ON;
+    EXEC(N'INSERT INTO [Rol] ([Id_Rol], [ActivaDetalleDeAutorizaciones], [Activo], [ConcurrencyStamp], [Descripcion], [Nombre], [NombreNormalizado], [RequiereAccionParaSerAsignado], [RequiereValidacionDeAsignacion], [RolBase], [ValidaAsignacionDeRoles], [ValidaEnrrolamiento])
+    VALUES (N''e198ec28-2b1b-48b0-8d5e-eb946d596e91'', CAST(0 AS bit), CAST(1 AS bit), N''4f4d7775-2677-47e7-8ccd-a34f5d002007'', N'''', N''AUDITOR_TRAZABILIDAD'', N''AUDITOR_TRAZABILIDAD'', CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit))');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id_Rol', N'ActivaDetalleDeAutorizaciones', N'Activo', N'ConcurrencyStamp', N'Descripcion', N'Nombre', N'NombreNormalizado', N'RequiereAccionParaSerAsignado', N'RequiereValidacionDeAsignacion', N'RolBase', N'ValidaAsignacionDeRoles', N'ValidaEnrrolamiento') AND [object_id] = OBJECT_ID(N'[Rol]'))
+        SET IDENTITY_INSERT [Rol] OFF;
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260412004336_AddAuditAggregateCursorConcurrencyToken'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20260412004336_AddAuditAggregateCursorConcurrencyToken', N'10.0.5');
+END;
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260414014343_AddNotificationOutbox'
+)
+BEGIN
+    CREATE TABLE [NotificationOutbox] (
+        [Id] uniqueidentifier NOT NULL,
+        [Channel] nvarchar(50) NOT NULL,
+        [NotificationType] nvarchar(150) NOT NULL,
+        [UserId] nvarchar(100) NULL,
+        [RequestPath] nvarchar(512) NULL,
+        [DeduplicationKey] nvarchar(300) NULL,
+        [PayloadJson] nvarchar(max) NOT NULL,
+        [DispatchStatus] smallint NOT NULL DEFAULT CAST(0 AS smallint),
+        [DispatchAttempts] int NOT NULL DEFAULT 0,
+        [CreatedAtUtc] datetimeoffset NOT NULL,
+        [NextAttemptUtc] datetimeoffset NOT NULL,
+        [LastDispatchAttemptUtc] datetimeoffset NULL,
+        [DispatchedAtUtc] datetimeoffset NULL,
+        [LastError] nvarchar(max) NULL,
+        [SchemaVersion] smallint NOT NULL DEFAULT CAST(1 AS smallint),
+        CONSTRAINT [PK_NotificationOutbox] PRIMARY KEY ([Id])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260414014343_AddNotificationOutbox'
+)
+BEGIN
+    CREATE INDEX [IX_NotificationOutbox_Channel_NotificationType_CreatedAtUtc] ON [NotificationOutbox] ([Channel], [NotificationType], [CreatedAtUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260414014343_AddNotificationOutbox'
+)
+BEGIN
+    CREATE INDEX [IX_NotificationOutbox_DeduplicationKey] ON [NotificationOutbox] ([DeduplicationKey]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260414014343_AddNotificationOutbox'
+)
+BEGIN
+    CREATE INDEX [IX_NotificationOutbox_DispatchStatus_NextAttemptUtc_CreatedAtUtc_Id] ON [NotificationOutbox] ([DispatchStatus], [NextAttemptUtc], [CreatedAtUtc], [Id]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260414014343_AddNotificationOutbox'
+)
+BEGIN
+    CREATE INDEX [IX_NotificationOutbox_UserId] ON [NotificationOutbox] ([UserId]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260414014343_AddNotificationOutbox'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20260414014343_AddNotificationOutbox', N'10.0.5');
 END;
 
 COMMIT;

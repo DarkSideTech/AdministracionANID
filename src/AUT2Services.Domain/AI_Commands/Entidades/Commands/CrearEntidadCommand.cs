@@ -14,13 +14,15 @@ public class CrearEntidadCommand : EntidadCommand
         Guid id_UnidadOrganizacional, 
         Guid id_Usuario, 
         string tipoDeEntidad, 
-        string correoElectronico 
+        string correoElectronico,
+        bool permitirCorreoElectronicoVacio = false
         )
     {
         Id_UnidadOrganizacional = id_UnidadOrganizacional; 
         Id_Usuario = id_Usuario; 
         TipoDeEntidad = tipoDeEntidad; 
         CorreoElectronico = correoElectronico; 
+        PermitirCorreoElectronicoVacio = permitirCorreoElectronicoVacio;
     }
 
     public override bool IsValid()

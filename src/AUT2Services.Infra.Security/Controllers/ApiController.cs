@@ -1,9 +1,8 @@
-﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Controllers;
 
@@ -12,7 +11,7 @@ public abstract class ApiController : ControllerBase
 {
     private readonly ICollection<string> _errors = new List<string>();
 
-    protected ActionResult CustomResponse(object result = null)
+    protected ActionResult CustomResponse(object? result = null)
     {
         if (IsOperationValid())
         {
@@ -50,8 +49,7 @@ public abstract class ApiController : ControllerBase
     {
         if (commandResponse.Result)
         {
-
-            return CustomResponse(JsonConvert.SerializeObject(new ResultModel() { Result = commandResponse.Result, Data = commandResponse.Data }));
+            return CustomResponse(new ResultModel() { Result = commandResponse.Result, Data = commandResponse.Data });
         }
         else
         {

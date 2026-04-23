@@ -22,7 +22,7 @@ public class EnumerationController : ApiController
     }
 
     [HttpGet("BuscarTodosLosValores_EnumTipoDeUsuario")]
-    [Authorize]
+    [AllowAnonymous]
     public IEnumerable<string> BuscarTodosLosValores_EnumTipoDeUsuario()
     {
         return EnumTipoDeUsuario.ObtenerListaValores();
@@ -64,28 +64,28 @@ public class EnumerationController : ApiController
     }
 
     [HttpGet("BuscarTodosLosValores_EnumNacionalidad")]
-    [Authorize]
+    [AllowAnonymous]
     public IEnumerable<string> BuscarTodosLosValores_EnumNacionalidad()
     {
         return EnumNacionalidad.ObtenerListaValores();
     }
 
     [HttpGet("BuscarTodosLosValores_EnumDocumentoDeIdentidad")]
-    [Authorize]
+    [AllowAnonymous]
     public IEnumerable<string> BuscarTodosLosValores_EnumDocumentoDeIdentidad()
     {
         return EnumDocumentoDeIdentidad.ObtenerListaValores();
     }
 
     [HttpGet("BuscarTodosLosValores_EnumSexoDeclarativo")]
-    [Authorize]
+    [AllowAnonymous]
     public IEnumerable<string> BuscarTodosLosValores_EnumSexoDeclarativo()
     {
         return EnumSexoDeclarativo.ObtenerListaValores();
     }
 
     [HttpGet("BuscarTodosLosValores_EnumSexoRegistral")]
-    [Authorize]
+    [AllowAnonymous]
     public IEnumerable<string> BuscarTodosLosValores_EnumSexoRegistral()
     {
         return EnumSexoRegistral.ObtenerListaValores();

@@ -35,7 +35,7 @@ public abstract class BaseEntityValidations<T> : AbstractValidator<T> where T : 
     protected void Validate_TipoDeEntidad()
     {
         RuleFor(rf => rf.TipoDeEntidad)
-            .Must((x, y) => CommonValidator.EnumerationValidator(typeof(EnumTipoDeEntidad), x.TipoDeEntidad))
+            .Must((_, y) => CommonValidator.EnumerationValidator(typeof(EnumTipoDeEntidad), y))
                 .WithMessage("El valor ingresado para el campo TipoDeEntidad debe ser un valor valido definido en la enumeracion")
             .Length(3, 100)
                 .WithMessage("El valor ingresado debe contener entre 3 y 100 caracteres");
@@ -47,6 +47,12 @@ public abstract class BaseEntityValidations<T> : AbstractValidator<T> where T : 
             .NotEmpty()
                 .WithMessage("El valor ingresado para el campo CorreoElectronico no puede estar vacio")
             .EmailAddress()
-                .WithMessage("El correo electronico ingresado no es valido");
+                .WithMessage("El correo electronico ingresado no es valido")
+            .When(rf => !rf.PermitirCorreoElectronicoVacio);
+
+        RuleFor(rf => rf.CorreoElectronico)
+            .EmailAddress()
+                .WithMessage("El correo electronico ingresado no es valido")
+            .When(rf => rf.PermitirCorreoElectronicoVacio && !string.IsNullOrWhiteSpace(rf.CorreoElectronico));
     }
 }

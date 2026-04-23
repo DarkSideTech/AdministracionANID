@@ -5,11 +5,11 @@
 // Date Generated File : 2026-04-05 14:21:10.450
 // -------------------------------------------------
 using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Core.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
 
 namespace AUT2Services.Services.API.Controllers;
 
@@ -18,7 +18,7 @@ public abstract class ApiController : ControllerBase
 {
     private readonly ICollection<string> _errors = new List<string>();
 
-    protected ActionResult CustomResponse(object result = null)
+    protected ActionResult CustomResponse(object? result = null)
     {
         if (IsOperationValid())
         {
@@ -56,8 +56,7 @@ public abstract class ApiController : ControllerBase
     {
         if (commandResponse.Result)
         {
-
-            return CustomResponse(JsonConvert.SerializeObject(new ResultModel() { Result = commandResponse.Result, Data = commandResponse.Data }));
+            return CustomResponse(new ResultModel() { Result = commandResponse.Result, Data = commandResponse.Data });
         }
         else
         {
@@ -85,6 +84,15 @@ public abstract class ApiController : ControllerBase
     protected void ClearErrors()
     {
         _errors.Clear();
+    }
+
+    protected static IReadOnlyList<AuditEnvelope> OrderAuditTimelineDescending(IEnumerable<AuditEnvelope> timeline)
+    {
+        return timeline
+            .OrderByDescending(item => item.AggregateRevision)
+            .ThenByDescending(item => item.OccurredAtUtc)
+            .ThenByDescending(item => item.Id)
+            .ToArray();
     }
 }
 

@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.592.26097</AssemblyVersion>
-    <FileVersion>1.0.592.26097</FileVersion>
+    <AssemblyVersion>1.0.608.26098</AssemblyVersion>
+    <FileVersion>1.0.608.26098</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +13,7 @@
     <ProjectReference Include="..\AUT2Services.Domain\AUT2Services.Domain.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Cross.Bus\AUT2Services.Infra.Cross.Bus.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Data\AUT2Services.Infra.Data.csproj" />
+    <ProjectReference Include="..\AUT2Services.Infra.DataTrazabilidad\AUT2Services.Infra.DataTrazabilidad.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Security\AUT2Services.Infra.Security.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Tools.EmailManager\AUT2Services.Infra.Tools.EmailManager.csproj" />
   </ItemGroup>

@@ -35,10 +35,10 @@ public partial class  ProveedorCommandHandler :
             return CommandResponse;
         }
  
-        existProveedor.AddDomainEvent(new ProveedorEventEliminadoPor_Codigo(
+        AddDeleteDomainEvent(command, existProveedor, new ProveedorEventEliminadoPor_Codigo(
             existProveedor.Id, 
             existProveedor.Codigo 
-        ));
+        ), existProveedor);
 
         _proveedorRepository.Eliminar(existProveedor);
 

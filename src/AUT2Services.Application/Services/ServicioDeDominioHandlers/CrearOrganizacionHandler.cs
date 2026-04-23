@@ -1,11 +1,10 @@
-﻿using AUT2Services.Application.ViewModels.ServiciosDeDominio;
+using AUT2Services.Application.ViewModels.ServiciosDeDominio;
 using AUT2Services.Domain.Commands.Organizaciones.Commands;
 using AUT2Services.Domain.Commands.UnidadesOrganizacionales.Commands;
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Enumerations;
 using FluentValidation.Results;
-using Newtonsoft.Json;
 
 namespace AUT2Services.Application.Services.ServicioDeDominioHandlers;
 
@@ -45,11 +44,11 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
 
-            var organizacionCreada = JsonConvert.DeserializeObject<OrganizacionDTO>(resultCrearOrganizacionCommand.Data);
+            var organizacionCreada = resultCrearOrganizacionCommand.GetData<OrganizacionDTO>();
 
             var crearUnidadOrganizacionalCommand = new CrearUnidadOrganizacionalCommand(
                 organizacionCreada!.Id,
@@ -66,18 +65,18 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                    await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync(cancellationToken);
+            await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
             result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"Error no manejado al momento de crear una entidad nueva, error: {ex.Message}"));
         }
 
         result.Result = true;
-        await transaction.CommitAsync(cancellationToken);
+        await context.CommitExternalTransactionAsync(transaction, cancellationToken);
         return result;
     }
 }

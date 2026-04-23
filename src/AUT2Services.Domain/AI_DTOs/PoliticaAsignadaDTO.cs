@@ -12,9 +12,9 @@ public class PoliticaAsignadaDTO
     public Guid Id_Entidad { get; set; } = Guid.Empty;
     public Guid Id_Rol { get; set; } = Guid.Empty;
     public Guid Id_Proceso { get; set; } = Guid.Empty;
-    public DateTimeOffset FechaInicioAsignacion { get; set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaTerminoAsignacion { get; set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaCreacion { get; set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset? FechaInicioAsignacion { get; set; }
+    public DateTimeOffset? FechaTerminoAsignacion { get; set; }
+    public DateTimeOffset? FechaCreacion { get; set; }
     public bool RolRequiereValidacion { get; set; } = false;
     public bool RolAsignadoValidado { get; set; } = false;
     public bool PoliticaAsignadaBase { get; set; } = false;

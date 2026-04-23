@@ -14,6 +14,7 @@ public class NativeInjectorBootStrapper
     {
         services.AddScoped<IServicioDeDominioServiceApp, ServicioDeDominioServiceApp>();
         services.AddScoped<IServicioDeDominioRepository, ServicioDeDominioRepository>();
+        services.AddScoped<IMailkitSmtpClientFactory, MailkitSmtpClientFactory>();
         services.AddScoped<IEmailMessageSender, MailkitEmailSender>();
     }
 }

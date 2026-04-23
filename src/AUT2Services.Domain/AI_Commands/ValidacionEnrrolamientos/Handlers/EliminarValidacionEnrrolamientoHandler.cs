@@ -30,9 +30,9 @@ public partial class  ValidacionEnrrolamientoCommandHandler :
         }
 
          
-        existValidacionEnrrolamiento.AddDomainEvent(new ValidacionEnrrolamientoEventEliminado(
+        AddDeleteDomainEvent(command, existValidacionEnrrolamiento, new ValidacionEnrrolamientoEventEliminado(
             existValidacionEnrrolamiento.Id 
-        ));
+        ), existValidacionEnrrolamiento);
 
         _validacionEnrrolamientoRepository.Eliminar(existValidacionEnrrolamiento);
 

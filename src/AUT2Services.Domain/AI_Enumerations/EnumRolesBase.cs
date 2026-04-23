@@ -16,6 +16,7 @@ public static class EnumRolesBase
     public const string VALIDA_ASIGNACION_ROLES = nameof(VALIDA_ASIGNACION_ROLES);
     public const string VALIDA_ENRROLAMIENTO = nameof(VALIDA_ENRROLAMIENTO);
     public const string USUARIO = nameof(USUARIO);
+    public const string AUDITOR_TRAZABILIDAD = nameof(AUDITOR_TRAZABILIDAD);
 
     public static IList<string> ObtenerListaValores()
     {

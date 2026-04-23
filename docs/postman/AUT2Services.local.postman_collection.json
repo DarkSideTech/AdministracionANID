@@ -1,0 +1,4394 @@
+{
+  "info": {
+    "_postman_id": "e6f7795a-2b75-4e17-bd3b-4d3bb7b0c401",
+    "name": "AUT2Services Local API",
+    "description": "Coleccion operativa local de AUT2Services. Incluye Auth Flow, Account y el resto de las APIs expuestas por la solucion, con payloads base derivados del codigo fuente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5002"
+    },
+    {
+      "key": "email",
+      "value": "administrador@security.com"
+    },
+    {
+      "key": "password",
+      "value": "Changeme123#"
+    },
+    {
+      "key": "csrfToken",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshTokenCookie",
+      "value": ""
+    },
+    {
+      "key": "accessTokenExpiracion",
+      "value": ""
+    },
+    {
+      "key": "seleccionOrganizacionRequerida",
+      "value": ""
+    },
+    {
+      "key": "loginError",
+      "value": ""
+    },
+    {
+      "key": "refreshError",
+      "value": ""
+    },
+    {
+      "key": "userIdConfirmacion",
+      "value": ""
+    },
+    {
+      "key": "confirmEmailToken",
+      "value": ""
+    },
+    {
+      "key": "codigo",
+      "value": ""
+    },
+    {
+      "key": "nombre",
+      "value": ""
+    },
+    {
+      "key": "descripcion",
+      "value": ""
+    },
+    {
+      "key": "correoElectronico",
+      "value": ""
+    },
+    {
+      "key": "nacionalidad",
+      "value": ""
+    },
+    {
+      "key": "tipoDeUsuario",
+      "value": ""
+    },
+    {
+      "key": "documentoDeIdentidad",
+      "value": ""
+    },
+    {
+      "key": "numeroDeDocumento",
+      "value": ""
+    },
+    {
+      "key": "codigoValidadorDocumento",
+      "value": ""
+    },
+    {
+      "key": "primerNombre",
+      "value": ""
+    },
+    {
+      "key": "segundoNombre",
+      "value": ""
+    },
+    {
+      "key": "primerApellido",
+      "value": ""
+    },
+    {
+      "key": "segundoApellido",
+      "value": ""
+    },
+    {
+      "key": "sexoDeclarativo",
+      "value": ""
+    },
+    {
+      "key": "sexoRegistral",
+      "value": ""
+    },
+    {
+      "key": "organizacion",
+      "value": ""
+    },
+    {
+      "key": "idProveedor",
+      "value": ""
+    },
+    {
+      "key": "idUsuario",
+      "value": ""
+    },
+    {
+      "key": "nombreUsuario",
+      "value": ""
+    },
+    {
+      "key": "claveDeAcceso",
+      "value": ""
+    },
+    {
+      "key": "nombreADesplegar",
+      "value": ""
+    },
+    {
+      "key": "id",
+      "value": ""
+    },
+    {
+      "key": "idOrganizacion",
+      "value": ""
+    },
+    {
+      "key": "idEntidad",
+      "value": ""
+    },
+    {
+      "key": "idRol",
+      "value": ""
+    },
+    {
+      "key": "idProceso",
+      "value": ""
+    },
+    {
+      "key": "idMacroProceso",
+      "value": ""
+    },
+    {
+      "key": "contexto",
+      "value": ""
+    },
+    {
+      "key": "nivelDeProceso",
+      "value": ""
+    },
+    {
+      "key": "url",
+      "value": ""
+    },
+    {
+      "key": "comoDesplegarUrlDeProceso",
+      "value": ""
+    },
+    {
+      "key": "aPIDeAutenticacion",
+      "value": ""
+    },
+    {
+      "key": "idUsuarioValidado",
+      "value": ""
+    },
+    {
+      "key": "idUsuarioValidaEnrrolamiento",
+      "value": ""
+    },
+    {
+      "key": "idPoliticaAsignada",
+      "value": ""
+    },
+    {
+      "key": "idUsuarioValidaAsignacionRol",
+      "value": ""
+    },
+    {
+      "key": "idUnidadOrganizacional",
+      "value": ""
+    },
+    {
+      "key": "tipoDeEntidad",
+      "value": ""
+    },
+    {
+      "key": "idValidadoUsuario",
+      "value": ""
+    },
+    {
+      "key": "idValidaEnrrolamientoUsuario",
+      "value": ""
+    },
+    {
+      "key": "loginOrganizacionError",
+      "value": ""
+    },
+    {
+      "key": "codigoOrganizacionSeleccionada",
+      "value": ""
+    },
+    {
+      "key": "nombreOrganizacionSeleccionada",
+      "value": ""
+    },
+    {
+      "key": "codigoUnidadOrganizacionalSeleccionada",
+      "value": ""
+    },
+    {
+      "key": "nombreUnidadOrganizacionalSeleccionada",
+      "value": ""
+    },
+    {
+      "key": "unidadesOrganizacionalesPorUsuarioJson",
+      "value": ""
+    },
+    {
+      "key": "currentUserError",
+      "value": ""
+    },
+    {
+      "key": "idAutenticadorExterno",
+      "value": ""
+    },
+    {
+      "key": "idValidacionEnrrolamiento",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth Flow",
+      "description": "Ejecutar la carpeta completa para validar CSRF, login, seleccion de organizacion y refresh token usando la misma cookie jar de Postman.",
+      "item": [
+        {
+          "name": "CSRF Bootstrap",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/csrf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "csrf"
+              ]
+            },
+            "description": "Obtiene la cookie XSRF-TOKEN y la guarda en la variable de coleccion csrfToken.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('csrf bootstrap responde 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  "",
+                  "const csrfToken = pm.cookies.get('XSRF-TOKEN');",
+                  "pm.test('csrf cookie presente', function () {",
+                  "    pm.expect(csrfToken).to.be.a('string').and.not.empty;",
+                  "});",
+                  "",
+                  "if (csrfToken) {",
+                  "    pm.collectionVariables.set('csrfToken', csrfToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "login"
+              ]
+            },
+            "description": "Inicia sesion, rota el token CSRF y captura las cookies de acceso y refresh.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const csrfToken = pm.collectionVariables.get('csrfToken');",
+                  "if (!csrfToken) {",
+                  "    throw new Error('Primero ejecuta CSRF Bootstrap para poblar csrfToken.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "const csrfToken = pm.cookies.get('XSRF-TOKEN');",
+                  "const accessToken = pm.cookies.get('accesstoken');",
+                  "const refreshToken = pm.cookies.get('refreshToken');",
+                  "",
+                  "if (csrfToken) pm.collectionVariables.set('csrfToken', csrfToken);",
+                  "if (accessToken) pm.collectionVariables.set('accessToken', accessToken);",
+                  "if (refreshToken) pm.collectionVariables.set('refreshTokenCookie', refreshToken);",
+                  "",
+                  "pm.collectionVariables.unset('loginError');",
+                  "pm.collectionVariables.unset('loginOrganizacionError');",
+                  "pm.collectionVariables.unset('accessTokenExpiracion');",
+                  "pm.collectionVariables.unset('seleccionOrganizacionRequerida');",
+                  "pm.collectionVariables.unset('codigoOrganizacionSeleccionada');",
+                  "pm.collectionVariables.unset('nombreOrganizacionSeleccionada');",
+                  "pm.collectionVariables.unset('codigoUnidadOrganizacionalSeleccionada');",
+                  "pm.collectionVariables.unset('nombreUnidadOrganizacionalSeleccionada');",
+                  "pm.collectionVariables.unset('unidadesOrganizacionalesPorUsuarioJson');",
+                  "",
+                  "if (pm.response.code !== 200) {",
+                  "    const errors = responseJson?.errors?.Messages || [];",
+                  "    pm.collectionVariables.set('loginError', errors.join(' | '));",
+                  "}",
+                  "",
+                  "pm.test('login responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const profile = responseJson?.data;",
+                  "if (profile && typeof profile === 'object' && !Array.isArray(profile)) {",
+                  "    const organizations = profile.organizacionesPorUsuario || profile.OrganizacionesPorUsuario;",
+                  "    if (profile.accessTokenExpiracion) pm.collectionVariables.set('accessTokenExpiracion', profile.accessTokenExpiracion);",
+                  "    if (typeof profile.seleccionOrganizacionRequerida !== 'undefined') pm.collectionVariables.set('seleccionOrganizacionRequerida', String(profile.seleccionOrganizacionRequerida));",
+                  "    if (Array.isArray(organizations) && organizations.length > 0) {",
+                  "        const orgCode = organizations[0]?.codigo_Organizacion || organizations[0]?.codigoOrganizacion || organizations[0]?.Codigo_Organizacion || organizations[0]?.CodigoOrganizacion;",
+                  "        if (orgCode) pm.collectionVariables.set('organizacion', orgCode);",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test('login entrega data como objeto', function () {",
+                  "    pm.expect(profile).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "loginorganizacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/loginorganizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "loginorganizacion"
+              ]
+            },
+            "description": "Completa la seleccion de organizacion despues de login. Requiere csrfToken y accessToken vigentes; actualiza accessToken, refreshToken y el perfil autenticado.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organizacion\": \"{{organizacion}}\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const csrfToken = pm.collectionVariables.get('csrfToken');",
+                  "const accessToken = pm.collectionVariables.get('accessToken');",
+                  "const organizacion = pm.collectionVariables.get('organizacion');",
+                  "if (!csrfToken) throw new Error('Primero ejecuta CSRF Bootstrap y Login para poblar csrfToken.');",
+                  "if (!accessToken) throw new Error('Primero ejecuta Login para poblar accessToken.');",
+                  "if (!organizacion) throw new Error('No hay organizacion seleccionada. Ejecuta Login o define la variable organizacion.');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "const csrfToken = pm.cookies.get('XSRF-TOKEN');",
+                  "const accessToken = pm.cookies.get('accesstoken');",
+                  "const refreshToken = pm.cookies.get('refreshToken');",
+                  "",
+                  "if (csrfToken) pm.collectionVariables.set('csrfToken', csrfToken);",
+                  "if (accessToken) pm.collectionVariables.set('accessToken', accessToken);",
+                  "if (refreshToken) pm.collectionVariables.set('refreshTokenCookie', refreshToken);",
+                  "",
+                  "pm.collectionVariables.unset('loginOrganizacionError');",
+                  "",
+                  "if (pm.response.code !== 200) {",
+                  "    const errors = responseJson?.errors?.Messages || [];",
+                  "    pm.collectionVariables.set('loginOrganizacionError', errors.join(' | '));",
+                  "}",
+                  "",
+                  "pm.test('loginorganizacion responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const profile = responseJson?.data;",
+                  "if (profile && typeof profile === 'object' && !Array.isArray(profile)) {",
+                  "    const accessTokenExpiracion = profile.accessTokenExpiracion || profile.AccessTokenExpiracion;",
+                  "    const codigoOrganizacionSeleccionada = profile.codigoOrganizacionSeleccionada || profile.CodigoOrganizacionSeleccionada;",
+                  "    const nombreOrganizacionSeleccionada = profile.nombreOrganizacionSeleccionada || profile.NombreOrganizacionSeleccionada;",
+                  "    const codigoUnidadOrganizacionalSeleccionada = profile.codigoUnidadOrganizacionalSeleccionada || profile.CodigoUnidadOrganizacionalSeleccionada;",
+                  "    const nombreUnidadOrganizacionalSeleccionada = profile.nombreUnidadOrganizacionalSeleccionada || profile.NombreUnidadOrganizacionalSeleccionada;",
+                  "    const idEntidadSeleccionada = profile.idEntidadSeleccionada || profile.IdEntidadSeleccionada;",
+                  "    const seleccionOrganizacionRequerida = profile.seleccionOrganizacionRequerida ?? profile.SeleccionOrganizacionRequerida;",
+                  "    const unidadesOrganizacionalesPorUsuario = profile.unidadesOrganizacionalesPorUsuario || profile.UnidadesOrganizacionalesPorUsuario;",
+                  "    if (accessTokenExpiracion) pm.collectionVariables.set('accessTokenExpiracion', accessTokenExpiracion);",
+                  "    if (codigoOrganizacionSeleccionada) {",
+                  "        pm.collectionVariables.set('codigoOrganizacionSeleccionada', codigoOrganizacionSeleccionada);",
+                  "        pm.collectionVariables.set('organizacion', codigoOrganizacionSeleccionada);",
+                  "    }",
+                  "    if (nombreOrganizacionSeleccionada) pm.collectionVariables.set('nombreOrganizacionSeleccionada', nombreOrganizacionSeleccionada);",
+                  "    if (codigoUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('codigoUnidadOrganizacionalSeleccionada', codigoUnidadOrganizacionalSeleccionada);",
+                  "    if (nombreUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('nombreUnidadOrganizacionalSeleccionada', nombreUnidadOrganizacionalSeleccionada);",
+                  "    if (idEntidadSeleccionada) pm.collectionVariables.set('idEntidad', idEntidadSeleccionada);",
+                  "    if (typeof seleccionOrganizacionRequerida !== 'undefined') pm.collectionVariables.set('seleccionOrganizacionRequerida', String(seleccionOrganizacionRequerida));",
+                  "    if (Array.isArray(unidadesOrganizacionalesPorUsuario)) {",
+                  "        pm.collectionVariables.set('unidadesOrganizacionalesPorUsuarioJson', JSON.stringify(unidadesOrganizacionalesPorUsuario));",
+                  "    } else {",
+                  "        pm.collectionVariables.unset('unidadesOrganizacionalesPorUsuarioJson');",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test('loginorganizacion entrega data como objeto', function () {",
+                  "    pm.expect(profile).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/refreshtoken",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "refreshtoken"
+              ]
+            },
+            "description": "Usa la cookie refreshToken emitida por login o loginorganizacion y actualiza csrfToken, accessToken y el perfil autenticado.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const csrfToken = pm.collectionVariables.get('csrfToken');",
+                  "if (!csrfToken) {",
+                  "    throw new Error('Primero ejecuta CSRF Bootstrap o Login para poblar csrfToken.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "const csrfToken = pm.cookies.get('XSRF-TOKEN');",
+                  "const accessToken = pm.cookies.get('accesstoken');",
+                  "const refreshToken = pm.cookies.get('refreshToken');",
+                  "",
+                  "if (csrfToken) pm.collectionVariables.set('csrfToken', csrfToken);",
+                  "if (accessToken) pm.collectionVariables.set('accessToken', accessToken);",
+                  "if (refreshToken) pm.collectionVariables.set('refreshTokenCookie', refreshToken);",
+                  "",
+                  "pm.collectionVariables.unset('refreshError');",
+                  "",
+                  "if (pm.response.code !== 200) {",
+                  "    const errors = responseJson?.errors?.Messages || [];",
+                  "    pm.collectionVariables.set('refreshError', errors.join(' | '));",
+                  "}",
+                  "",
+                  "pm.test('refresh token responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const profile = responseJson?.data;",
+                  "if (profile && typeof profile === 'object' && !Array.isArray(profile)) {",
+                  "    const accessTokenExpiracion = profile.accessTokenExpiracion || profile.AccessTokenExpiracion;",
+                  "    const codigoOrganizacionSeleccionada = profile.codigoOrganizacionSeleccionada || profile.CodigoOrganizacionSeleccionada;",
+                  "    const nombreOrganizacionSeleccionada = profile.nombreOrganizacionSeleccionada || profile.NombreOrganizacionSeleccionada;",
+                  "    const codigoUnidadOrganizacionalSeleccionada = profile.codigoUnidadOrganizacionalSeleccionada || profile.CodigoUnidadOrganizacionalSeleccionada;",
+                  "    const nombreUnidadOrganizacionalSeleccionada = profile.nombreUnidadOrganizacionalSeleccionada || profile.NombreUnidadOrganizacionalSeleccionada;",
+                  "    const idEntidadSeleccionada = profile.idEntidadSeleccionada || profile.IdEntidadSeleccionada;",
+                  "    const seleccionOrganizacionRequerida = profile.seleccionOrganizacionRequerida ?? profile.SeleccionOrganizacionRequerida;",
+                  "    const unidadesOrganizacionalesPorUsuario = profile.unidadesOrganizacionalesPorUsuario || profile.UnidadesOrganizacionalesPorUsuario;",
+                  "    if (accessTokenExpiracion) pm.collectionVariables.set('accessTokenExpiracion', accessTokenExpiracion);",
+                  "    if (codigoOrganizacionSeleccionada) {",
+                  "        pm.collectionVariables.set('codigoOrganizacionSeleccionada', codigoOrganizacionSeleccionada);",
+                  "        pm.collectionVariables.set('organizacion', codigoOrganizacionSeleccionada);",
+                  "    }",
+                  "    if (nombreOrganizacionSeleccionada) pm.collectionVariables.set('nombreOrganizacionSeleccionada', nombreOrganizacionSeleccionada);",
+                  "    if (codigoUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('codigoUnidadOrganizacionalSeleccionada', codigoUnidadOrganizacionalSeleccionada);",
+                  "    if (nombreUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('nombreUnidadOrganizacionalSeleccionada', nombreUnidadOrganizacionalSeleccionada);",
+                  "    if (idEntidadSeleccionada) pm.collectionVariables.set('idEntidad', idEntidadSeleccionada);",
+                  "    if (typeof seleccionOrganizacionRequerida !== 'undefined') pm.collectionVariables.set('seleccionOrganizacionRequerida', String(seleccionOrganizacionRequerida));",
+                  "    if (Array.isArray(unidadesOrganizacionalesPorUsuario)) {",
+                  "        pm.collectionVariables.set('unidadesOrganizacionalesPorUsuarioJson', JSON.stringify(unidadesOrganizacionalesPorUsuario));",
+                  "    } else {",
+                  "        pm.collectionVariables.unset('unidadesOrganizacionalesPorUsuarioJson');",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test('refresh token entrega data como objeto', function () {",
+                  "    pm.expect(profile).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "register"
+              ]
+            },
+            "description": "Payload base derivado de RegisterViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"CorreoElectronico\": \"{{correoElectronico}}\",\r\n  \"Nacionalidad\": \"{{nacionalidad}}\",\r\n  \"TipoDeUsuario\": \"{{tipoDeUsuario}}\",\r\n  \"DocumentoDeIdentidad\": \"{{documentoDeIdentidad}}\",\r\n  \"NumeroDeDocumento\": \"{{numeroDeDocumento}}\",\r\n  \"CodigoValidadorDocumento\": \"{{codigoValidadorDocumento}}\",\r\n  \"PrimerNombre\": \"{{primerNombre}}\",\r\n  \"SegundoNombre\": \"{{segundoNombre}}\",\r\n  \"PrimerApellido\": \"{{primerApellido}}\",\r\n  \"SegundoApellido\": \"{{segundoApellido}}\",\r\n  \"SexoDeclarativo\": \"{{sexoDeclarativo}}\",\r\n  \"SexoRegistral\": \"{{sexoRegistral}}\",\r\n  \"FechaDeNacimiento\": \"2000-01-01\",\r\n  \"TerminosYCondiciones\": false\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loginorganizacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/loginorganizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "loginorganizacion"
+              ]
+            },
+            "description": "Completa la seleccion de organizacion despues de login. Requiere csrfToken y accessToken vigentes; actualiza accessToken, refreshToken y el perfil autenticado.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organizacion\": \"{{organizacion}}\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const csrfToken = pm.collectionVariables.get('csrfToken');",
+                  "const accessToken = pm.collectionVariables.get('accessToken');",
+                  "const organizacion = pm.collectionVariables.get('organizacion');",
+                  "if (!csrfToken) throw new Error('Primero ejecuta CSRF Bootstrap y Login para poblar csrfToken.');",
+                  "if (!accessToken) throw new Error('Primero ejecuta Login para poblar accessToken.');",
+                  "if (!organizacion) throw new Error('No hay organizacion seleccionada. Ejecuta Login o define la variable organizacion.');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "const csrfToken = pm.cookies.get('XSRF-TOKEN');",
+                  "const accessToken = pm.cookies.get('accesstoken');",
+                  "const refreshToken = pm.cookies.get('refreshToken');",
+                  "",
+                  "if (csrfToken) pm.collectionVariables.set('csrfToken', csrfToken);",
+                  "if (accessToken) pm.collectionVariables.set('accessToken', accessToken);",
+                  "if (refreshToken) pm.collectionVariables.set('refreshTokenCookie', refreshToken);",
+                  "",
+                  "pm.collectionVariables.unset('loginOrganizacionError');",
+                  "",
+                  "if (pm.response.code !== 200) {",
+                  "    const errors = responseJson?.errors?.Messages || [];",
+                  "    pm.collectionVariables.set('loginOrganizacionError', errors.join(' | '));",
+                  "}",
+                  "",
+                  "pm.test('loginorganizacion responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const profile = responseJson?.data;",
+                  "if (profile && typeof profile === 'object' && !Array.isArray(profile)) {",
+                  "    const accessTokenExpiracion = profile.accessTokenExpiracion || profile.AccessTokenExpiracion;",
+                  "    const codigoOrganizacionSeleccionada = profile.codigoOrganizacionSeleccionada || profile.CodigoOrganizacionSeleccionada;",
+                  "    const nombreOrganizacionSeleccionada = profile.nombreOrganizacionSeleccionada || profile.NombreOrganizacionSeleccionada;",
+                  "    const codigoUnidadOrganizacionalSeleccionada = profile.codigoUnidadOrganizacionalSeleccionada || profile.CodigoUnidadOrganizacionalSeleccionada;",
+                  "    const nombreUnidadOrganizacionalSeleccionada = profile.nombreUnidadOrganizacionalSeleccionada || profile.NombreUnidadOrganizacionalSeleccionada;",
+                  "    const idEntidadSeleccionada = profile.idEntidadSeleccionada || profile.IdEntidadSeleccionada;",
+                  "    const seleccionOrganizacionRequerida = profile.seleccionOrganizacionRequerida ?? profile.SeleccionOrganizacionRequerida;",
+                  "    const unidadesOrganizacionalesPorUsuario = profile.unidadesOrganizacionalesPorUsuario || profile.UnidadesOrganizacionalesPorUsuario;",
+                  "    if (accessTokenExpiracion) pm.collectionVariables.set('accessTokenExpiracion', accessTokenExpiracion);",
+                  "    if (codigoOrganizacionSeleccionada) {",
+                  "        pm.collectionVariables.set('codigoOrganizacionSeleccionada', codigoOrganizacionSeleccionada);",
+                  "        pm.collectionVariables.set('organizacion', codigoOrganizacionSeleccionada);",
+                  "    }",
+                  "    if (nombreOrganizacionSeleccionada) pm.collectionVariables.set('nombreOrganizacionSeleccionada', nombreOrganizacionSeleccionada);",
+                  "    if (codigoUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('codigoUnidadOrganizacionalSeleccionada', codigoUnidadOrganizacionalSeleccionada);",
+                  "    if (nombreUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('nombreUnidadOrganizacionalSeleccionada', nombreUnidadOrganizacionalSeleccionada);",
+                  "    if (idEntidadSeleccionada) pm.collectionVariables.set('idEntidad', idEntidadSeleccionada);",
+                  "    if (typeof seleccionOrganizacionRequerida !== 'undefined') pm.collectionVariables.set('seleccionOrganizacionRequerida', String(seleccionOrganizacionRequerida));",
+                  "    if (Array.isArray(unidadesOrganizacionalesPorUsuario)) {",
+                  "        pm.collectionVariables.set('unidadesOrganizacionalesPorUsuarioJson', JSON.stringify(unidadesOrganizacionalesPorUsuario));",
+                  "    } else {",
+                  "        pm.collectionVariables.unset('unidadesOrganizacionalesPorUsuarioJson');",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test('loginorganizacion entrega data como objeto', function () {",
+                  "    pm.expect(profile).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "logout"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "confirmemail",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/confirmemail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "confirmemail"
+              ]
+            },
+            "description": "Payload base derivado de ConfirmEmailRequest. Ajustar variables de coleccion segun el caso de prueba.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"UserId\": \"{{userIdConfirmacion}}\",\r\n  \"Token\": \"{{confirmEmailToken}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "resendconfirmationemail",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/resendconfirmationemail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "resendconfirmationemail"
+              ]
+            },
+            "description": "Payload base derivado de ResendEmailConfirmationTokenRequest. Ajustar variables de coleccion segun el caso de prueba.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Email\": \"{{email}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "miinformacion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/miinformacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "miinformacion"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "currentuser",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/currentuser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "currentuser"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual. Ejecutar despues de loginorganizacion o refresh token para validar el perfil y los procesos activos.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "pm.collectionVariables.unset('currentUserError');",
+                  "",
+                  "if (pm.response.code !== 200) {",
+                  "    const errors = responseJson?.errors?.Messages || [];",
+                  "    pm.collectionVariables.set('currentUserError', errors.join(' | '));",
+                  "}",
+                  "",
+                  "pm.test('currentuser responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const profile = responseJson?.data;",
+                  "if (profile && typeof profile === 'object' && !Array.isArray(profile)) {",
+                  "    const codigoOrganizacionSeleccionada = profile.organizacionSeleccionada || profile.OrganizacionSeleccionada;",
+                  "    const nombreOrganizacionSeleccionada = profile.nombreOrganizacionSeleccionada || profile.NombreOrganizacionSeleccionada;",
+                  "    const codigoUnidadOrganizacionalSeleccionada = profile.codigoUnidadOrganizacionalSeleccionada || profile.CodigoUnidadOrganizacionalSeleccionada;",
+                  "    const nombreUnidadOrganizacionalSeleccionada = profile.nombreUnidadOrganizacionalSeleccionada || profile.NombreUnidadOrganizacionalSeleccionada;",
+                  "    const idEntidadSeleccionada = profile.entidadIdSeleccionada || profile.EntidadIdSeleccionada;",
+                  "    const seleccionOrganizacionRequerida = profile.seleccionOrganizacionrequerida ?? profile.SeleccionOrganizacionrequerida;",
+                  "    const unidadesOrganizacionalesPorUsuario = profile.unidadesOrganizacionalesPorUsuario || profile.UnidadesOrganizacionalesPorUsuario;",
+                  "    if (codigoOrganizacionSeleccionada) {",
+                  "        pm.collectionVariables.set('codigoOrganizacionSeleccionada', codigoOrganizacionSeleccionada);",
+                  "        pm.collectionVariables.set('organizacion', codigoOrganizacionSeleccionada);",
+                  "    }",
+                  "    if (nombreOrganizacionSeleccionada) pm.collectionVariables.set('nombreOrganizacionSeleccionada', nombreOrganizacionSeleccionada);",
+                  "    if (codigoUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('codigoUnidadOrganizacionalSeleccionada', codigoUnidadOrganizacionalSeleccionada);",
+                  "    if (nombreUnidadOrganizacionalSeleccionada) pm.collectionVariables.set('nombreUnidadOrganizacionalSeleccionada', nombreUnidadOrganizacionalSeleccionada);",
+                  "    if (idEntidadSeleccionada) pm.collectionVariables.set('idEntidad', idEntidadSeleccionada);",
+                  "    if (typeof seleccionOrganizacionRequerida !== 'undefined') pm.collectionVariables.set('seleccionOrganizacionRequerida', String(seleccionOrganizacionRequerida));",
+                  "    if (Array.isArray(unidadesOrganizacionalesPorUsuario)) {",
+                  "        pm.collectionVariables.set('unidadesOrganizacionalesPorUsuarioJson', JSON.stringify(unidadesOrganizacionalesPorUsuario));",
+                  "    } else {",
+                  "        pm.collectionVariables.unset('unidadesOrganizacionalesPorUsuarioJson');",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test('currentuser entrega data como objeto', function () {",
+                  "    pm.expect(profile).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Enumeration",
+      "item": [
+        {
+          "name": "BuscarTodosLosValores_EnumTipoDeUsuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumTipoDeUsuario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumTipoDeUsuario"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumTipoDeEntidad",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumTipoDeEntidad",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumTipoDeEntidad"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumNivelDeProceso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumNivelDeProceso",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumNivelDeProceso"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumComoDesplegarUrlDeProceso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumComoDesplegarUrlDeProceso",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumComoDesplegarUrlDeProceso"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumRolesBase",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumRolesBase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumRolesBase"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumUsuariosBase",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumUsuariosBase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumUsuariosBase"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumNacionalidad",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumNacionalidad",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumNacionalidad"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumDocumentoDeIdentidad",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumDocumentoDeIdentidad",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumDocumentoDeIdentidad"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumSexoDeclarativo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumSexoDeclarativo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumSexoDeclarativo"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumSexoRegistral",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumSexoRegistral",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumSexoRegistral"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumProcesosBase",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumProcesosBase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumProcesosBase"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumUnidadOrganizacionalBase",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumUnidadOrganizacionalBase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumUnidadOrganizacionalBase"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumOrganizacionBase",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumOrganizacionBase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumOrganizacionBase"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumAuthCookie",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumAuthCookie",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumAuthCookie"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumBusinessClaimTypes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumBusinessClaimTypes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumBusinessClaimTypes"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumPartialBusinessClaimTypes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumPartialBusinessClaimTypes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumPartialBusinessClaimTypes"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodosLosValores_EnumAccessTokenType",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Enumeration/BuscarTodosLosValores_EnumAccessTokenType",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Enumeration",
+                "BuscarTodosLosValores_EnumAccessTokenType"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organizacion",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearOrganizacionViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"IdOrganizacion\": \"{{idOrganizacion}}\",\r\n  \"Codigo\": \"{{codigo}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/Modificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "Modificar"
+              ]
+            },
+            "description": "Payload base derivado de ModificarOrganizacionViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\",\r\n  \"IdOrganizacion\": \"{{idOrganizacion}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarOrganizacionViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "EliminarPor_Codigo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/EliminarPor_Codigo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "EliminarPor_Codigo"
+              ]
+            },
+            "description": "Payload base derivado de EliminarPor_CodigoOrganizacionViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Codigo\": \"{{codigo}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/Activar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "Activar"
+              ]
+            },
+            "description": "Payload base derivado de ActivarOrganizacionViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/Desactivar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "Desactivar"
+              ]
+            },
+            "description": "Payload base derivado de DesactivarOrganizacionViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/BuscarTodos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "BuscarTodos"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Codigo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/BuscarPor_Codigo?codigo={{codigo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "BuscarPor_Codigo"
+              ],
+              "query": [
+                {
+                  "key": "codigo",
+                  "value": "{{codigo}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Organizacion/BuscarTrazabilidadPor_Id?id={{idOrganizacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Organizacion",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idOrganizacion}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UnidadOrganizacional",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearUnidadOrganizacionalViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_Organizacion\": \"{{idOrganizacion}}\",\r\n  \"Codigo\": \"{{codigo}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/Modificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "Modificar"
+              ]
+            },
+            "description": "Payload base derivado de ModificarUnidadOrganizacionalViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarUnidadOrganizacionalViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "EliminarPor_Codigo_Id_Organizacion",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/EliminarPor_Codigo_Id_Organizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "EliminarPor_Codigo_Id_Organizacion"
+              ]
+            },
+            "description": "Payload base derivado de EliminarPor_Codigo_Id_OrganizacionUnidadOrganizacionalViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Codigo\": \"{{codigo}}\",\r\n  \"Id_Organizacion\": \"{{idOrganizacion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/Activar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "Activar"
+              ]
+            },
+            "description": "Payload base derivado de ActivarUnidadOrganizacionalViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/Desactivar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "Desactivar"
+              ]
+            },
+            "description": "Payload base derivado de DesactivarUnidadOrganizacionalViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/BuscarTodos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "BuscarTodos"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Codigo_Id_Organizacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/BuscarPor_Codigo_Id_Organizacion?codigo={{codigo}}&id_Organizacion={{idOrganizacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "BuscarPor_Codigo_Id_Organizacion"
+              ],
+              "query": [
+                {
+                  "key": "codigo",
+                  "value": "{{codigo}}"
+                },
+                {
+                  "key": "id_Organizacion",
+                  "value": "{{idOrganizacion}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Organizacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/BuscarPor_Id_Organizacion?id_Organizacion={{idOrganizacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "BuscarPor_Id_Organizacion"
+              ],
+              "query": [
+                {
+                  "key": "id_Organizacion",
+                  "value": "{{idOrganizacion}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UnidadOrganizacional/BuscarTrazabilidadPor_Id?id={{idUnidadOrganizacional}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "UnidadOrganizacional",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idUnidadOrganizacional}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Entidad",
+      "item": [
+        {
+          "name": "Modificar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/Modificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "Modificar"
+              ]
+            },
+            "description": "Payload base derivado de ModificarEntidadViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\",\r\n  \"CorreoElectronico\": \"{{correoElectronico}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarEntidadViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FinalizaAutorizacion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/FinalizaAutorizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "FinalizaAutorizacion"
+              ]
+            },
+            "description": "Payload base derivado de FinalizaAutorizacionEntidadViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal?id_Usuario={{idUsuario}}&id_UnidadOrganizacional={{idUnidadOrganizacional}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                },
+                {
+                  "key": "id_UnidadOrganizacional",
+                  "value": "{{idUnidadOrganizacional}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Usuario_Id_UnidadOrganizacional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/BuscarPor_Id_Usuario_Id_UnidadOrganizacional?id_Usuario={{idUsuario}}&id_UnidadOrganizacional={{idUnidadOrganizacional}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "BuscarPor_Id_Usuario_Id_UnidadOrganizacional"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                },
+                {
+                  "key": "id_UnidadOrganizacional",
+                  "value": "{{idUnidadOrganizacional}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/BuscarPor_Id_Usuario?id_Usuario={{idUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "BuscarPor_Id_Usuario"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_UnidadOrganizacional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/BuscarPor_Id_UnidadOrganizacional?id_UnidadOrganizacional={{idUnidadOrganizacional}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "BuscarPor_Id_UnidadOrganizacional"
+              ],
+              "query": [
+                {
+                  "key": "id_UnidadOrganizacional",
+                  "value": "{{idUnidadOrganizacional}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Entidad/BuscarTrazabilidadPor_Id?id={{idEntidad}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Entidad",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idEntidad}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PoliticaAsignada",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearPoliticaAsignadaViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_Entidad\": \"{{idEntidad}}\",\r\n  \"Id_Rol\": \"{{idRol}}\",\r\n  \"Id_Proceso\": \"{{idProceso}}\",\r\n  \"RolRequiereValidacion\": false\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarPoliticaAsignadaViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FinalizaAsignacion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/FinalizaAsignacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "FinalizaAsignacion"
+              ]
+            },
+            "description": "Payload base derivado de FinalizaAsignacionPoliticaAsignadaViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ValidaAsignacionDeRol",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/ValidaAsignacionDeRol",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "ValidaAsignacionDeRol"
+              ]
+            },
+            "description": "Payload base derivado de ValidaAsignacionDeRolPoliticaAsignadaViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Entidad_Id_Rol_Id_Proceso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarPor_Id_Entidad_Id_Rol_Id_Proceso?id_Entidad={{idEntidad}}&id_Rol={{idRol}}&id_Proceso={{idProceso}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarPor_Id_Entidad_Id_Rol_Id_Proceso"
+              ],
+              "query": [
+                {
+                  "key": "id_Entidad",
+                  "value": "{{idEntidad}}"
+                },
+                {
+                  "key": "id_Rol",
+                  "value": "{{idRol}}"
+                },
+                {
+                  "key": "id_Proceso",
+                  "value": "{{idProceso}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Entidad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarPor_Id_Entidad?id_Entidad={{idEntidad}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarPor_Id_Entidad"
+              ],
+              "query": [
+                {
+                  "key": "id_Entidad",
+                  "value": "{{idEntidad}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Rol",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarPor_Id_Rol?id_Rol={{idRol}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarPor_Id_Rol"
+              ],
+              "query": [
+                {
+                  "key": "id_Rol",
+                  "value": "{{idRol}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Proceso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarPor_Id_Proceso?id_Proceso={{idProceso}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarPor_Id_Proceso"
+              ],
+              "query": [
+                {
+                  "key": "id_Proceso",
+                  "value": "{{idProceso}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_RolRequiereValidacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarPor_RolRequiereValidacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarPor_RolRequiereValidacion"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/PoliticaAsignada/BuscarTrazabilidadPor_Id?id={{idPoliticaAsignada}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "PoliticaAsignada",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idPoliticaAsignada}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Proceso",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearProcesoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"IdMacro_Proceso\": \"{{idMacroProceso}}\",\r\n  \"Codigo\": \"{{codigo}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\",\r\n  \"Contexto\": \"{{contexto}}\",\r\n  \"NivelDeProceso\": \"{{nivelDeProceso}}\",\r\n  \"Url\": \"{{url}}\",\r\n  \"Token\": \"{{confirmEmailToken}}\",\r\n  \"ComoDesplegarUrlDeProceso\": \"{{comoDesplegarUrlDeProceso}}\",\r\n  \"MaximaAsignacionDeRoles\": 0\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/Modificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "Modificar"
+              ]
+            },
+            "description": "Payload base derivado de ModificarProcesoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\",\r\n  \"Contexto\": \"{{contexto}}\",\r\n  \"NivelDeProceso\": \"{{nivelDeProceso}}\",\r\n  \"Url\": \"{{url}}\",\r\n  \"Token\": \"{{confirmEmailToken}}\",\r\n  \"ComoDesplegarUrlDeProceso\": \"{{comoDesplegarUrlDeProceso}}\",\r\n  \"MaximaAsignacionDeRoles\": 0\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarProcesoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/Activar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "Activar"
+              ]
+            },
+            "description": "Payload base derivado de ActivarProcesoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/Desactivar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "Desactivar"
+              ]
+            },
+            "description": "Payload base derivado de DesactivarProcesoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/BuscarTodos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "BuscarTodos"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Codigo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/BuscarPor_Codigo?codigo={{codigo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "BuscarPor_Codigo"
+              ],
+              "query": [
+                {
+                  "key": "codigo",
+                  "value": "{{codigo}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_IdMacro_Proceso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/BuscarPor_IdMacro_Proceso?idMacro_Proceso={{idMacroProceso}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "BuscarPor_IdMacro_Proceso"
+              ],
+              "query": [
+                {
+                  "key": "idMacro_Proceso",
+                  "value": "{{idMacroProceso}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proceso/BuscarTrazabilidadPor_Id?id={{idProceso}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proceso",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idProceso}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Proveedor",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearProveedorViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Codigo\": \"{{codigo}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\",\r\n  \"APIDeAutenticacion\": \"{{aPIDeAutenticacion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/Modificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "Modificar"
+              ]
+            },
+            "description": "Payload base derivado de ModificarProveedorViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\",\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Descripcion\": \"{{descripcion}}\",\r\n  \"APIDeAutenticacion\": \"{{aPIDeAutenticacion}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarProveedorViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "EliminarPor_Codigo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/EliminarPor_Codigo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "EliminarPor_Codigo"
+              ]
+            },
+            "description": "Payload base derivado de EliminarPor_CodigoProveedorViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Codigo\": \"{{codigo}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/Activar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "Activar"
+              ]
+            },
+            "description": "Payload base derivado de ActivarProveedorViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/Desactivar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "Desactivar"
+              ]
+            },
+            "description": "Payload base derivado de DesactivarProveedorViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTodos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/BuscarTodos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "BuscarTodos"
+              ]
+            },
+            "description": "Endpoint operativo expuesto por la API actual.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Codigo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/BuscarPor_Codigo?codigo={{codigo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "BuscarPor_Codigo"
+              ],
+              "query": [
+                {
+                  "key": "codigo",
+                  "value": "{{codigo}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Proveedor/BuscarTrazabilidadPor_Id?id={{idProveedor}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Proveedor",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idProveedor}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AutenticadorExterno",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearAutenticadorExternoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_Proveedor\": \"{{idProveedor}}\",\r\n  \"Id_Usuario\": \"{{idUsuario}}\",\r\n  \"NombreUsuario\": \"{{nombreUsuario}}\",\r\n  \"ClaveDeAcceso\": \"{{claveDeAcceso}}\",\r\n  \"NombreADesplegar\": \"{{nombreADesplegar}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/Modificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "Modificar"
+              ]
+            },
+            "description": "Payload base derivado de ModificarAutenticadorExternoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\",\r\n  \"ClaveDeAcceso\": \"{{claveDeAcceso}}\",\r\n  \"NombreADesplegar\": \"{{nombreADesplegar}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarAutenticadorExternoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MarcarComoValidadorPrimario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/MarcarComoValidadorPrimario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "MarcarComoValidadorPrimario"
+              ]
+            },
+            "description": "Payload base derivado de MarcarComoValidadorPrimarioAutenticadorExternoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/Activar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "Activar"
+              ]
+            },
+            "description": "Payload base derivado de ActivarAutenticadorExternoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/Desactivar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "Desactivar"
+              ]
+            },
+            "description": "Payload base derivado de DesactivarAutenticadorExternoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Proveedor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/BuscarPor_Id_Proveedor?id_Proveedor={{idProveedor}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "BuscarPor_Id_Proveedor"
+              ],
+              "query": [
+                {
+                  "key": "id_Proveedor",
+                  "value": "{{idProveedor}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/BuscarPor_Id_Usuario?id_Usuario={{idUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "BuscarPor_Id_Usuario"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Usuario_ValidadorPrimario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/BuscarPor_Id_Usuario_ValidadorPrimario?id_Usuario={{idUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "BuscarPor_Id_Usuario_ValidadorPrimario"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id_Proveedor_Id_Usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/BuscarPor_Id_Proveedor_Id_Usuario?id_Proveedor={{idProveedor}}&id_Usuario={{idUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "BuscarPor_Id_Proveedor_Id_Usuario"
+              ],
+              "query": [
+                {
+                  "key": "id_Proveedor",
+                  "value": "{{idProveedor}}"
+                },
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/AutenticadorExterno/BuscarTrazabilidadPor_Id?id={{idAutenticadorExterno}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "AutenticadorExterno",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idAutenticadorExterno}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ValidacionEnrrolamiento",
+      "item": [
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/Crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "Crear"
+              ]
+            },
+            "description": "Payload base derivado de CrearValidacionEnrrolamientoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"IdValidado_Usuario\": \"{{idValidadoUsuario}}\",\r\n  \"IdValidaEnrrolamiento_Usuario\": \"{{idValidaEnrrolamientoUsuario}}\",\r\n  \"EnrrolamientoAceptado\": false,\r\n  \"FechaValidacion\": \"2026-04-07T00:00:00Z\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/Eliminar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "Eliminar"
+              ]
+            },
+            "description": "Payload base derivado de EliminarValidacionEnrrolamientoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/Activar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "Activar"
+              ]
+            },
+            "description": "Payload base derivado de ActivarValidacionEnrrolamientoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/Desactivar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "Desactivar"
+              ]
+            },
+            "description": "Payload base derivado de DesactivarValidacionEnrrolamientoViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"{{id}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/BuscarPor_Id?id={{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "BuscarPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_IdValidado_Usuario_IdValidaEnrrolamiento_Usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/BuscarPor_IdValidado_Usuario_IdValidaEnrrolamiento_Usuario?idValidado_Usuario={{idValidadoUsuario}}&idValidaEnrrolamiento_Usuario={{idValidaEnrrolamientoUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "BuscarPor_IdValidado_Usuario_IdValidaEnrrolamiento_Usuario"
+              ],
+              "query": [
+                {
+                  "key": "idValidado_Usuario",
+                  "value": "{{idValidadoUsuario}}"
+                },
+                {
+                  "key": "idValidaEnrrolamiento_Usuario",
+                  "value": "{{idValidaEnrrolamientoUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_IdValidado_Usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/BuscarPor_IdValidado_Usuario?idValidado_Usuario={{idValidadoUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "BuscarPor_IdValidado_Usuario"
+              ],
+              "query": [
+                {
+                  "key": "idValidado_Usuario",
+                  "value": "{{idValidadoUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarPor_IdValidaEnrrolamiento_Usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/BuscarPor_IdValidaEnrrolamiento_Usuario?idValidaEnrrolamiento_Usuario={{idValidaEnrrolamientoUsuario}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "BuscarPor_IdValidaEnrrolamiento_Usuario"
+              ],
+              "query": [
+                {
+                  "key": "idValidaEnrrolamiento_Usuario",
+                  "value": "{{idValidaEnrrolamientoUsuario}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTrazabilidadPor_Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ValidacionEnrrolamiento/BuscarTrazabilidadPor_Id?id={{idValidacionEnrrolamiento}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ValidacionEnrrolamiento",
+                "BuscarTrazabilidadPor_Id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{idValidacionEnrrolamiento}}"
+                }
+              ]
+            },
+            "description": "Requiere autenticacion. Devuelve AuditEnvelope[] crudo desde SQL ordenado desde la ultima revision a la primera."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ServicioDeDominio",
+      "item": [
+        {
+          "name": "ValidaEnrrolamiento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ServicioDeDominio/ValidaEnrrolamiento",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ServicioDeDominio",
+                "ValidaEnrrolamiento"
+              ]
+            },
+            "description": "Payload base derivado de ValidaEnrrolamientoServicioDeDominioViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_Usuario_Validado\": \"{{idUsuarioValidado}}\",\r\n  \"Id_Usuario_Valida_Enrrolamiento\": \"{{idUsuarioValidaEnrrolamiento}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ValidaAsignacionDeRol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ServicioDeDominio/ValidaAsignacionDeRol",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ServicioDeDominio",
+                "ValidaAsignacionDeRol"
+              ]
+            },
+            "description": "Payload base derivado de ValidaAsignacionDeRolServicioDeDominioViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_PoliticaAsignada\": \"{{idPoliticaAsignada}}\",\r\n  \"Id_Usuario_ValidaAsignacionRol\": \"{{idUsuarioValidaAsignacionRol}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CrearEntidad",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ServicioDeDominio/CrearEntidad",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ServicioDeDominio",
+                "CrearEntidad"
+              ]
+            },
+            "description": "Payload base derivado de CrearEntidadServicioDeDominioViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_UnidadOrganizacional\": \"{{idUnidadOrganizacional}}\",\r\n  \"Id_Usuario\": \"{{idUsuario}}\",\r\n  \"TipoDeEntidad\": \"{{tipoDeEntidad}}\",\r\n  \"CorreoElectronico\": \"{{correoElectronico}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MarcarEntidadComoPrincipal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-CSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ServicioDeDominio/MarcarEntidadComoPrincipal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ServicioDeDominio",
+                "MarcarEntidadComoPrincipal"
+              ]
+            },
+            "description": "Payload base derivado de MarcarEntidadComoPrincipalServicioDeDominioViewModel. Ajustar variables de coleccion segun el caso de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id_Entidad\": \"{{idEntidad}}\"\r\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ServicioDeDominio/BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion?id_Usuario={{idUsuario}}&id_Organizacion={{idOrganizacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ServicioDeDominio",
+                "BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                },
+                {
+                  "key": "id_Organizacion",
+                  "value": "{{idOrganizacion}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar."
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ServicioDeDominio/BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion?id_Usuario={{idUsuario}}&id_Organizacion={{idOrganizacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ServicioDeDominio",
+                "BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion"
+              ],
+              "query": [
+                {
+                  "key": "id_Usuario",
+                  "value": "{{idUsuario}}"
+                },
+                {
+                  "key": "id_Organizacion",
+                  "value": "{{idOrganizacion}}"
+                }
+              ]
+            },
+            "description": "Completar los query params con las variables de coleccion correspondientes antes de ejecutar."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

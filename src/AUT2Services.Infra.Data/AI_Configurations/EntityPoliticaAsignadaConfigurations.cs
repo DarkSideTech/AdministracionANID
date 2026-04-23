@@ -13,48 +13,45 @@ namespace AUT2Services.Infra.Data.Configurations;
 internal class EntityPoliticaAsignadaConfiguration : IEntityTypeConfiguration<PoliticaAsignada>
 {
     public void Configure(EntityTypeBuilder<PoliticaAsignada> builder)
-    { 
+    {
         builder.Property(p => p.Id)
-            .HasColumnName("Id") 
-            .IsRequired(); 
+            .HasColumnName("Id")
+            .IsRequired();
 
         builder.HasKey(p => p.Id)
-            .HasName("PK_PoliticaAsignada_Id"); 
- 
+            .HasName("PK_PoliticaAsignada_Id");
+
         builder.Property(p => p.Id_Entidad)
-            .HasColumnName("Id_Entidad") 
-            .IsRequired(); 
- 
+            .HasColumnName("Id_Entidad")
+            .IsRequired();
+
         builder.Property(p => p.Id_Rol)
-            .HasColumnName("Id_Rol") 
-            .IsRequired(); 
- 
+            .HasColumnName("Id_Rol")
+            .IsRequired();
+
         builder.Property(p => p.Id_Proceso)
-            .HasColumnName("Id_Proceso") 
-            .IsRequired(); 
- 
+            .HasColumnName("Id_Proceso")
+            .IsRequired();
+
         builder.Property(p => p.FechaInicioAsignacion)
-            .HasColumnName("FechaInicioAsignacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("FechaInicioAsignacion");
+
         builder.Property(p => p.FechaTerminoAsignacion)
-            .HasColumnName("FechaTerminoAsignacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("FechaTerminoAsignacion");
+
         builder.Property(p => p.FechaCreacion)
-            .HasColumnName("FechaCreacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("FechaCreacion")
+            .IsRequired();
+
         builder.Property(p => p.RolRequiereValidacion)
-            .HasColumnName("RolRequiereValidacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("RolRequiereValidacion")
+            .IsRequired();
+
         builder.Property(p => p.RolAsignadoValidado)
-            .HasColumnName("RolAsignadoValidado"); 
- 
+            .HasColumnName("RolAsignadoValidado");
+
         builder.Property(p => p.PoliticaAsignadaBase)
-            .HasColumnName("PoliticaAsignadaBase") 
-            .IsRequired(); 
+            .HasColumnName("PoliticaAsignadaBase")
+            .IsRequired();
     }
 }
-

@@ -30,11 +30,11 @@ public partial class  UnidadOrganizacionalCommandHandler :
         }
 
          
-        existUnidadOrganizacional.AddDomainEvent(new UnidadOrganizacionalEventEliminadoPor_Codigo_Id_Organizacion(
+        AddDeleteDomainEvent(command, existUnidadOrganizacional, new UnidadOrganizacionalEventEliminadoPor_Codigo_Id_Organizacion(
             existUnidadOrganizacional.Id, 
             existUnidadOrganizacional.Codigo, 
             existUnidadOrganizacional.Id_Organizacion 
-        ));
+        ), existUnidadOrganizacional);
 
         _unidadOrganizacionalRepository.Eliminar(existUnidadOrganizacional);
 

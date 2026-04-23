@@ -17,7 +17,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -76,7 +76,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = new Guid("ecaf1074-722d-468f-81fa-69c2d7b88d68"),
                             Activo = true,
                             AutenticadorExternoBase = true,
-                            ClaveDeAcceso = "AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA==",
+                            ClaveDeAcceso = "AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg==",
                             Id_Proveedor = new Guid("701c19bf-405c-4467-85f0-ddbc3786f9ee"),
                             Id_Usuario = new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"),
                             NombreADesplegar = "ADMINISTRADOR",
@@ -105,11 +105,11 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("FechaCreacion");
 
-                    b.Property<DateTimeOffset>("FechaInicioAutorizacion")
+                    b.Property<DateTimeOffset?>("FechaInicioAutorizacion")
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("FechaInicioAutorizacion");
 
-                    b.Property<DateTimeOffset>("FechaTerminoAutorizacion")
+                    b.Property<DateTimeOffset?>("FechaTerminoAutorizacion")
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("FechaTerminoAutorizacion");
 
@@ -142,13 +142,11 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
                             CorreoElectronico = "",
                             EntidadBase = true,
-                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 19, 42, 37, 511, DateTimeKind.Unspecified).AddTicks(8787), new TimeSpan(0, -4, 0, 0, 0)),
-                            FechaInicioAutorizacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaTerminoAutorizacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_UnidadOrganizacional = new Guid("198c164d-1cd8-4107-9db3-74b9fa33302c"),
                             Id_Usuario = new Guid("2b12d04f-c167-4ad1-a42a-e2ecd30518d7"),
                             Principal = true,
-                            TipoDeEntidad = "UNIDAD_ORGANIZACIONAL"
+                            TipoDeEntidad = "PERSONA"
                         });
                 });
 
@@ -218,11 +216,11 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("FechaCreacion");
 
-                    b.Property<DateTimeOffset>("FechaInicioAsignacion")
+                    b.Property<DateTimeOffset?>("FechaInicioAsignacion")
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("FechaInicioAsignacion");
 
-                    b.Property<DateTimeOffset>("FechaTerminoAsignacion")
+                    b.Property<DateTimeOffset?>("FechaTerminoAsignacion")
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("FechaTerminoAsignacion");
 
@@ -259,9 +257,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         new
                         {
                             Id = new Guid("8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d"),
-                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 37, 513, DateTimeKind.Unspecified).AddTicks(7764), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaInicioAsignacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaTerminoAsignacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
                             Id_Proceso = new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"),
                             Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
@@ -272,9 +268,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         new
                         {
                             Id = new Guid("bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61"),
-                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 37, 513, DateTimeKind.Unspecified).AddTicks(9101), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaInicioAsignacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaTerminoAsignacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
                             Id_Proceso = new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"),
                             Id_Rol = new Guid("03b6b706-a24f-4505-9ef6-e3ae7d48c907"),
@@ -285,12 +279,153 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         new
                         {
                             Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb55"),
-                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 6, 23, 42, 37, 513, DateTimeKind.Unspecified).AddTicks(9105), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaInicioAsignacion = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            FechaTerminoAsignacion = new DateTimeOffset(new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified).AddTicks(9999), new TimeSpan(0, 0, 0, 0, 0)),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
                             Id_Proceso = new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"),
                             Id_Rol = new Guid("856a08fd-4162-47cb-bf92-ff25029f3546"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb56"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("fcd2dcf8-7230-4fdd-9651-b4efeb60d11f"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb57"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("eec159f1-9ba9-463d-8407-ec2951751c29"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb58"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("4bb69d17-cc38-4e52-ad36-42226aa5723d"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb59"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("35e9a345-dda9-45fc-9a35-7cf27ec8e947"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb5a"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("06001a21-9b5f-47a3-ae8b-c749e531f9b1"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb5b"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("e256405c-0bda-479a-8a41-a043c672f9b1"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb5c"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("2b597b09-55ad-4304-b57d-76bd2df5ac4c"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb5d"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb5e"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("aeaeb19b-2206-4870-9a99-f5d40a982b2e"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb5f"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("f2224186-ffcc-41ee-bbce-4bbd72504e22"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb60"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("f3285b94-90a4-4610-8c65-2782d2e3a1a3"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb61"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("e150709d-4fed-480b-8916-8b0837a775d3"),
+                            Id_Rol = new Guid("c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e"),
+                            PoliticaAsignadaBase = true,
+                            RolAsignadoValidado = true,
+                            RolRequiereValidacion = false
+                        },
+                        new
+                        {
+                            Id = new Guid("60838d42-c2df-402c-9253-ab3ce52ffb62"),
+                            FechaCreacion = new DateTimeOffset(new DateTime(2026, 4, 7, 23, 4, 30, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id_Entidad = new Guid("05507441-5792-4c46-9334-9a5faa99e20a"),
+                            Id_Proceso = new Guid("d1889c7c-c5dc-4d9a-a2fe-34cdf956b145"),
+                            Id_Rol = new Guid("e198ec28-2b1b-48b0-8d5e-eb946d596e91"),
                             PoliticaAsignadaBase = true,
                             RolAsignadoValidado = true,
                             RolRequiereValidacion = false
@@ -1049,11 +1184,11 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAtUtc")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("ExpiresAtUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("ExpiresAtUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("Id_Entidad")
                         .HasColumnType("uniqueidentifier");
@@ -1066,8 +1201,8 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime?>("RevokedAtUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("RevokedAtUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("SelectedOrganization")
                         .HasMaxLength(256)
@@ -1158,6 +1293,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e",
                             ActivaDetalleDeAutorizaciones = false,
                             Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002001",
                             Descripcion = "",
                             Name = "ADMINISTRADOR",
                             NormalizedName = "ADMINISTRADOR",
@@ -1172,6 +1308,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "36957ec2-2857-4101-a81b-f0340bf8eff2",
                             ActivaDetalleDeAutorizaciones = false,
                             Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002002",
                             Descripcion = "",
                             Name = "ADMINISTRADOR_ENTIDAD",
                             NormalizedName = "ADMINISTRADOR_ENTIDAD",
@@ -1186,6 +1323,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "e3093727-b36b-45af-a495-7c3d0804c0e9",
                             ActivaDetalleDeAutorizaciones = false,
                             Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002003",
                             Descripcion = "",
                             Name = "ADMINISTRADOR_UNIDAD",
                             NormalizedName = "ADMINISTRADOR_UNIDAD",
@@ -1200,6 +1338,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "03b6b706-a24f-4505-9ef6-e3ae7d48c907",
                             ActivaDetalleDeAutorizaciones = false,
                             Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002004",
                             Descripcion = "",
                             Name = "VALIDA_ASIGNACION_ROLES",
                             NormalizedName = "VALIDA_ASIGNACION_ROLES",
@@ -1214,6 +1353,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "856a08fd-4162-47cb-bf92-ff25029f3546",
                             ActivaDetalleDeAutorizaciones = false,
                             Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002005",
                             Descripcion = "",
                             Name = "VALIDA_ENRROLAMIENTO",
                             NormalizedName = "VALIDA_ENRROLAMIENTO",
@@ -1228,10 +1368,26 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "e198ec28-2b1b-48b0-8d5e-eb946d596e90",
                             ActivaDetalleDeAutorizaciones = false,
                             Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002006",
                             Descripcion = "",
                             Name = "USUARIO",
                             NormalizedName = "USUARIO",
                             RequiereAccionParaSerAsignado = false,
+                            RequiereValidacionDeAsignacion = false,
+                            RolBase = true,
+                            ValidaAsignacionDeRoles = false,
+                            ValidaEnrrolamiento = false
+                        },
+                        new
+                        {
+                            Id = "e198ec28-2b1b-48b0-8d5e-eb946d596e91",
+                            ActivaDetalleDeAutorizaciones = false,
+                            Activo = true,
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002007",
+                            Descripcion = "",
+                            Name = "AUDITOR_TRAZABILIDAD",
+                            NormalizedName = "AUDITOR_TRAZABILIDAD",
+                            RequiereAccionParaSerAsignado = true,
                             RequiereValidacionDeAsignacion = false,
                             RolBase = true,
                             ValidaAsignacionDeRoles = false,
@@ -1310,8 +1466,8 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("RefreshTokenExpiresAtUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("RefreshTokenExpiresAtUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<bool?>("RequiereValidacionEnrrolamiento")
                         .HasColumnType("bit");
@@ -1352,7 +1508,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             Id = "2b12d04f-c167-4ad1-a42a-e2ecd30518d7",
                             AccessFailedCount = 10,
                             Activo = true,
-                            ConcurrencyStamp = "e5edc734-b9a6-40f6-a23d-0f0df4730666",
+                            ConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d001001",
                             Descripcion = "Administrador global",
                             Email = "administrador@security.com",
                             EmailConfirmed = true,
@@ -1363,7 +1519,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             NombreADesplegar = "Administrador",
                             NormalizedEmail = "ADMINISTRADOR@SECURITY.COM",
                             NormalizedUserName = "ADMINISTRADOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFrF3Wi3ka+83NR4LeucHMod1hOqUy65JTzjnmjTv2e4DtU9+DJiLDTW1IIKhZN7fA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
                             RequiereValidacionEnrrolamiento = false,
@@ -1373,6 +1529,289 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                             UserName = "ADMINISTRADOR",
                             UsuarioBase = true
                         });
+                });
+
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.AuditAggregateCursor", b =>
+                {
+                    b.Property<Guid>("AggregateId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("LastRevision")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("AggregateId");
+
+                    b.ToTable("AuditAggregateCursor", (string)null);
+                });
+
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.AuditOutboxChange", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuditOutboxMessageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NewValueJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ValueType")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuditOutboxMessageId");
+
+                    b.HasIndex("Path");
+
+                    b.ToTable("AuditOutboxChange", (string)null);
+                });
+
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.AuditOutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ActorEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("ActorUserId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ActorUsername")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("AggregateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("AggregateRevision")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("AggregateType")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("CommandType")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DispatchAttempts")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<short>("DispatchStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)0);
+
+                    b.Property<DateTimeOffset?>("DispatchedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTimeOffset?>("LastDispatchAttemptUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("OccurredAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("OperationType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("PersistedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RequestPath")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<short>("SchemaVersion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)1);
+
+                    b.Property<string>("SnapshotJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorrelationId");
+
+                    b.HasIndex("ActorUserId", "OccurredAtUtc");
+
+                    b.HasIndex("AggregateId", "AggregateRevision")
+                        .IsUnique();
+
+                    b.HasIndex("EventType", "OccurredAtUtc");
+
+                    b.HasIndex("AggregateId", "OccurredAtUtc", "Id");
+
+                    b.HasIndex("DispatchStatus", "PersistedAtUtc", "Id");
+
+                    b.ToTable("AuditOutbox", (string)null);
+                });
+
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.NotificationOutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeduplicationKey")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("DispatchAttempts")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<short>("DispatchStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)0);
+
+                    b.Property<DateTimeOffset?>("DispatchedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("LastDispatchAttemptUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("NextAttemptUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NotificationType")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("PayloadJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestPath")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<short>("SchemaVersion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)1);
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeduplicationKey");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("Channel", "NotificationType", "CreatedAtUtc");
+
+                    b.HasIndex("DispatchStatus", "NextAttemptUtc", "CreatedAtUtc", "Id");
+
+                    b.ToTable("NotificationOutbox", (string)null);
+                });
+
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.PasswordChangeChallenge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("CancelledAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTimeOffset?>("ConsumedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("ExpiresAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("FailedAttempts")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTimeOffset>("LastSentAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RequestPath")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<int>("ResendCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "CreatedAtUtc");
+
+                    b.HasIndex("UserId", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
+
+                    b.ToTable("PasswordChangeChallenges", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1492,6 +1931,17 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.AuditOutboxChange", b =>
+                {
+                    b.HasOne("AUT2Services.Infra.DataTrazabilidad.Persistence.AuditOutboxMessage", "AuditOutboxMessage")
+                        .WithMany("Changes")
+                        .HasForeignKey("AuditOutboxMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AuditOutboxMessage");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("AUT2Services.Domain.Security.Entities.Rol", null)
@@ -1546,6 +1996,11 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
             modelBuilder.Entity("AUT2Services.Domain.Security.Entities.Usuario", b =>
                 {
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("AUT2Services.Infra.DataTrazabilidad.Persistence.AuditOutboxMessage", b =>
+                {
+                    b.Navigation("Changes");
                 });
 #pragma warning restore 612, 618
         }

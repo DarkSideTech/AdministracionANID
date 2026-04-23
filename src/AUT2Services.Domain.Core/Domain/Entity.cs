@@ -11,8 +11,8 @@ namespace AUT2Services.Domain.Core.Domain
 
         public Guid Id { get; set; }
 
-        private List<Event> _domainEvents;
-        public IReadOnlyCollection<Event> DomainEvents => _domainEvents?.AsReadOnly()!;
+        private List<Event> _domainEvents = [];
+        public IReadOnlyCollection<Event> DomainEvents => _domainEvents.AsReadOnly();
 
         public void AddDomainEvent(Event domainEvent)
         {
@@ -32,7 +32,7 @@ namespace AUT2Services.Domain.Core.Domain
 
         #region BaseBehaviours
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var compareTo = obj as Entity;
 

@@ -18,9 +18,9 @@ public class Entidad : Entity, IAggregateRoot
         Guid id_Usuario, 
         string tipoDeEntidad, 
         string correoElectronico, 
-        DateTimeOffset fechaInicioAutorizacion, 
-        DateTimeOffset fechaTerminoAutorizacion, 
-        DateTimeOffset fechaCreacion, 
+        DateTimeOffset? fechaInicioAutorizacion, 
+        DateTimeOffset? fechaTerminoAutorizacion, 
+        DateTimeOffset? fechaCreacion, 
         bool principal, 
         bool entidadBase 
         )
@@ -41,23 +41,23 @@ public class Entidad : Entity, IAggregateRoot
     public Guid Id_Usuario { get; private set; } = Guid.Empty;
     public string TipoDeEntidad { get; private set; } = string.Empty;
     public string CorreoElectronico { get; private set; } = string.Empty;
-    public DateTimeOffset FechaInicioAutorizacion { get; private set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaTerminoAutorizacion { get; private set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaCreacion { get; private set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset? FechaInicioAutorizacion { get; private set; }
+    public DateTimeOffset? FechaTerminoAutorizacion { get; private set; }
+    public DateTimeOffset? FechaCreacion { get; private set; }
     public bool Principal { get; private set; } = false;
     public bool EntidadBase { get; private set; } = true;
 
-    public void CambiarFechaInicioAutorizacion(DateTimeOffset nuevoValor)
+    public void CambiarFechaInicioAutorizacion(DateTimeOffset? nuevoValor)
     {
         FechaInicioAutorizacion = nuevoValor;
     }
 
-    public void CambiarFechaTerminoAutorizacion(DateTimeOffset nuevoValor)
+    public void CambiarFechaTerminoAutorizacion(DateTimeOffset? nuevoValor)
     {
         FechaTerminoAutorizacion = nuevoValor;
     }
 
-    public void CambiarFechaCreacion(DateTimeOffset nuevoValor)
+    public void CambiarFechaCreacion(DateTimeOffset? nuevoValor)
     {
         FechaCreacion = nuevoValor;
     }

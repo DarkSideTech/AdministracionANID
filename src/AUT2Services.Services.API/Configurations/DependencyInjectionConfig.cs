@@ -1,5 +1,6 @@
 using AUT2Services.Infra.Cross.IoC;
 using AUT2Services.Infra.Security.Extensions;
+using AUT2Services.Infra.Security.Models;
 using AUT2Services.Infra.Security.SecurityIoC;
 
 namespace AUT2Services.Services.API.Configurations;

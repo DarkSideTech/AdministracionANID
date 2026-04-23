@@ -10,7 +10,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Events.PoliticasAsignadas.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Handlers
 {
@@ -50,17 +50,16 @@ namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Handlers
                 return CommandResponse;
             }
 
-            newPoliticaAsignada.CambiarFechaTerminoAsignacion(DateTimeOffset.Now);
+            newPoliticaAsignada.CambiarFechaTerminoAsignacion(_clock.UtcNow);
 
-            newPoliticaAsignada.AddDomainEvent(new PoliticaAsignadaEventAsignacionFinalizada(
+            AddUpdateDomainEvent(command, newPoliticaAsignada, new PoliticaAsignadaEventAsignacionFinalizada(
                     newPoliticaAsignada.Id, 
                     newPoliticaAsignada.FechaTerminoAsignacion 
-                    )
-                );
+                    ), existPoliticaAsignada, newPoliticaAsignada);
 
             _politicaAsignadaRepository.Modificar(newPoliticaAsignada);
         
-            CommandResponse.Data = JsonConvert.SerializeObject(new PoliticaAsignadaDTO(){
+            CommandResponse.Data = new PoliticaAsignadaDTO(){
                     Id = newPoliticaAsignada.Id, 
                     Id_Entidad = newPoliticaAsignada.Id_Entidad, 
                     Id_Rol = newPoliticaAsignada.Id_Rol, 
@@ -71,7 +70,7 @@ namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Handlers
                     RolRequiereValidacion = newPoliticaAsignada.RolRequiereValidacion, 
                     RolAsignadoValidado = newPoliticaAsignada.RolAsignadoValidado, 
                     PoliticaAsignadaBase = newPoliticaAsignada.PoliticaAsignadaBase 
-                });
+                };
             CommandResponse.Result = true;
 
             return await Commit(_politicaAsignadaRepository.UnitOfWork);

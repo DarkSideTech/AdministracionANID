@@ -1,9 +1,10 @@
-﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Time;
 using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Records;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace AUT2Services.Infra.Security.Accounts.Yo;
@@ -11,12 +12,14 @@ namespace AUT2Services.Infra.Security.Accounts.Yo;
 public class YoCommandHandler(
     ITokenService tokenService,
     ICsrfService csrfService,
-    ICurrentUserService currentUserService) : CommandHandler,
+    ICurrentUserService currentUserService,
+    IClock clock) : CommandHandler,
     IRequestHandler<YoCommand, CommandResponse>
 {
     private readonly ITokenService tokenService = tokenService;
     private readonly ICsrfService csrfService = csrfService;
     private readonly ICurrentUserService currentUserService = currentUserService;
+    private readonly IClock clock = clock;
 
     public async Task<CommandResponse> Handle(YoCommand command, CancellationToken cancellationToken)
     {
@@ -37,24 +40,34 @@ public class YoCommandHandler(
 
         var currentUser = await currentUserService.GetCurrentUserResponseAsync(command.Context.RequestAborted);
         var claimsPrincipal = currentUserService.GetClaimsPrincipal(command.Context.RequestAborted);
+        var selectedEntityRole = currentUser.EntidadRolSeleccionado;
 
         var expClaim = claimsPrincipal!.FindFirst(JwtRegisteredClaimNames.Exp)?.Value;
         var expiresAtUtc = long.TryParse(expClaim, out var unixSeconds)
-            ? DateTimeOffset.FromUnixTimeSeconds(unixSeconds).UtcDateTime
-            : DateTime.UtcNow;
+            ? DateTimeOffset.FromUnixTimeSeconds(unixSeconds)
+            : clock.UtcNow;
 
         command.Request.Cookies.TryGetValue(EnumCsrfNames.Cookie, out var existingToken);
         csrfService.EnsureTokenCookie(command.Response, existingToken);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
+        var userDto = Guid.TryParse(currentUser.EntidadIdSeleccionada, out var idEntidadSeleccionada)
+            ? await tokenService.CreateUserDtoAsync(usuario, idEntidadSeleccionada, selectedEntityRole)
+            : await tokenService.CreateUserDtoAsync(usuario);
+
+        CommandResponse.Data = new ProfileLogin(
             AccessTokenExpiracion: expiresAtUtc,
             OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
-            User: await tokenService.CreateUserDtoAsync(usuario, Guid.Parse(currentUser.EntidadIdSeleccionada!)),
-            ProcesosActivos: await currentUserService.GetProcesosActivosAsync(cancellationToken) ?? null,
+            UnidadesOrganizacionalesPorUsuario: currentUser.UnidadesOrganizacionalesPorUsuario,
+            User: userDto,
+            ProcesosActivos: currentUser.ProcesosActivos,
             CodigoOrganizacionSeleccionada: currentUser.OrganizacionSeleccionada,
+            NombreOrganizacionSeleccionada: currentUser.NombreOrganizacionSeleccionada,
+            CodigoUnidadOrganizacionalSeleccionada: currentUser.CodigoUnidadOrganizacionalSeleccionada,
+            NombreUnidadOrganizacionalSeleccionada: currentUser.NombreUnidadOrganizacionalSeleccionada,
             IdEntidadSeleccionada: currentUser.EntidadIdSeleccionada,
+            EntidadRolSeleccionado: selectedEntityRole,
             SeleccionOrganizacionRequerida: currentUser.SeleccionOrganizacionrequerida
-        ));
+        );
         CommandResponse.Result = true;
 
         return CommandResponse;

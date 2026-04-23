@@ -1,4 +1,4 @@
-﻿using AUT2Services.Application.ViewModels.ServiciosDeDominio;
+using AUT2Services.Application.ViewModels.ServiciosDeDominio;
 using AUT2Services.Domain.Commands.Entidades.Commands;
 using AUT2Services.Domain.Commands.PoliticasAsignadas.Commands;
 using AUT2Services.Domain.Core.Commands;
@@ -6,7 +6,6 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Enumerations;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace AUT2Services.Application.Services.ServicioDeDominioHandlers;
 
@@ -63,11 +62,11 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
 
-            var entidadCreada = JsonConvert.DeserializeObject<EntidadDTO>(resultCrearEntidadCommand.Data);
+            var entidadCreada = resultCrearEntidadCommand.GetData<EntidadDTO>();
 
             var existEntidadPrincipal = await servicioDeDominioRepository.BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion((Guid)command.Id_Usuario, (Guid)command.Id_UnidadOrganizacional);
 
@@ -85,7 +84,7 @@ public partial class ServicioDeDominioServiceApp
                     {
                         result.ValidationResult.Errors.Add(item);
                     }
-                    await transaction.RollbackAsync(cancellationToken);
+                    await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                     return result;
                 }
             }
@@ -102,7 +101,7 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
 
@@ -129,7 +128,7 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                    await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
 
@@ -156,18 +155,18 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync(cancellationToken);
+            await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
             result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"Error no manejado al momento de crear una entidad nueva, error: {ex.Message}"));
         }
 
         result.Result = true;
-        await transaction.CommitAsync(cancellationToken);
+        await context.CommitExternalTransactionAsync(transaction, cancellationToken);
         return result;
     }
 }

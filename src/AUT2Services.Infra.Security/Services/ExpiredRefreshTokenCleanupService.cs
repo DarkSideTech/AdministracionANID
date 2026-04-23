@@ -1,4 +1,5 @@
-﻿using AUT2Services.Infra.Data.Context;
+using AUT2Services.Domain.Core.Time;
+using AUT2Services.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,14 +11,17 @@ namespace AUT2Services.Infra.Security.Services;
 public class ExpiredRefreshTokenCleanupService(
     IServiceScopeFactory scopeFactory,
     IConfiguration configuration,
-    ILogger<ExpiredRefreshTokenCleanupService> logger) : BackgroundService
+    ILogger<ExpiredRefreshTokenCleanupService> logger,
+    IClock clock) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var intervalMinutes = Math.Max(5, configuration.GetValue<int?>("RefreshTokenCleanup:IntervalMinutes") ?? 60);
-        var timer = new PeriodicTimer(TimeSpan.FromMinutes(intervalMinutes));
+        logger.LogInformation("Iniciando limpieza de refresh tokens expirados con un intervalo de {IntervalMinutes} minutos.", intervalMinutes);
 
         await CleanupExpiredTokensAsync(stoppingToken);
+
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(intervalMinutes));
 
         try
         {
@@ -37,21 +41,19 @@ public class ExpiredRefreshTokenCleanupService(
         {
             using var scope = scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AUT2ServicesContext>();
-            var nowUtc = DateTime.UtcNow;
+            var nowUtc = clock.UtcNow;
 
-            var expiredTokens = await dbContext.RefreshTokens
-                .Where(x => x.ExpiresAtUtc <= nowUtc)
-                .ToListAsync(cancellationToken);
+            var deletedCount = await dbContext.RefreshTokens
+                .Where(x => x.ExpiresAtUtc != null && x.ExpiresAtUtc <= nowUtc)
+                .ExecuteDeleteAsync(cancellationToken);
 
-            if (expiredTokens.Count == 0)
+            if (deletedCount == 0)
             {
+                logger.LogDebug("No se encontraron refresh tokens expirados para eliminar.");
                 return;
             }
 
-            dbContext.RefreshTokens.RemoveRange(expiredTokens);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            logger.LogInformation($"Se eliminaron {expiredTokens.Count} tokens de actualización caducados.");
+            logger.LogInformation("Se eliminaron {DeletedCount} refresh tokens expirados.", deletedCount);
         }
         catch (Exception ex)
         {
@@ -59,3 +61,4 @@ public class ExpiredRefreshTokenCleanupService(
         }
     }
 }
+

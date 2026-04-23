@@ -47,30 +47,27 @@ public abstract class PoliticaAsignadaValidations<T> : AbstractValidator<T> wher
     protected void Validate_FechaInicioAsignacion()
     {
         RuleFor(rf => rf.FechaInicioAsignacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaInicioAsignacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaInicioAsignacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaInicioAsignacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 
     protected void Validate_FechaTerminoAsignacion()
     {
         RuleFor(rf => rf.FechaTerminoAsignacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaTerminoAsignacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaTerminoAsignacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaTerminoAsignacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 
     protected void Validate_FechaCreacion()
     {
         RuleFor(rf => rf.FechaCreacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaCreacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaCreacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaCreacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 

@@ -1,7 +1,6 @@
-﻿using AUT2Services.Domain.Entities;
+using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AUT2Services.Infra.Data.Extensions;
@@ -10,12 +9,15 @@ public static class IncludeBaseData
 {
     private const string Id_Administrador = "2b12d04f-c167-4ad1-a42a-e2ecd30518d7";
 
+    private static readonly DateTimeOffset SeedCreatedAtUtc = new(2026, 4, 7, 23, 4, 30, TimeSpan.Zero);
+
     private const string Id_Rol_Administrador = "c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e";
     private const string Id_Rol_Administrador_Entidad = "36957ec2-2857-4101-a81b-f0340bf8eff2";
     private const string Id_Rol_Administrador_Unidad = "e3093727-b36b-45af-a495-7c3d0804c0e9";
     private const string Id_Rol_Valida_Asignacion_Roles = "03b6b706-a24f-4505-9ef6-e3ae7d48c907";
     private const string Id_Rol_Valida_Enrrolamiento = "856a08fd-4162-47cb-bf92-ff25029f3546";
     private const string Id_Rol_Usuario = "e198ec28-2b1b-48b0-8d5e-eb946d596e90";
+    private const string Id_Rol_Auditor_Trazabilidad = "e198ec28-2b1b-48b0-8d5e-eb946d596e91";
 
     private const string Id_Organizacion_ANID = "70c699b4-eb37-49a4-9dcf-1fc87be16489";
 
@@ -64,13 +66,34 @@ public static class IncludeBaseData
     private const string Id_PoliticaAsignada_1 = "8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d";
     private const string Id_PoliticaAsignada_2 = "bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61";
     private const string Id_PoliticaAsignada_3 = "60838d42-c2df-402c-9253-ab3ce52ffb55";
+    private const string Id_PoliticaAsignada_4 = "60838d42-c2df-402c-9253-ab3ce52ffb56";
+    private const string Id_PoliticaAsignada_5 = "60838d42-c2df-402c-9253-ab3ce52ffb57";
+    private const string Id_PoliticaAsignada_6 = "60838d42-c2df-402c-9253-ab3ce52ffb58";
+    private const string Id_PoliticaAsignada_7 = "60838d42-c2df-402c-9253-ab3ce52ffb59";
+    private const string Id_PoliticaAsignada_8 = "60838d42-c2df-402c-9253-ab3ce52ffb5a";
+    private const string Id_PoliticaAsignada_9 = "60838d42-c2df-402c-9253-ab3ce52ffb5b";
+    private const string Id_PoliticaAsignada_10 = "60838d42-c2df-402c-9253-ab3ce52ffb5c";
+    private const string Id_PoliticaAsignada_11 = "60838d42-c2df-402c-9253-ab3ce52ffb5d";
+    private const string Id_PoliticaAsignada_12 = "60838d42-c2df-402c-9253-ab3ce52ffb5e";
+    private const string Id_PoliticaAsignada_13 = "60838d42-c2df-402c-9253-ab3ce52ffb5f";
+    private const string Id_PoliticaAsignada_14 = "60838d42-c2df-402c-9253-ab3ce52ffb60";
+    private const string Id_PoliticaAsignada_15 = "60838d42-c2df-402c-9253-ab3ce52ffb61";
+    private const string Id_PoliticaAsignada_16 = "60838d42-c2df-402c-9253-ab3ce52ffb62";
 
     private const string Id_Proveedor_ClaveUnica = "9d9b40fa-fecb-41f6-ad4f-8ed7ceb1be13";
     private const string Id_Proveedor_ANID = "701c19bf-405c-4467-85f0-ddbc3786f9ee";
 
     private const string Id_AutenticadorExterno_ADMINISTRADOR = "ecaf1074-722d-468f-81fa-69c2d7b88d68";
 
-    private static string clave_Administrador = string.Empty;
+    private const string ClaveAdministradorHash = "AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg==";
+    private const string UsuarioAdministradorConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d001001";
+    private const string RolAdministradorConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002001";
+    private const string RolAdministradorEntidadConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002002";
+    private const string RolAdministradorUnidadConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002003";
+    private const string RolValidaAsignacionConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002004";
+    private const string RolValidaEnrrolamientoConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002005";
+    private const string RolUsuarioConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002006";
+    private const string RolAuditorTrazabilidadConcurrencyStamp = "4f4d7775-2677-47e7-8ccd-a34f5d002007";
 
     public static void SeedBaseData(ModelBuilder modelBuilder)
     {
@@ -157,8 +180,6 @@ public static class IncludeBaseData
 
     private static void SeedUsers(ModelBuilder modelBuilder)
     {
-        var hasher = new PasswordHasher<Usuario>();
-
         var usuarioAdministrador = new Usuario
         {
             Id = Id_Administrador,
@@ -167,6 +188,7 @@ public static class IncludeBaseData
             Email = "administrador@security.com",
             NormalizedEmail = "administrador@security.com".ToUpper(),
             EmailConfirmed = true,
+            ConcurrencyStamp = UsuarioAdministradorConcurrencyStamp,
             SecurityStamp = string.Empty,
             PhoneNumber = string.Empty,
             PhoneNumberConfirmed = true,
@@ -185,8 +207,7 @@ public static class IncludeBaseData
             #endregion PropiedadesPersonalizadas
         };
 
-        usuarioAdministrador.PasswordHash = hasher.HashPassword(usuarioAdministrador, "Changeme123#");
-        clave_Administrador = usuarioAdministrador.PasswordHash;
+        usuarioAdministrador.PasswordHash = ClaveAdministradorHash;
 
         modelBuilder.Entity<Usuario>().HasData(
             usuarioAdministrador
@@ -202,6 +223,7 @@ public static class IncludeBaseData
                     Id = Id_Rol_Administrador,
                     Name = EnumRolesBase.ADMINISTRADOR,
                     NormalizedName = EnumRolesBase.ADMINISTRADOR,
+                    ConcurrencyStamp = RolAdministradorConcurrencyStamp,
                     #region PropiedadesPersonalizadas
                     ActivaDetalleDeAutorizaciones = false,
                     RequiereAccionParaSerAsignado = true,
@@ -216,6 +238,7 @@ public static class IncludeBaseData
                     Id = Id_Rol_Administrador_Entidad,
                     Name = EnumRolesBase.ADMINISTRADOR_ENTIDAD,
                     NormalizedName = EnumRolesBase.ADMINISTRADOR_ENTIDAD,
+                    ConcurrencyStamp = RolAdministradorEntidadConcurrencyStamp,
                     #region PropiedadesPersonalizadas
                     ActivaDetalleDeAutorizaciones = false,
                     RequiereAccionParaSerAsignado = true,
@@ -230,6 +253,7 @@ public static class IncludeBaseData
                     Id = Id_Rol_Administrador_Unidad,
                     Name = EnumRolesBase.ADMINISTRADOR_UNIDAD,
                     NormalizedName = EnumRolesBase.ADMINISTRADOR_UNIDAD,
+                    ConcurrencyStamp = RolAdministradorUnidadConcurrencyStamp,
                     #region PropiedadesPersonalizadas
                     ActivaDetalleDeAutorizaciones = false,
                     RequiereAccionParaSerAsignado = true,
@@ -244,6 +268,7 @@ public static class IncludeBaseData
                     Id = Id_Rol_Valida_Asignacion_Roles,
                     Name = EnumRolesBase.VALIDA_ASIGNACION_ROLES,
                     NormalizedName = EnumRolesBase.VALIDA_ASIGNACION_ROLES,
+                    ConcurrencyStamp = RolValidaAsignacionConcurrencyStamp,
                     #region PropiedadesPersonalizadas
                     ActivaDetalleDeAutorizaciones = false,
                     RequiereAccionParaSerAsignado = true,
@@ -258,6 +283,7 @@ public static class IncludeBaseData
                     Id = Id_Rol_Valida_Enrrolamiento,
                     Name = EnumRolesBase.VALIDA_ENRROLAMIENTO,
                     NormalizedName = EnumRolesBase.VALIDA_ENRROLAMIENTO,
+                    ConcurrencyStamp = RolValidaEnrrolamientoConcurrencyStamp,
                     #region PropiedadesPersonalizadas
                     ActivaDetalleDeAutorizaciones = false,
                     RequiereAccionParaSerAsignado = true,
@@ -272,9 +298,25 @@ public static class IncludeBaseData
                     Id = Id_Rol_Usuario,
                     Name = EnumRolesBase.USUARIO,
                     NormalizedName = EnumRolesBase.USUARIO,
+                    ConcurrencyStamp = RolUsuarioConcurrencyStamp,
                     #region PropiedadesPersonalizadas
                     ActivaDetalleDeAutorizaciones = false,
                     RequiereAccionParaSerAsignado = false,
+                    ValidaAsignacionDeRoles = false,
+                    ValidaEnrrolamiento = false,
+                    RolBase = true,
+                    Activo = true
+                    #endregion PropiedadesPersonalizadas
+                },
+                new Rol
+                {
+                    Id = Id_Rol_Auditor_Trazabilidad,
+                    Name = EnumRolesBase.AUDITOR_TRAZABILIDAD,
+                    NormalizedName = EnumRolesBase.AUDITOR_TRAZABILIDAD,
+                    ConcurrencyStamp = RolAuditorTrazabilidadConcurrencyStamp,
+                    #region PropiedadesPersonalizadas
+                    ActivaDetalleDeAutorizaciones = false,
+                    RequiereAccionParaSerAsignado = true,
                     ValidaAsignacionDeRoles = false,
                     ValidaEnrrolamiento = false,
                     RolBase = true,
@@ -831,11 +873,11 @@ public static class IncludeBaseData
                     id: Guid.Parse(Id_Entidad_Administrador),
                     id_UnidadOrganizacional: Guid.Parse(Id_UnidadOrganizacional_ANID_CasaMatriz),
                     id_Usuario: Guid.Parse(Id_Administrador),
-                    tipoDeEntidad: EnumTipoDeEntidad.UNIDAD_ORGANIZACIONAL,
+                    tipoDeEntidad: EnumTipoDeEntidad.PERSONA,
                     correoElectronico: "",
-                    fechaInicioAutorizacion: DateTimeOffset.MinValue,
-                    fechaTerminoAutorizacion: DateTimeOffset.MaxValue,
-                    fechaCreacion: DateTimeOffset.Now,
+                    fechaInicioAutorizacion: null,
+                    fechaTerminoAutorizacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
                     principal: true,
                     entidadBase: true
                     )
@@ -851,9 +893,9 @@ public static class IncludeBaseData
                     id_Entidad: Guid.Parse(Id_Entidad_Administrador),
                     id_Rol: Guid.Parse(Id_Rol_Administrador),
                     id_Proceso: Guid.Parse(Id_Proceso_Administracion),
-                    fechaInicioAsignacion: DateTimeOffset.MinValue,
-                    fechaTerminoAsignacion: DateTimeOffset.MaxValue,
-                    fechaCreacion: DateTimeOffset.UtcNow,
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
                     rolRequiereValidacion: false,
                     rolAsignadoValidado: true,
                     politicaAsignadaBase: true
@@ -863,9 +905,9 @@ public static class IncludeBaseData
                     id_Entidad: Guid.Parse(Id_Entidad_Administrador),
                     id_Rol: Guid.Parse(Id_Rol_Valida_Asignacion_Roles),
                     id_Proceso: Guid.Parse(Id_Proceso_Administracion),
-                    fechaInicioAsignacion: DateTimeOffset.MinValue,
-                    fechaTerminoAsignacion: DateTimeOffset.MaxValue,
-                    fechaCreacion: DateTimeOffset.UtcNow,
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
                     rolRequiereValidacion: false,
                     rolAsignadoValidado: true,
                     politicaAsignadaBase: true
@@ -875,9 +917,165 @@ public static class IncludeBaseData
                     id_Entidad: Guid.Parse(Id_Entidad_Administrador),
                     id_Rol: Guid.Parse(Id_Rol_Valida_Enrrolamiento),
                     id_Proceso: Guid.Parse(Id_Proceso_Administracion),
-                    fechaInicioAsignacion: DateTimeOffset.MinValue,
-                    fechaTerminoAsignacion: DateTimeOffset.MaxValue,
-                    fechaCreacion: DateTimeOffset.UtcNow,
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_4),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_Vinculacion),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_5),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_VIN_Scielo),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_6),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_VIN_Beic),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_7),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_VIN_DataCiencia),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_8),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_SeguimientoFinanciero),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_9),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_SFI_SGDL_SPI),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_10),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_SFI_Sisfon_Luthien_SPI_SCH),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_11),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_SFI_Sistema_Termino_SIA),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_12),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_SeguimientoTecnico),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_13),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_STE_SIAL_SPI),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_14),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_STE_SyC_Legacy_SIA),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_15),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Administrador),
+                    id_Proceso: Guid.Parse(Id_Proceso_STE_Gestion_Milenio),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
+                    rolRequiereValidacion: false,
+                    rolAsignadoValidado: true,
+                    politicaAsignadaBase: true
+                    ),
+                new PoliticaAsignada(
+                    id: Guid.Parse(Id_PoliticaAsignada_16),
+                    id_Entidad: Guid.Parse(Id_Entidad_Administrador),
+                    id_Rol: Guid.Parse(Id_Rol_Auditor_Trazabilidad),
+                    id_Proceso: Guid.Parse(Id_Proceso_Administracion),
+                    fechaInicioAsignacion: null,
+                    fechaTerminoAsignacion: null,
+                    fechaCreacion: SeedCreatedAtUtc,
                     rolRequiereValidacion: false,
                     rolAsignadoValidado: true,
                     politicaAsignadaBase: true
@@ -919,7 +1117,7 @@ public static class IncludeBaseData
                     id_Proveedor: Guid.Parse(Id_Proveedor_ANID),
                     id_Usuario: Guid.Parse(Id_Administrador),
                     nombreUsuario: EnumUsuariosBase.ADMINISTRADOR,
-                    claveDeAcceso: clave_Administrador,
+                    claveDeAcceso: ClaveAdministradorHash,
                     nombreADesplegar: EnumUsuariosBase.ADMINISTRADOR,
                     validadorPrimario: true,
                     autenticadorExternoBase: true,

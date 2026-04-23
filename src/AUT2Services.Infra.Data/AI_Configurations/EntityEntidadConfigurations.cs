@@ -13,50 +13,47 @@ namespace AUT2Services.Infra.Data.Configurations;
 internal class EntityEntidadConfiguration : IEntityTypeConfiguration<Entidad>
 {
     public void Configure(EntityTypeBuilder<Entidad> builder)
-    { 
+    {
         builder.Property(p => p.Id)
-            .HasColumnName("Id") 
-            .IsRequired(); 
+            .HasColumnName("Id")
+            .IsRequired();
 
         builder.HasKey(p => p.Id)
-            .HasName("PK_Entidad_Id"); 
- 
+            .HasName("PK_Entidad_Id");
+
         builder.Property(p => p.Id_UnidadOrganizacional)
-            .HasColumnName("Id_UnidadOrganizacional") 
-            .IsRequired(); 
- 
+            .HasColumnName("Id_UnidadOrganizacional")
+            .IsRequired();
+
         builder.Property(p => p.Id_Usuario)
-            .HasColumnName("Id_Usuario") 
-            .IsRequired(); 
- 
+            .HasColumnName("Id_Usuario")
+            .IsRequired();
+
         builder.Property(p => p.TipoDeEntidad)
-            .HasColumnName("TipoDeEntidad") 
-            .IsRequired() 
-            .HasMaxLength(100); 
- 
+            .HasColumnName("TipoDeEntidad")
+            .IsRequired()
+            .HasMaxLength(100);
+
         builder.Property(p => p.CorreoElectronico)
-            .HasColumnName("CorreoElectronico") 
-            .IsRequired(); 
- 
+            .HasColumnName("CorreoElectronico")
+            .IsRequired();
+
         builder.Property(p => p.FechaInicioAutorizacion)
-            .HasColumnName("FechaInicioAutorizacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("FechaInicioAutorizacion");
+
         builder.Property(p => p.FechaTerminoAutorizacion)
-            .HasColumnName("FechaTerminoAutorizacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("FechaTerminoAutorizacion");
+
         builder.Property(p => p.FechaCreacion)
-            .HasColumnName("FechaCreacion") 
-            .IsRequired(); 
- 
+            .HasColumnName("FechaCreacion")
+            .IsRequired();
+
         builder.Property(p => p.Principal)
-            .HasColumnName("Principal") 
-            .IsRequired(); 
- 
+            .HasColumnName("Principal")
+            .IsRequired();
+
         builder.Property(p => p.EntidadBase)
-            .HasColumnName("EntidadBase") 
-            .IsRequired(); 
+            .HasColumnName("EntidadBase")
+            .IsRequired();
     }
 }
-

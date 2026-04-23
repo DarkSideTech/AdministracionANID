@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.424.26097</AssemblyVersion>
-    <FileVersion>1.0.424.26097</FileVersion>
+    <AssemblyVersion>1.0.436.26098</AssemblyVersion>
+    <FileVersion>1.0.436.26098</FileVersion>
 	<TransformOnBuild>true</TransformOnBuild>
 	<OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
 	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>

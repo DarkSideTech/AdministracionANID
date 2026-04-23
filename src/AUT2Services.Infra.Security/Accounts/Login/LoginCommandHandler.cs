@@ -1,4 +1,4 @@
-﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Interfaces;
@@ -7,7 +7,6 @@ using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Records;
 using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.Login;
 
@@ -84,9 +83,10 @@ public class LoginCommandHandler(
             }
 
             var sessionId = Guid.NewGuid().ToString("N");
-            accessTokenResult = await tokenService.GenerateAccessTokenAsync(usuario, sessionId, entidad.Id);
+            accessTokenResult = await tokenService.GenerateAccessTokenAsync(usuario, sessionId);
             var refreshToken = tokenService.CreateRefreshToken(sessionId);
             refreshToken.RefreshToken.UserId = usuario.Id;
+            refreshToken.RefreshToken.Id_Entidad = entidad.Id;
 
             aUT2ServicesContext.RefreshTokens.Add(refreshToken.RefreshToken);
             await aUT2ServicesContext.SaveChangesAsync(cancellationToken);
@@ -112,15 +112,20 @@ public class LoginCommandHandler(
             return CommandResponse;
         }
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
+        CommandResponse.Data = new ProfileLogin(
             AccessTokenExpiracion: accessTokenResult!.ExpiresAtUtc,
             OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
+            UnidadesOrganizacionalesPorUsuario: null,
             User: await tokenService.CreateUserDtoAsync(usuario, entidad!.Id),
             ProcesosActivos: null,
             CodigoOrganizacionSeleccionada: null,
+            NombreOrganizacionSeleccionada: null,
+            CodigoUnidadOrganizacionalSeleccionada: null,
+            NombreUnidadOrganizacionalSeleccionada: null,
             IdEntidadSeleccionada: null,
+            EntidadRolSeleccionado: null,
             SeleccionOrganizacionRequerida: true
-        ));
+        );
         CommandResponse.Result = true;
 
         return CommandResponse;

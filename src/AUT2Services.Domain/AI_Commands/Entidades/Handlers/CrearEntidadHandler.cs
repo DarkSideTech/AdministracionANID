@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.Entidades.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.Entidades.Handlers;
 
@@ -49,26 +49,25 @@ public partial class EntidadCommandHandler :
             command.EntidadBase 
         );
 
-                newEntidad.CambiarFechaInicioAutorizacion(DateTimeOffset.Now);
-        newEntidad.CambiarFechaTerminoAutorizacion(DateTimeOffset.MinValue);
-        newEntidad.CambiarFechaCreacion(DateTimeOffset.Now);
+        newEntidad.CambiarFechaInicioAutorizacion(_clock.UtcNow);
+        newEntidad.CambiarFechaTerminoAutorizacion(null);
+        newEntidad.CambiarFechaCreacion(_clock.UtcNow);
         newEntidad.CambiarPrincipal(false);
         newEntidad.CambiarEntidadBase(false);
 
-        newEntidad.AddDomainEvent(new EntidadEventCreado(
+        AddCreateDomainEvent(command, newEntidad, new EntidadEventCreado(
             newEntidad.Id, 
-        newEntidad.Id_UnidadOrganizacional, 
-        newEntidad.Id_Usuario, 
-        newEntidad.TipoDeEntidad, 
-        newEntidad.CorreoElectronico, 
-        newEntidad.Principal, 
-        newEntidad.EntidadBase 
-            )
-        );
+            newEntidad.Id_UnidadOrganizacional, 
+            newEntidad.Id_Usuario, 
+            newEntidad.TipoDeEntidad, 
+            newEntidad.CorreoElectronico, 
+            newEntidad.Principal, 
+            newEntidad.EntidadBase 
+            ), newEntidad);
 
         _entidadRepository.Crear(newEntidad);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new EntidadDTO(){
+        CommandResponse.Data = new EntidadDTO(){
             Id = newEntidad.Id, 
             Id_UnidadOrganizacional = newEntidad.Id_UnidadOrganizacional, 
             Id_Usuario = newEntidad.Id_Usuario, 
@@ -79,7 +78,7 @@ public partial class EntidadCommandHandler :
             FechaCreacion = newEntidad.FechaCreacion, 
             Principal = newEntidad.Principal, 
             EntidadBase = newEntidad.EntidadBase 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_entidadRepository.UnitOfWork);

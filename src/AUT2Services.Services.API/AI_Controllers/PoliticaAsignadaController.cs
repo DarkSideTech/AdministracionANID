@@ -7,6 +7,7 @@
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.PoliticasAsignadas;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,16 @@ namespace AUT2Services.Services.API.Controllers;
 public class PoliticaAsignadaController : ApiController
 {
     private readonly IPoliticaAsignadaServiceApp _politicaAsignadaServiceApp;
+    private readonly IAuditJournalReader _auditJournalReader;
     private readonly ILogger<PoliticaAsignadaController> _logger;
 
-    public PoliticaAsignadaController(IPoliticaAsignadaServiceApp politicaAsignadaServiceApp, ILogger<PoliticaAsignadaController> logger)
+    public PoliticaAsignadaController(
+        IPoliticaAsignadaServiceApp politicaAsignadaServiceApp,
+        IAuditJournalReader auditJournalReader,
+        ILogger<PoliticaAsignadaController> logger)
     {
         _politicaAsignadaServiceApp = politicaAsignadaServiceApp;
+        _auditJournalReader = auditJournalReader;
         _logger = logger;
     }
 
@@ -118,6 +124,14 @@ public class PoliticaAsignadaController : ApiController
     {
         return await _politicaAsignadaServiceApp.BuscarPor_RolRequiereValidacion(); 
     } 
+
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD_UNIDAD)]
+    [HttpGet("BuscarTrazabilidadPor_Id")]
+    public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
+    {
+        var timeline = await _auditJournalReader.GetAggregateTimelineAsync(id);
+        return Ok(OrderAuditTimelineDescending(timeline));
+    }
 
 }
 

@@ -2,5 +2,5 @@
 
 public sealed record AccessTokenResult(
     string Token,
-    DateTime ExpiresAtUtc
+    DateTimeOffset? ExpiresAtUtc
 );

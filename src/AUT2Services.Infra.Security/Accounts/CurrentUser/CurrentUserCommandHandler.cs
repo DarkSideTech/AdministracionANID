@@ -1,8 +1,8 @@
-﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.CurrentUser;
 
@@ -27,7 +27,7 @@ public class CurrentUserCommandHandler(
         command.Request.Cookies.TryGetValue(EnumCsrfNames.Cookie, out var existingToken);
         csrfService.EnsureTokenCookie(command.Response, existingToken);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(await currentUserService.GetCurrentUserResponseAsync(command.Context.RequestAborted));
+        CommandResponse.Data = await currentUserService.GetCurrentUserResponseAsync(command.Context.RequestAborted);
         CommandResponse.Result = true;
 
         return CommandResponse;

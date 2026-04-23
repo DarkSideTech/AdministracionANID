@@ -31,3 +31,12 @@ The goal of this project is to provide a foundation for managing Authentication 
 - Repository
 
 ## About:
+
+## Run by Provider
+
+- Guide: [docs/guia-ejecucion-por-provider.md](E:/DST/dev/AUT2Services/docs/guia-ejecucion-por-provider.md)
+- PostgreSQL run: `.\scripts\run-postgresql.ps1`
+- PostgreSQL migrations: `.\scripts\update-db-postgresql.ps1`
+- SQL Server run: `.\scripts\run-sqlserver.ps1`
+- SQL Server migrations: `.\scripts\update-db-sqlserver.ps1`
+- Dual SQL provider + Mongo projection operation guide: [docs/guia-ejecucion-por-provider.md](E:/DST/dev/AUT2Services/docs/guia-ejecucion-por-provider.md)

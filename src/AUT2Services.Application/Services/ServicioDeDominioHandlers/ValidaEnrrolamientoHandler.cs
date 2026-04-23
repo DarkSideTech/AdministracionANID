@@ -1,4 +1,4 @@
-﻿using AUT2Services.Application.ViewModels.ServiciosDeDominio;
+using AUT2Services.Application.ViewModels.ServiciosDeDominio;
 using AUT2Services.Domain.Commands.ValidacionEnrrolamientos.Commands;
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Enumerations;
@@ -50,7 +50,7 @@ public partial class ServicioDeDominioServiceApp
                 if (!resultUpdateUser.Succeeded)
                 {
                     result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"El usuario id [{command.Id_Usuario_Validado}] no es posible validar el enrrolamiento"));
-                    await transaction.RollbackAsync(cancellationToken);
+                    await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                     return result;
                 }
 
@@ -58,16 +58,16 @@ public partial class ServicioDeDominioServiceApp
                     Guid.Parse(existUser.Id),
                     (Guid)command.Id_Usuario_Valida_Enrrolamiento!,
                     true,
-                    DateTimeOffset.Now
+                    clock.UtcNow
                     );
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync(cancellationToken);
+                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"Error no manejado al momento de crear una entidad nueva, error: {ex.Message}"));
             }
             result.Result = true;
-            await transaction.CommitAsync(cancellationToken);
+            await context.CommitExternalTransactionAsync(transaction, cancellationToken);
         }
 
         return result;

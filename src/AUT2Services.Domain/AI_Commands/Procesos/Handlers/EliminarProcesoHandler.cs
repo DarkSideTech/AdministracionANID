@@ -35,9 +35,9 @@ public partial class  ProcesoCommandHandler :
             return CommandResponse;
         }
  
-        existProceso.AddDomainEvent(new ProcesoEventEliminado(
+        AddDeleteDomainEvent(command, existProceso, new ProcesoEventEliminado(
             existProceso.Id 
-        ));
+        ), existProceso);
 
         _procesoRepository.Eliminar(existProceso);
 

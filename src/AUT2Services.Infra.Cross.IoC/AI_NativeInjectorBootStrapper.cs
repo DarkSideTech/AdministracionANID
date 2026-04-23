@@ -6,12 +6,19 @@
 // -------------------------------------------------
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.Services;
+using AUT2Services.Domain.Core.Auditing;
+using AUT2Services.Domain.Core.Auditing.Queries;
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Time;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Infra.Cross.Bus;
+using AUT2Services.Infra.Cross.IoC.Time;
+using AUT2Services.Infra.Data.Auditing;
+using AUT2Services.Infra.Data.Auditing.Queries;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Data.Repositories;
+using AUT2Services.Infra.DataTrazabilidad.Auditing;
 using AUT2Services.Domain.Commands.Proveedores.Commands;
 using AUT2Services.Domain.Commands.Proveedores.Handlers;
 using AUT2Services.Domain.Events.Proveedores;
@@ -57,6 +64,18 @@ public class AI_NativeInjectorBootStrapper
         #region Domain Bus (Mediator)
         services.AddScoped<IMediator, Mediator>();
         services.AddScoped<IMediatorHandler, MemoryBus>();
+        services.AddSingleton<IClock, SystemClock>();
+        ClockContext.Current = new SystemClock();
+        services.AddScoped<IAuditBuffer, InMemoryAuditBuffer>();
+        services.AddScoped<ScopedAuditExecutionContext>();
+        services.AddScoped<IAuditExecutionContext>(sp => sp.GetRequiredService<ScopedAuditExecutionContext>());
+        services.AddScoped<IAuditExecutionContextInitializer>(sp => sp.GetRequiredService<ScopedAuditExecutionContext>());
+        services.AddSingleton<IAuditSerializer, SystemTextJsonAuditSerializer>();
+        services.AddScoped<IAuditDeltaBuilder, DefaultAuditDeltaBuilder>();
+        services.AddScoped<IAuditJournalReader, EfAuditJournalReader>();
+        services.AddSingleton<ITraceabilityEntityCatalog, StaticTraceabilityEntityCatalog>();
+        services.AddScoped<ITraceabilityReadStore, SqlTraceabilityReadStore>();
+        services.AddScoped<ITraceabilityQueryService, TraceabilityQueryService>();
         #endregion
 
         #region Application
@@ -214,9 +233,8 @@ public class AI_NativeInjectorBootStrapper
         services.AddScoped<IPoliticaAsignadaRepository, PoliticaAsignadaRepository>();
         services.AddScoped<IProcesoRepository, ProcesoRepository>();
 
-        services.AddScoped<AUT2ServicesContext>();
-        services.AddDbContext<AUT2ServicesContext>();
         #endregion
     } 
 }
+
 

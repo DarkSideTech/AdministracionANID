@@ -9,4 +9,11 @@ public class BaseEntityCommand : Command
     public Guid? Id_Usuario { get; set; }
     public string? TipoDeEntidad { get; set; }
     public string? CorreoElectronico { get; set; }
+    public bool PermitirCorreoElectronicoVacio { get; set; }
+
+    public override bool IsValid()
+    {
+        CommandResponse.ValidationResult = new BaseEntityCommandValidations().Validate(this);
+        return CommandResponse.ValidationResult.IsValid;
+    }
 }

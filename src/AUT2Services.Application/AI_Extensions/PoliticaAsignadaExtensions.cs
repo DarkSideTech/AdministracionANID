@@ -46,9 +46,9 @@ public static class PoliticaAsignadaExtensions
             (Guid)politicaAsignada.Id_Entidad!, 
             (Guid)politicaAsignada.Id_Rol!, 
             (Guid)politicaAsignada.Id_Proceso!, 
-            (DateTimeOffset)politicaAsignada.FechaInicioAsignacion!, 
-            (DateTimeOffset)politicaAsignada.FechaTerminoAsignacion!, 
-            (DateTimeOffset)politicaAsignada.FechaCreacion!, 
+            politicaAsignada.FechaInicioAsignacion, 
+            politicaAsignada.FechaTerminoAsignacion, 
+            politicaAsignada.FechaCreacion, 
             (bool)politicaAsignada.RolRequiereValidacion!, 
             (bool)politicaAsignada.RolAsignadoValidado!, 
             (bool)politicaAsignada.PoliticaAsignadaBase! 

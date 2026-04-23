@@ -1,5 +1,4 @@
 ﻿using AUT2Services.Domain.DTOs;
-using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +23,7 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
         Guid id_Organizacion
         )
     {
-        IList<UnidadOrganizacionalDTO> result = null!;
+        IList<UnidadOrganizacionalDTO> result = [];
 
         var repositoryQuery =
             from entidad in db.Entidad
@@ -62,12 +61,12 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
         return result;
     }
 
-    public async Task<EntidadDTO> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(
+    public async Task<EntidadDTO?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(
         Guid id_Usuario,
         Guid id_Organizacion
         )
     {
-        EntidadDTO result = null!;
+        EntidadDTO? result = null;
 
         var repositoryQuery =
             from entidad in db.Entidad
@@ -185,7 +184,7 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
 
     public async Task<IEnumerable<OrganizacionPorUsuarioDTO>> BuscarOrganizacionesPor_Id_Usuario(Guid id_Usuario)
     {
-        IList<OrganizacionPorUsuarioDTO> result = null!;
+        IList<OrganizacionPorUsuarioDTO> result = [];
 
         var repositoryQuery =
             from entidad in db.Entidad

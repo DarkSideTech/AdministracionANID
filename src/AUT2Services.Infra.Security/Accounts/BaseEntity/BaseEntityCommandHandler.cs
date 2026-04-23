@@ -1,10 +1,8 @@
-﻿using AUT2Services.Domain.Commands.Entidades.Commands;
+using AUT2Services.Domain.Commands.Entidades.Commands;
 using AUT2Services.Domain.Commands.Organizaciones.Commands;
 using AUT2Services.Domain.Commands.UnidadesOrganizacionales.Commands;
 using AUT2Services.Domain.Core.Commands;
-using AUT2Services.Domain.Core.Enumerations;
 using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Core.Models;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
@@ -12,7 +10,6 @@ using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Security.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.BaseEntity;
 
@@ -23,19 +20,16 @@ public class BaseEntityCommandHandler : CommandHandler,
     private readonly IMediatorHandler mediator;
     private readonly IOrganizacionRepository organizacionRepository;
     private readonly UserManager<Usuario> userManager;
-    private readonly ITicketDataSender ticketDataSender;
 
     public BaseEntityCommandHandler(
         IMediatorHandler mediator,
         IOrganizacionRepository organizacionRepository,
-        UserManager<Usuario> userManager,
-        ITicketDataSender ticketDataSender
+        UserManager<Usuario> userManager
         )
     {
         this.mediator = mediator;
         this.organizacionRepository = organizacionRepository;
         this.userManager = userManager;
-        this.ticketDataSender = ticketDataSender;
     }
 
     public async Task<CommandResponse> Handle(BaseEntityCommand command, CancellationToken cancellationToken)
@@ -83,8 +77,10 @@ public class BaseEntityCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
+        var organizacionCreada = resultCrearOrganizacionCommand.GetData<ResponseSingleId>();
+
         var crearUnidadOrganizacionalCommand = new CrearUnidadOrganizacionalCommand(
-            Guid.Parse(JsonConvert.DeserializeObject<ResponseSingleId>(resultCrearOrganizacionCommand.Data)!.Id),
+            Guid.Parse(organizacionCreada!.Id),
             EnumUnidadOrganizacionalBase.CASA_MATRIZ,
             "Casa Matriz",
             "Unidad Organizacional Principal");
@@ -100,11 +96,14 @@ public class BaseEntityCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
+        var unidadCreada = resultCrearUnidadOrganizacionalCommand.GetData<ResponseSingleId>();
+
         var crearEntidadCommand = new CrearEntidadCommand(
-            Guid.Parse(JsonConvert.DeserializeObject<ResponseSingleId>(resultCrearUnidadOrganizacionalCommand.Data)!.Id),
+            Guid.Parse(unidadCreada!.Id),
             (Guid)command.Id_Usuario!,
             EnumTipoDeEntidad.PERSONA,
-            command.CorreoElectronico!
+            command.CorreoElectronico ?? string.Empty,
+            command.PermitirCorreoElectronicoVacio
             );
 
         var resultCrearEntidadCommand = await mediator.SendCommand(crearEntidadCommand, cancellationToken);
@@ -118,8 +117,10 @@ public class BaseEntityCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
+        var entidadCreada = resultCrearEntidadCommand.GetData<ResponseSingleId>();
+
         var cambiarEntidadAPrincipalEntidadCommand = new CambiaEntidadAPrincipalEntidadCommand(
-            Guid.Parse(JsonConvert.DeserializeObject<ResponseSingleId>(resultCrearEntidadCommand.Data)!.Id)
+            Guid.Parse(entidadCreada!.Id)
             );
 
         var resultCambiarEntidadAPrincipalEntidadCommand = await mediator.SendCommand(cambiarEntidadAPrincipalEntidadCommand, cancellationToken);
@@ -133,27 +134,12 @@ public class BaseEntityCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
-        var ticket = new TicketDataModel()
+        CommandResponse.Data = new BaseEntityRequestModel()
         {
-            Subject = "Registro Nuevo Usuario Extranjero",
-            Body = $"El usuario {user.NombreADesplegar} con la cuenta de correo {command.CorreoElectronico} se ha registrado y ya ha superado el proceso de validacion del correo electrónico, el siguiente aso es la autorizacion de este nuevo correo, por favor dirigirse al sistema de autorizaciones.",
-            Priority = EnumTicketPriority.NORMAL 
-        };
-
-        var resultSendTicketData = await ticketDataSender.SendTicketData(ticket);
-
-        if (!resultSendTicketData.Result)
-        {
-            AddError($"{resultSendTicketData.Data}");
-            return CommandResponse;
-        }
-
-        CommandResponse.Data = JsonConvert.SerializeObject(new BaseEntityRequestModel()
-        {
-            Id_Entidad = Guid.Parse(JsonConvert.DeserializeObject<ResponseSingleId>(resultCrearEntidadCommand.Data)!.Id),
-            Id_UnidadOrganizacional = Guid.Parse(JsonConvert.DeserializeObject<ResponseSingleId>(resultCrearUnidadOrganizacionalCommand.Data)!.Id),
+            Id_Entidad = Guid.Parse(entidadCreada.Id),
+            Id_UnidadOrganizacional = Guid.Parse(unidadCreada.Id),
             NombreOrganizacion = command.NombreOrganizacion!
-        });
+        };
         CommandResponse.Result = true;
 
         return CommandResponse;

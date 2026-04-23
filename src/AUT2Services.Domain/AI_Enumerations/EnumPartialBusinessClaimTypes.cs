@@ -10,6 +10,8 @@ namespace AUT2Services.Domain.Enumerations;
 
 public static class EnumPartialBusinessClaimTypes
 {
+    public const string _ID_PROCESO = nameof(_ID_PROCESO);
+    public const string _ID_MACRO_PROCESO = nameof(_ID_MACRO_PROCESO);
     public const string _NOMBRE = nameof(_NOMBRE);
     public const string _NIVEL_DE_PROCESO = nameof(_NIVEL_DE_PROCESO);
     public const string _ROL = nameof(_ROL);

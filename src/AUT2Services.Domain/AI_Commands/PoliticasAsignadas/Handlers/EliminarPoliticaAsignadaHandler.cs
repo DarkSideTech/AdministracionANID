@@ -35,9 +35,9 @@ public partial class  PoliticaAsignadaCommandHandler :
                 return CommandResponse;
             }
  
-        existPoliticaAsignada.AddDomainEvent(new PoliticaAsignadaEventEliminado(
-            existPoliticaAsignada.Id 
-        ));
+        AddDeleteDomainEvent(command, existPoliticaAsignada, new PoliticaAsignadaEventEliminado(
+            existPoliticaAsignada.Id
+        ), existPoliticaAsignada);
 
         _politicaAsignadaRepository.Eliminar(existPoliticaAsignada);
 

@@ -1,8 +1,12 @@
 ﻿using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
-using AUT2Services.Domain.DTOs;
+using AUT2Services.Infra.Security.Accounts.CambioUnidadOrganizacionalEntidadRol;
+using AUT2Services.Infra.Security.Accounts.ConfirmaCambioClave;
 using AUT2Services.Infra.Security.Accounts.CurrentUser;
 using AUT2Services.Infra.Security.Accounts.Logout;
+using AUT2Services.Infra.Security.Accounts.ModificaCorreoElectronico;
+using AUT2Services.Infra.Security.Accounts.ReenviaCodigoCambioClave;
+using AUT2Services.Infra.Security.Accounts.SolicitaCambioClave;
 using AUT2Services.Infra.Security.Accounts.Yo;
 using AUT2Services.Infra.Security.Extensions;
 using AUT2Services.Infra.Security.Interfaces;
@@ -15,15 +19,12 @@ namespace AUT2Services.Infra.Security.Services;
 public class AccountServiceApp : IAccountServiceApp
 {
     private readonly IMediatorHandler mediator;
-    private readonly IUserAccessor userAccessor;
 
     public AccountServiceApp(
-                IMediatorHandler mediator,
-                IUserAccessor userAccessor
+                IMediatorHandler mediator
         )
     {
         this.mediator = mediator;
-        this.userAccessor = userAccessor;
     }
 
     public Task<CommandResponse> LoginAsync(LoginViewModel login, HttpRequest request, HttpResponse response)
@@ -31,9 +32,19 @@ public class AccountServiceApp : IAccountServiceApp
         return mediator.SendCommand(login.ToLoginCommand(request, response));
     }
 
+    public Task<CommandResponse> LoginClaveUnicaAsync(LoginClaveUnicaViewModel login, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(login.ToLoginClaveUnicaCommand(request, response));
+    }
+
     public Task<CommandResponse> LoginOrganizacionAsync(LoginOrganizacionViewModel loginOrganizacion, HttpRequest request, HttpResponse response, HttpContext httpContext)
     {
         return mediator.SendCommand(loginOrganizacion.ToLoginOrganizacionCommand(request, response, httpContext));
+    }
+
+    public Task<CommandResponse> CambioUnidadOrganizacionalEntidadRolAsync(CambioUnidadOrganizacionalEntidadRolViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext httpContext)
+    {
+        return mediator.SendCommand(viewModel.ToCambioUnidadOrganizacionalEntidadRolCommand(request, response, httpContext));
     }
 
     public Task<CommandResponse> RefreshTokenAsync(RefreshTokenViewModel viewModel, HttpRequest request, HttpResponse response)
@@ -43,16 +54,7 @@ public class AccountServiceApp : IAccountServiceApp
 
     public Task<CommandResponse> RegisterAsync(RegisterViewModel viewModel, HttpRequest request, HttpResponse response)
     {
-        Task<CommandResponse> result = null!;
-        try
-        {
-            result = mediator.SendCommand(viewModel.ToRegisterCommand(request, response));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        return result;
+        return mediator.SendCommand(viewModel.ToRegisterCommand(request, response)); 
     }
 
     public async Task<CommandResponse> Logout(HttpRequest request, HttpResponse response)
@@ -75,16 +77,6 @@ public class AccountServiceApp : IAccountServiceApp
         return mediator.SendCommand(resendEmailConfirmationTokenRequest.ToResendEmailConfirmationTokenCommand(request, response));
     }
 
-    public IEnumerable<string> ProcesosAutorizados()
-    {
-        return userAccessor.GetProcesos();
-    }
-
-    public IEnumerable<string> RolesPorProceso(string proceso)
-    {
-        return userAccessor.GetRolesPorProceso(proceso);
-    }
-
     public Task<CommandResponse> YoAsync(HttpRequest request, HttpResponse response, HttpContext context)
     {
         return mediator.SendCommand(new YoCommand() { 
@@ -104,34 +96,28 @@ public class AccountServiceApp : IAccountServiceApp
         });
     }
 
-
-    public DatosUsuarioDTO DatosUsuario()
+    public Task<CommandResponse> ModificaUsuarioAsync(ModificaUsuarioViewModel viewModel, HttpRequest request, HttpResponse response)
     {
-        DatosUsuarioDTO result = new()
-        {
-            NombreADesplegar = userAccessor.GetNombreADesplegar(),
-            CodigoOrganizaicon = userAccessor.GetCodigoOrganizacion(),
-            NombreOrganizaicon = userAccessor.GetNombreOrganizacion(),
-            CodigoUnidadOrganizacional = userAccessor.GetCodigoUnidadOrganizacional(),
-            NombreUnidadOrganizacional = userAccessor.GetNombreUnidadOrganizacional(),
-        };
+        return mediator.SendCommand(viewModel.ToModificaUsuarioCommand(request, response));
+    }
 
-        var procesosActivos = new List<ProcesoActivoDTO>();
+    public Task<CommandResponse> ModificaCorreoElectronicoAsync(ModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToModificaCorreoElectronicoCommand(request, response));
+    }
 
-        foreach (var item in userAccessor.GetProcesos())
-        {
-            procesosActivos.Add(new ProcesoActivoDTO()
-            {
-                Codigo = item,
-                Roles = userAccessor.GetRolesPorProceso(item),
-                NombreProceso = userAccessor.GetProcesoNombre(item),
-                Url = userAccessor.GetProcesoUrl(item),
-                ComoDesplegarUrlDeProceso = userAccessor.GetProcesoComoDesplegarUrl(item)
-            });
-        }
+    public Task<CommandResponse> SolicitaCambioClaveAsync(SolicitaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToSolicitaCambioClaveCommand(request, response));
+    }
 
-        result.ProcesosActivos = procesosActivos;
+    public Task<CommandResponse> ReenviaCodigoCambioClaveAsync(ReenviaCodigoCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToReenviaCodigoCambioClaveCommand(request, response));
+    }
 
-        return result;
+    public Task<CommandResponse> ConfirmaCambioClaveAsync(ConfirmaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToConfirmaCambioClaveCommand(request, response));
     }
 }

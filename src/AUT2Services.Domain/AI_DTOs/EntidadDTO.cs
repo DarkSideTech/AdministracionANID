@@ -13,9 +13,9 @@ public class EntidadDTO
     public Guid Id_Usuario { get; set; } = Guid.Empty;
     public string TipoDeEntidad { get; set; } = string.Empty;
     public string CorreoElectronico { get; set; } = string.Empty;
-    public DateTimeOffset FechaInicioAutorizacion { get; set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaTerminoAutorizacion { get; set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaCreacion { get; set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset? FechaInicioAutorizacion { get; set; }
+    public DateTimeOffset? FechaTerminoAutorizacion { get; set; }
+    public DateTimeOffset? FechaCreacion { get; set; }
     public bool Principal { get; set; } = false;
     public bool EntidadBase { get; set; } = true;
 }

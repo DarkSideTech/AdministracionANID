@@ -42,7 +42,7 @@ public partial class ServicioDeDominioServiceApp
                     {
                         result.ValidationResult.Errors.Add(item);
                     }
-                    await transaction.RollbackAsync(cancellationToken);
+                    await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                     return result;
                 }
             }
@@ -59,18 +59,18 @@ public partial class ServicioDeDominioServiceApp
                 {
                     result.ValidationResult.Errors.Add(item);
                 }
-                await transaction.RollbackAsync(cancellationToken);
+                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
                 return result;
             }
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync(cancellationToken);
+            await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
             result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"Error no manejado al momento de crear una entidad nueva, error: {ex.Message}"));
         }
 
         result.Result = true;
-        await transaction.CommitAsync(cancellationToken);
+        await context.CommitExternalTransactionAsync(transaction, cancellationToken);
         return result;
     }
 }

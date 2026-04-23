@@ -61,7 +61,7 @@ public class UserAccessor : IUserAccessor
         var procesos = _httpContextAccessor
         .HttpContext!
             .User
-                .FindAll(proceso)!
+                .FindAll($"{proceso}{EnumPartialBusinessClaimTypes._ROL}")!
                 .ToList();
 
         foreach (var item in procesos)

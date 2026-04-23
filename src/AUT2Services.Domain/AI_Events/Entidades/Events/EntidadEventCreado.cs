@@ -13,12 +13,12 @@ public class EntidadEventCreado : Event
 {
     public EntidadEventCreado(
         Guid id, 
-            Guid id_UnidadOrganizacional, 
-            Guid id_Usuario, 
-            string tipoDeEntidad, 
-            string correoElectronico, 
-            bool principal, 
-            bool entidadBase 
+        Guid id_UnidadOrganizacional, 
+        Guid id_Usuario, 
+        string tipoDeEntidad, 
+        string correoElectronico, 
+        bool principal, 
+        bool entidadBase 
         )
     {
         Id = id;

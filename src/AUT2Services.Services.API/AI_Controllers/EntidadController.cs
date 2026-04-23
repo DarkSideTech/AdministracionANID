@@ -7,6 +7,7 @@
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.Entidades;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,16 @@ namespace AUT2Services.Services.API.Controllers;
 public class EntidadController : ApiController
 {
     private readonly IEntidadServiceApp _entidadServiceApp;
+    private readonly IAuditJournalReader _auditJournalReader;
     private readonly ILogger<EntidadController> _logger;
 
-    public EntidadController(IEntidadServiceApp entidadServiceApp, ILogger<EntidadController> logger)
+    public EntidadController(
+        IEntidadServiceApp entidadServiceApp,
+        IAuditJournalReader auditJournalReader,
+        ILogger<EntidadController> logger)
     {
         _entidadServiceApp = entidadServiceApp;
+        _auditJournalReader = auditJournalReader;
         _logger = logger;
     }
 
@@ -104,6 +110,14 @@ public class EntidadController : ApiController
             id_UnidadOrganizacional 
         ); 
     } 
+
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD_UNIDAD)]
+    [HttpGet("BuscarTrazabilidadPor_Id")]
+    public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
+    {
+        var timeline = await _auditJournalReader.GetAggregateTimelineAsync(id);
+        return Ok(OrderAuditTimelineDescending(timeline));
+    }
 
 }
 

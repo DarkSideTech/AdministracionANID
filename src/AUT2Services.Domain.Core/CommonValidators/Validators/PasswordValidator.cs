@@ -4,7 +4,7 @@ namespace AUT2Services.Domain.Core.CommonValidators.Validators;
 
 public static partial class CommonValidator
 {
-    public static IRuleBuilder<T, string> PasswordValidator<T>(this IRuleBuilder<T, string> ruleBuilder, int minimumLength = 8, int maximunLength = 16)
+    public static IRuleBuilderOptions<T, string?> PasswordValidator<T>(this IRuleBuilder<T, string?> ruleBuilder, int minimumLength = 8, int maximunLength = 16)
     {
         var options = ruleBuilder
             .NotEmpty()

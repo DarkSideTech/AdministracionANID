@@ -17,8 +17,8 @@ public class PoliticaAsignadaEventCreado : Event
             Guid id_Rol, 
             Guid id_Proceso, 
             bool rolRequiereValidacion, 
-            DateTimeOffset fechaInicioAsignacion, 
-            DateTimeOffset fechaCreacion, 
+            DateTimeOffset? fechaInicioAsignacion, 
+            DateTimeOffset? fechaCreacion, 
             bool politicaAsignadaBase 
         )
     {
@@ -39,8 +39,8 @@ public class PoliticaAsignadaEventCreado : Event
     public Guid Id_Rol  { get; private set; } = Guid.Empty; 
     public Guid Id_Proceso  { get; private set; } = Guid.Empty; 
     public bool RolRequiereValidacion  { get; private set; } = false; 
-    public DateTimeOffset FechaInicioAsignacion  { get; private set; } = DateTimeOffset.MinValue; 
-    public DateTimeOffset FechaCreacion  { get; private set; } = DateTimeOffset.MinValue; 
+    public DateTimeOffset? FechaInicioAsignacion  { get; private set; }
+    public DateTimeOffset? FechaCreacion  { get; private set; }
     public bool PoliticaAsignadaBase  { get; private set; } = false; 
 }
 

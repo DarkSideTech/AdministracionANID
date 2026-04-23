@@ -8,7 +8,7 @@ START TRANSACTION;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "AutenticadorExterno" (
         "Id" uuid NOT NULL,
         "Id_Proveedor" uuid NOT NULL,
@@ -26,15 +26,15 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "Entidad" (
         "Id" uuid NOT NULL,
         "Id_UnidadOrganizacional" uuid NOT NULL,
         "Id_Usuario" uuid NOT NULL,
         "TipoDeEntidad" character varying(100) NOT NULL,
         "CorreoElectronico" text NOT NULL,
-        "FechaInicioAutorizacion" timestamp with time zone NOT NULL,
-        "FechaTerminoAutorizacion" timestamp with time zone NOT NULL,
+        "FechaInicioAutorizacion" timestamp with time zone,
+        "FechaTerminoAutorizacion" timestamp with time zone,
         "FechaCreacion" timestamp with time zone NOT NULL,
         "Principal" boolean NOT NULL,
         "EntidadBase" boolean NOT NULL,
@@ -45,7 +45,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "Organizacion" (
         "Id" uuid NOT NULL,
         "IdOrganizacion" text NOT NULL,
@@ -61,14 +61,14 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "PoliticaAsignada" (
         "Id" uuid NOT NULL,
         "Id_Entidad" uuid NOT NULL,
         "Id_Rol" uuid NOT NULL,
         "Id_Proceso" uuid NOT NULL,
-        "FechaInicioAsignacion" timestamp with time zone NOT NULL,
-        "FechaTerminoAsignacion" timestamp with time zone NOT NULL,
+        "FechaInicioAsignacion" timestamp with time zone,
+        "FechaTerminoAsignacion" timestamp with time zone,
         "FechaCreacion" timestamp with time zone NOT NULL,
         "RolRequiereValidacion" boolean NOT NULL,
         "RolAsignadoValidado" boolean NOT NULL,
@@ -80,7 +80,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "Proceso" (
         "Id" uuid NOT NULL,
         "IdMacro_Proceso" uuid NOT NULL,
@@ -102,7 +102,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "Proveedor" (
         "Id" uuid NOT NULL,
         "Codigo" character varying(100) NOT NULL,
@@ -118,7 +118,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "Rol" (
         "Id_Rol" text NOT NULL,
         "Descripcion" text,
@@ -139,7 +139,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "UnidadOrganizacional" (
         "Id" uuid NOT NULL,
         "Id_Organizacion" uuid NOT NULL,
@@ -155,7 +155,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "Usuario" (
         "Id" text NOT NULL,
         "IdPersona" text,
@@ -190,7 +190,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "ValidacionEnrrolamiento" (
         "Id" uuid NOT NULL,
         "IdValidado_Usuario" uuid NOT NULL,
@@ -206,7 +206,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "AspNetRoleClaims" (
         "Id" integer GENERATED BY DEFAULT AS IDENTITY,
         "RoleId" text NOT NULL,
@@ -220,7 +220,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "AspNetUserClaims" (
         "Id" integer GENERATED BY DEFAULT AS IDENTITY,
         "UserId" text NOT NULL,
@@ -234,7 +234,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "AspNetUserLogins" (
         "LoginProvider" text NOT NULL,
         "ProviderKey" text NOT NULL,
@@ -248,7 +248,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "AspNetUserRoles" (
         "UserId" text NOT NULL,
         "RoleId" text NOT NULL,
@@ -261,7 +261,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "AspNetUserTokens" (
         "UserId" text NOT NULL,
         "LoginProvider" text NOT NULL,
@@ -275,13 +275,13 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE TABLE "RefreshTokens" (
         "Id" integer GENERATED BY DEFAULT AS IDENTITY,
         "SessionId" character varying(64) NOT NULL,
         "TokenHash" character varying(128) NOT NULL,
-        "CreatedAtUtc" timestamp with time zone NOT NULL,
-        "ExpiresAtUtc" timestamp with time zone NOT NULL,
+        "CreatedAtUtc" timestamp with time zone,
+        "ExpiresAtUtc" timestamp with time zone,
         "RevokedAtUtc" timestamp with time zone,
         "SelectedOrganization" character varying(256),
         "ReplacedByTokenHash" character varying(128),
@@ -296,23 +296,23 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "AutenticadorExterno" ("Id", "Activo", "AutenticadorExternoBase", "ClaveDeAcceso", "Id_Proveedor", "Id_Usuario", "NombreADesplegar", "NombreUsuario", "ValidadorPrimario")
-    VALUES ('ecaf1074-722d-468f-81fa-69c2d7b88d68', TRUE, TRUE, 'AQAAAAIAAYagAAAAEI6x2Zir3U9izF0j0aIsdPjRT/G72/zAZedaz0ieb0sdgpqH6ooegTLinxwcsIPliQ==', '701c19bf-405c-4467-85f0-ddbc3786f9ee', '2b12d04f-c167-4ad1-a42a-e2ecd30518d7', 'ADMINISTRADOR', 'ADMINISTRADOR', TRUE);
+    VALUES ('ecaf1074-722d-468f-81fa-69c2d7b88d68', TRUE, TRUE, 'AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg==', '701c19bf-405c-4467-85f0-ddbc3786f9ee', '2b12d04f-c167-4ad1-a42a-e2ecd30518d7', 'ADMINISTRADOR', 'ADMINISTRADOR', TRUE);
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "Entidad" ("Id", "CorreoElectronico", "EntidadBase", "FechaCreacion", "FechaInicioAutorizacion", "FechaTerminoAutorizacion", "Id_UnidadOrganizacional", "Id_Usuario", "Principal", "TipoDeEntidad")
-    VALUES ('05507441-5792-4c46-9334-9a5faa99e20a', '', TRUE, TIMESTAMPTZ '2026-04-06T19:42:27.433084-04:00', TIMESTAMPTZ '-infinity', TIMESTAMPTZ 'infinity', '198c164d-1cd8-4107-9db3-74b9fa33302c', '2b12d04f-c167-4ad1-a42a-e2ecd30518d7', TRUE, 'UNIDAD_ORGANIZACIONAL');
+    VALUES ('05507441-5792-4c46-9334-9a5faa99e20a', '', TRUE, TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '198c164d-1cd8-4107-9db3-74b9fa33302c', '2b12d04f-c167-4ad1-a42a-e2ecd30518d7', TRUE, 'PERSONA');
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "Organizacion" ("Id", "Activo", "Codigo", "Descripcion", "IdOrganizacion", "Nombre", "OrganizacionBase")
     VALUES ('70c699b4-eb37-49a4-9dcf-1fc87be16489', TRUE, 'ANID', 'Entidad pública encargada de promover la investigación y el desarrollo en Chile.', '', 'Agencia Nacional de Investigación y Desarrollo', TRUE);
     END IF;
@@ -320,19 +320,43 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
-    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb55', TIMESTAMPTZ '2026-04-06T23:42:27.435029+00:00', TIMESTAMPTZ '-infinity', TIMESTAMPTZ 'infinity', '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', '856a08fd-4162-47cb-bf92-ff25029f3546', TRUE, TRUE, FALSE);
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb55', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', '856a08fd-4162-47cb-bf92-ff25029f3546', TRUE, TRUE, FALSE);
     INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
-    VALUES ('8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d', TIMESTAMPTZ '2026-04-06T23:42:27.434906+00:00', TIMESTAMPTZ '-infinity', TIMESTAMPTZ 'infinity', '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb56', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'fcd2dcf8-7230-4fdd-9651-b4efeb60d11f', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
     INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
-    VALUES ('bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61', TIMESTAMPTZ '2026-04-06T23:42:27.435028+00:00', TIMESTAMPTZ '-infinity', TIMESTAMPTZ 'infinity', '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', '03b6b706-a24f-4505-9ef6-e3ae7d48c907', TRUE, TRUE, FALSE);
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb57', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'eec159f1-9ba9-463d-8407-ec2951751c29', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb58', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', '4bb69d17-cc38-4e52-ad36-42226aa5723d', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb59', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', '35e9a345-dda9-45fc-9a35-7cf27ec8e947', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb5a', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', '06001a21-9b5f-47a3-ae8b-c749e531f9b1', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb5b', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'e256405c-0bda-479a-8a41-a043c672f9b1', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb5c', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', '2b597b09-55ad-4304-b57d-76bd2df5ac4c', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb5d', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', '0737dfc9-8c0f-44ed-ada9-0d227d6a4b5c', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb5e', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'aeaeb19b-2206-4870-9a99-f5d40a982b2e', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb5f', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'f2224186-ffcc-41ee-bbce-4bbd72504e22', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb60', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'f3285b94-90a4-4610-8c65-2782d2e3a1a3', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb61', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'e150709d-4fed-480b-8916-8b0837a775d3', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('8f589ba2-3bc0-40ea-b7c2-7aaaee278d6d', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', 'c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', TRUE, TRUE, FALSE);
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('bf05f4af-4bbc-472f-a7ed-bbd6d5d1af61', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', '03b6b706-a24f-4505-9ef6-e3ae7d48c907', TRUE, TRUE, FALSE);
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "Proceso" ("Id", "Activo", "Codigo", "ComoDesplegarUrlDeProceso", "Contexto", "Descripcion", "IdMacro_Proceso", "MaximaAsignacionDeRoles", "NivelDeProceso", "Nombre", "ProcesoBase", "Token", "Url")
     VALUES ('06001a21-9b5f-47a3-ae8b-c749e531f9b1', TRUE, 'SEGUIMIENTO_FINANCIERO', 'IFRAME', 'Sistema de Seguimiento Financiero', 'Sistema de Seguimiento Financiero', '00000000-0000-0000-0000-000000000000', 1, 'NIVEL_MACRO', 'Sistema de Seguimiento Financiero', FALSE, '', 'http://localhost:4210');
     INSERT INTO "Proceso" ("Id", "Activo", "Codigo", "ComoDesplegarUrlDeProceso", "Contexto", "Descripcion", "IdMacro_Proceso", "MaximaAsignacionDeRoles", "NivelDeProceso", "Nombre", "ProcesoBase", "Token", "Url")
@@ -402,7 +426,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "Proveedor" ("Id", "APIDeAutenticacion", "Activo", "Codigo", "Descripcion", "Nombre", "ProveedorBase")
     VALUES ('701c19bf-405c-4467-85f0-ddbc3786f9ee', 'https://www.aut2.darksidetech.services/', TRUE, 'ANID', 'Proveedor de autenticación implementadop or ANID.', 'ANID', TRUE);
     INSERT INTO "Proveedor" ("Id", "APIDeAutenticacion", "Activo", "Codigo", "Descripcion", "Nombre", "ProveedorBase")
@@ -412,25 +436,25 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
-    VALUES ('03b6b706-a24f-4505-9ef6-e3ae7d48c907', FALSE, TRUE, NULL, '', 'VALIDA_ASIGNACION_ROLES', 'VALIDA_ASIGNACION_ROLES', TRUE, FALSE, TRUE, FALSE, FALSE);
+    VALUES ('03b6b706-a24f-4505-9ef6-e3ae7d48c907', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002004', '', 'VALIDA_ASIGNACION_ROLES', 'VALIDA_ASIGNACION_ROLES', TRUE, FALSE, TRUE, FALSE, FALSE);
     INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
-    VALUES ('36957ec2-2857-4101-a81b-f0340bf8eff2', FALSE, TRUE, NULL, '', 'ADMINISTRADOR_ENTIDAD', 'ADMINISTRADOR_ENTIDAD', TRUE, FALSE, TRUE, FALSE, FALSE);
+    VALUES ('36957ec2-2857-4101-a81b-f0340bf8eff2', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002002', '', 'ADMINISTRADOR_ENTIDAD', 'ADMINISTRADOR_ENTIDAD', TRUE, FALSE, TRUE, FALSE, FALSE);
     INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
-    VALUES ('856a08fd-4162-47cb-bf92-ff25029f3546', FALSE, TRUE, NULL, '', 'VALIDA_ENRROLAMIENTO', 'VALIDA_ENRROLAMIENTO', TRUE, FALSE, TRUE, FALSE, FALSE);
+    VALUES ('856a08fd-4162-47cb-bf92-ff25029f3546', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002005', '', 'VALIDA_ENRROLAMIENTO', 'VALIDA_ENRROLAMIENTO', TRUE, FALSE, TRUE, FALSE, FALSE);
     INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
-    VALUES ('c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', FALSE, TRUE, NULL, '', 'ADMINISTRADOR', 'ADMINISTRADOR', TRUE, FALSE, TRUE, FALSE, FALSE);
+    VALUES ('c42e4c85-2b6d-4c8f-8672-f82a2d1c2d9e', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002001', '', 'ADMINISTRADOR', 'ADMINISTRADOR', TRUE, FALSE, TRUE, FALSE, FALSE);
     INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
-    VALUES ('e198ec28-2b1b-48b0-8d5e-eb946d596e90', FALSE, TRUE, NULL, '', 'USUARIO', 'USUARIO', FALSE, FALSE, TRUE, FALSE, FALSE);
+    VALUES ('e198ec28-2b1b-48b0-8d5e-eb946d596e90', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002006', '', 'USUARIO', 'USUARIO', FALSE, FALSE, TRUE, FALSE, FALSE);
     INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
-    VALUES ('e3093727-b36b-45af-a495-7c3d0804c0e9', FALSE, TRUE, NULL, '', 'ADMINISTRADOR_UNIDAD', 'ADMINISTRADOR_UNIDAD', TRUE, FALSE, TRUE, FALSE, FALSE);
+    VALUES ('e3093727-b36b-45af-a495-7c3d0804c0e9', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002003', '', 'ADMINISTRADOR_UNIDAD', 'ADMINISTRADOR_UNIDAD', TRUE, FALSE, TRUE, FALSE, FALSE);
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "UnidadOrganizacional" ("Id", "Activo", "Codigo", "Descripcion", "Id_Organizacion", "Nombre", "UnidadOrganizacionalBase")
     VALUES ('198c164d-1cd8-4107-9db3-74b9fa33302c', TRUE, 'CASA_MATRIZ', 'Casa Matriz de la Agencia Nacional de Investigación y Desarrollo', '70c699b4-eb37-49a4-9dcf-1fc87be16489', 'Casa Matriz ANID', TRUE);
     END IF;
@@ -438,87 +462,309 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "Usuario" ("Id", "CantidadDeAccesosFallidos", "Activo", "ConcurrencyStamp", "Descripcion", "CorreoElectronico", "CorreoElectronicoConfirmado", "EstadoDeUsuario", "IdPersona", "InformacionAdicional", "LockoutEnabled", "LockoutEnd", "NombreADesplegar", "CorreoElectronicoNormalizado", "NombreUsuarioNormalizado", "HashDeLaClave", "NumeroDeTelefono", "NumeroDeTelefonoConfirmado", "RefreshToken", "RefreshTokenExpiresAtUtc", "RequiereValidacionEnrrolamiento", "SecurityStamp", "TipoDeUsuario", "DobleFactorHabilitado", "NombreUsuario", "UsuarioBase")
-    VALUES ('2b12d04f-c167-4ad1-a42a-e2ecd30518d7', 10, TRUE, 'a9f4ebf7-5ec4-450f-ab46-a263fe780995', 'Administrador global', 'administrador@security.com', TRUE, 'REGISTRADO', '', '', FALSE, NULL, 'Administrador', 'ADMINISTRADOR@SECURITY.COM', 'ADMINISTRADOR', 'AQAAAAIAAYagAAAAEI6x2Zir3U9izF0j0aIsdPjRT/G72/zAZedaz0ieb0sdgpqH6ooegTLinxwcsIPliQ==', '', TRUE, NULL, NULL, FALSE, '', 'NACIONAL', FALSE, 'ADMINISTRADOR', TRUE);
+    VALUES ('2b12d04f-c167-4ad1-a42a-e2ecd30518d7', 10, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d001001', 'Administrador global', 'administrador@security.com', TRUE, 'REGISTRADO', '', '', FALSE, NULL, 'Administrador', 'ADMINISTRADOR@SECURITY.COM', 'ADMINISTRADOR', 'AQAAAAIAAYagAAAAEL23Xp7j+JxUsrKAljUnZ89wxmX/rYfRl8mrMVy20i8pAO1tng9S7zJYwpOucvcyrg==', '', TRUE, NULL, NULL, FALSE, '', 'NACIONAL', FALSE, 'ADMINISTRADOR', TRUE);
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "IX_AspNetRoleClaims_RoleId" ON "AspNetRoleClaims" ("RoleId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "IX_AspNetUserClaims_UserId" ON "AspNetUserClaims" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "IX_AspNetUserLogins_UserId" ON "AspNetUserLogins" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "IX_AspNetUserRoles_RoleId" ON "AspNetUserRoles" ("RoleId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "IX_RefreshTokens_SessionId" ON "RefreshTokens" ("SessionId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE UNIQUE INDEX "IX_RefreshTokens_TokenHash" ON "RefreshTokens" ("TokenHash");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "IX_RefreshTokens_UserId" ON "RefreshTokens" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE UNIQUE INDEX "RoleNameIndex" ON "Rol" ("NombreNormalizado");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE INDEX "EmailIndex" ON "Usuario" ("CorreoElectronicoNormalizado");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     CREATE UNIQUE INDEX "UserNameIndex" ON "Usuario" ("NombreUsuarioNormalizado");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260406234227_Inicial') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260406234227_Inicial', '9.0.8');
+    VALUES ('20260408205139_Inicial', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE TABLE "AuditAggregateCursor" (
+        "AggregateId" uuid NOT NULL,
+        "LastRevision" bigint NOT NULL,
+        "UpdatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_AuditAggregateCursor" PRIMARY KEY ("AggregateId")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE TABLE "AuditOutbox" (
+        "Id" uuid NOT NULL,
+        "CorrelationId" uuid NOT NULL,
+        "AggregateId" uuid NOT NULL,
+        "AggregateType" character varying(150) NOT NULL,
+        "AggregateRevision" bigint NOT NULL,
+        "EventType" character varying(200) NOT NULL,
+        "CommandType" character varying(200) NOT NULL,
+        "OperationType" integer NOT NULL,
+        "ActorUserId" character varying(100),
+        "ActorUsername" character varying(256),
+        "ActorEmail" character varying(256),
+        "RequestPath" character varying(512),
+        "OccurredAtUtc" timestamp with time zone NOT NULL,
+        "PersistedAtUtc" timestamp with time zone NOT NULL,
+        "SnapshotJson" text,
+        "DispatchStatus" smallint NOT NULL DEFAULT 0,
+        "DispatchAttempts" integer NOT NULL DEFAULT 0,
+        "LastDispatchAttemptUtc" timestamp with time zone,
+        "DispatchedAtUtc" timestamp with time zone,
+        "LastError" text,
+        "SchemaVersion" smallint NOT NULL DEFAULT 1,
+        CONSTRAINT "PK_AuditOutbox" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE TABLE "AuditOutboxChange" (
+        "Id" uuid NOT NULL,
+        "AuditOutboxMessageId" uuid NOT NULL,
+        "Order" integer NOT NULL,
+        "Path" character varying(200) NOT NULL,
+        "ValueType" character varying(512),
+        "NewValueJson" text,
+        CONSTRAINT "PK_AuditOutboxChange" PRIMARY KEY ("Id"),
+        CONSTRAINT "FK_AuditOutboxChange_AuditOutbox_AuditOutboxMessageId" FOREIGN KEY ("AuditOutboxMessageId") REFERENCES "AuditOutbox" ("Id") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutbox_ActorUserId_OccurredAtUtc" ON "AuditOutbox" ("ActorUserId", "OccurredAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE UNIQUE INDEX "IX_AuditOutbox_AggregateId_AggregateRevision" ON "AuditOutbox" ("AggregateId", "AggregateRevision");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutbox_AggregateId_OccurredAtUtc_Id" ON "AuditOutbox" ("AggregateId", "OccurredAtUtc", "Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutbox_CorrelationId" ON "AuditOutbox" ("CorrelationId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutbox_DispatchStatus_PersistedAtUtc_Id" ON "AuditOutbox" ("DispatchStatus", "PersistedAtUtc", "Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutbox_EventType_OccurredAtUtc" ON "AuditOutbox" ("EventType", "OccurredAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutboxChange_AuditOutboxMessageId" ON "AuditOutboxChange" ("AuditOutboxMessageId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    CREATE INDEX "IX_AuditOutboxChange_Path" ON "AuditOutboxChange" ("Path");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260411163537_AddAuditTraceability', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260412004336_AddAuditAggregateCursorConcurrencyToken') THEN
+    ALTER TABLE "AuditAggregateCursor" ADD "ConcurrencyToken" uuid NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260412004336_AddAuditAggregateCursorConcurrencyToken') THEN
+    INSERT INTO "PoliticaAsignada" ("Id", "FechaCreacion", "FechaInicioAsignacion", "FechaTerminoAsignacion", "Id_Entidad", "Id_Proceso", "Id_Rol", "PoliticaAsignadaBase", "RolAsignadoValidado", "RolRequiereValidacion")
+    VALUES ('60838d42-c2df-402c-9253-ab3ce52ffb62', TIMESTAMPTZ '2026-04-07T23:04:30+00:00', NULL, NULL, '05507441-5792-4c46-9334-9a5faa99e20a', 'd1889c7c-c5dc-4d9a-a2fe-34cdf956b145', 'e198ec28-2b1b-48b0-8d5e-eb946d596e91', TRUE, TRUE, FALSE);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260412004336_AddAuditAggregateCursorConcurrencyToken') THEN
+    INSERT INTO "Rol" ("Id_Rol", "ActivaDetalleDeAutorizaciones", "Activo", "ConcurrencyStamp", "Descripcion", "Nombre", "NombreNormalizado", "RequiereAccionParaSerAsignado", "RequiereValidacionDeAsignacion", "RolBase", "ValidaAsignacionDeRoles", "ValidaEnrrolamiento")
+    VALUES ('e198ec28-2b1b-48b0-8d5e-eb946d596e91', FALSE, TRUE, '4f4d7775-2677-47e7-8ccd-a34f5d002007', '', 'AUDITOR_TRAZABILIDAD', 'AUDITOR_TRAZABILIDAD', TRUE, FALSE, TRUE, FALSE, FALSE);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260412004336_AddAuditAggregateCursorConcurrencyToken') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260412004336_AddAuditAggregateCursorConcurrencyToken', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
+    CREATE TABLE "NotificationOutbox" (
+        "Id" uuid NOT NULL,
+        "Channel" character varying(50) NOT NULL,
+        "NotificationType" character varying(150) NOT NULL,
+        "UserId" character varying(100),
+        "RequestPath" character varying(512),
+        "DeduplicationKey" character varying(300),
+        "PayloadJson" text NOT NULL,
+        "DispatchStatus" smallint NOT NULL DEFAULT 0,
+        "DispatchAttempts" integer NOT NULL DEFAULT 0,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        "NextAttemptUtc" timestamp with time zone NOT NULL,
+        "LastDispatchAttemptUtc" timestamp with time zone,
+        "DispatchedAtUtc" timestamp with time zone,
+        "LastError" text,
+        "SchemaVersion" smallint NOT NULL DEFAULT 1,
+        CONSTRAINT "PK_NotificationOutbox" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
+    CREATE INDEX "IX_NotificationOutbox_Channel_NotificationType_CreatedAtUtc" ON "NotificationOutbox" ("Channel", "NotificationType", "CreatedAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
+    CREATE INDEX "IX_NotificationOutbox_DeduplicationKey" ON "NotificationOutbox" ("DeduplicationKey");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
+    CREATE INDEX "IX_NotificationOutbox_DispatchStatus_NextAttemptUtc_CreatedAtU~" ON "NotificationOutbox" ("DispatchStatus", "NextAttemptUtc", "CreatedAtUtc", "Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
+    CREATE INDEX "IX_NotificationOutbox_UserId" ON "NotificationOutbox" ("UserId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260414014337_AddNotificationOutbox', '10.0.5');
     END IF;
 END $EF$;
 COMMIT;

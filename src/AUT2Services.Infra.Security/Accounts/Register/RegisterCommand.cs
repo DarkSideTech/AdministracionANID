@@ -35,7 +35,7 @@ public class RegisterCommand : Command
     public string? SegundoApellido { get; set; } = string.Empty;
     public string? SexoDeclarativo { get; set; } = string.Empty;
     public string? SexoRegistral { get; set; } = string.Empty;
-    public DateTime? FechaDeNacimiento { get; set; } = DateTime.MinValue;
+    public DateOnly? FechaDeNacimiento { get; set; }
     public bool? TerminosYCondiciones { get; set; } = true;
     public required HttpRequest Request { get; set; }
     public required HttpResponse Response { get; set; }

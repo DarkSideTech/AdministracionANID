@@ -1,4 +1,5 @@
-﻿using AUT2Services.Domain.Security.Entities;
+using AUT2Services.Domain.Core.Time;
+using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,8 @@ namespace AUT2Services.Infra.Security.Services;
 
 public class SessionValidationService(
     AUT2ServicesContext dbContext,
-    UserManager<Usuario> userManager) : ISessionValidationService
+    UserManager<Usuario> userManager,
+    IClock clock) : ISessionValidationService
 {
     public async Task<bool> IsSessionValidAsync(string? userId, string? sessionId, string? securityStamp, CancellationToken cancellationToken = default)
     {
@@ -21,7 +23,7 @@ public class SessionValidationService(
             x => x.UserId == userId &&
                  x.SessionId == sessionId &&
                  x.RevokedAtUtc == null &&
-                 x.ExpiresAtUtc > DateTime.UtcNow,
+                 x.ExpiresAtUtc > clock.UtcNow,
             cancellationToken);
 
         if (!sessionExists)

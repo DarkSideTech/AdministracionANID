@@ -17,6 +17,7 @@ public static class EnumBusinessClaimTypes
     public const string CODIGO_UNIDAD_ORGANIZACIONAL = nameof(CODIGO_UNIDAD_ORGANIZACIONAL);
     public const string NOMBRE_UNIDAD_ORGANIZACIONAL = nameof(NOMBRE_UNIDAD_ORGANIZACIONAL);
     public const string ID_ENTIDAD = nameof(ID_ENTIDAD);
+    public const string ID_ROL = nameof(ID_ROL);
     public const string PROCESO = nameof(PROCESO);
 
     public static IList<string> ObtenerListaValores()

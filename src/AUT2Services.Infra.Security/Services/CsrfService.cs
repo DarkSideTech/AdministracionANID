@@ -1,24 +1,25 @@
-﻿using AUT2Services.Infra.Security.Enumerations;
+using AUT2Services.Domain.Core.Time;
+using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using System;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace AUT2Services.Infra.Security.Services;
 
 public class CsrfService(
-    IOptions<JwtOptions> jwtOptions
-        ) : ICsrfService
+    IOptions<JwtOptions> jwtOptions,
+    IClock clock) : ICsrfService
 {
     private readonly JwtOptions jwtOptions = jwtOptions.Value;
 
     public void EnsureTokenCookie(HttpResponse response, string? existingToken = null)
     {
         var token = string.IsNullOrWhiteSpace(existingToken)
-            ? Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))
+            ? Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(32))
             : existingToken;
 
         response.Cookies.Append(
@@ -31,7 +32,7 @@ public class CsrfService(
                 SameSite = SameSiteMode.Strict,
                 IsEssential = true,
                 Path = "/",
-                Expires = DateTimeOffset.UtcNow.AddHours(8)
+                Expires = clock.UtcNow.AddHours(8)
             });
     }
 
@@ -58,4 +59,3 @@ public class CsrfService(
         return CryptographicOperations.FixedTimeEquals(cookieBytes, headerBytes);
     }
 }
-

@@ -7,6 +7,7 @@
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.Procesos;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,16 @@ namespace AUT2Services.Services.API.Controllers;
 public class ProcesoController : ApiController
 {
     private readonly IProcesoServiceApp _procesoServiceApp;
+    private readonly IAuditJournalReader _auditJournalReader;
     private readonly ILogger<ProcesoController> _logger;
 
-    public ProcesoController(IProcesoServiceApp procesoServiceApp, ILogger<ProcesoController> logger)
+    public ProcesoController(
+        IProcesoServiceApp procesoServiceApp,
+        IAuditJournalReader auditJournalReader,
+        ILogger<ProcesoController> logger)
     {
         _procesoServiceApp = procesoServiceApp;
+        _auditJournalReader = auditJournalReader;
         _logger = logger;
     }
 
@@ -99,6 +105,14 @@ public class ProcesoController : ApiController
             idMacro_Proceso 
         ); 
     } 
+
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [HttpGet("BuscarTrazabilidadPor_Id")]
+    public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
+    {
+        var timeline = await _auditJournalReader.GetAggregateTimelineAsync(id);
+        return Ok(OrderAuditTimelineDescending(timeline));
+    }
 
 }
 

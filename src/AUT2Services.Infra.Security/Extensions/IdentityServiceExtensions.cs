@@ -1,4 +1,5 @@
 ﻿using AUT2Services.Domain.Core.Models;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Enumerations;
@@ -22,18 +23,17 @@ public class IdentityServiceExtensions
 {
     public static void AddIdentityServices(WebApplicationBuilder builder)
     {
-        builder.Services.Configure<ZendeskSendTicketOptions>(
-            builder.Configuration.GetSection(ZendeskSendTicketOptions.ZendeskTicketOptionsKey));
-
-        builder.Services.AddIdentityCore<Usuario>(opt =>
+        builder.Services.AddIdentity<Usuario, Rol>(opt =>
             {
                 opt.User.RequireUniqueEmail = true;
                 opt.SignIn.RequireConfirmedEmail = true;
                 opt.Password.RequireNonAlphanumeric = false;
             })
-            .AddRoles<Rol>()
             .AddEntityFrameworkStores<AUT2ServicesContext>()
             .AddDefaultTokenProviders();
+
+        var jwtKey = builder.Configuration["JwtOptions:Key"]
+             ?? throw new InvalidOperationException("Missing configuration: \"JwtOptions:Key\"");
 
         builder.Services
             .AddAuthentication(options =>
@@ -51,7 +51,7 @@ public class IdentityServiceExtensions
                         ValidateLifetime = true,
                         ValidIssuer = builder.Configuration["JwtOptions:Issuer"],
                         ValidAudience = builder.Configuration["JwtOptions:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtOptions:Secret"]!)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
                         ClockSkew = TimeSpan.Zero
                     };
                     options.Events = new JwtBearerEvents
@@ -88,7 +88,7 @@ public class IdentityServiceExtensions
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-            options.AddPolicy("ResendConfirmationEmail", httpContext =>
+            options.AddPolicy(EnumPolicyMaster.RESEND_CONFIRMATION_EMAIL, httpContext =>
             {
                 var settings = httpContext.RequestServices
                     .GetRequiredService<Microsoft.Extensions.Options.IOptions<EmailValidationOptions>>()

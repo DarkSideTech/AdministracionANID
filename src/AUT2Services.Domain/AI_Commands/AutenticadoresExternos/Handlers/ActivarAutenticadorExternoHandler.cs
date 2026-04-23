@@ -10,7 +10,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Events.AutenticadoresExternos.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.AutenticadoresExternos.Handlers
 {
@@ -57,15 +57,14 @@ namespace AUT2Services.Domain.Commands.AutenticadoresExternos.Handlers
 
             newAutenticadorExterno.CambiarActivo(true);
 
-            newAutenticadorExterno.AddDomainEvent(new AutenticadorExternoEventActivado(
+            AddUpdateDomainEvent(command, newAutenticadorExterno, new AutenticadorExternoEventActivado(
                     newAutenticadorExterno.Id, 
                     newAutenticadorExterno.Activo 
-                    )
-                );
+                    ), existAutenticadorExterno, newAutenticadorExterno);
 
             _autenticadorExternoRepository.Modificar(newAutenticadorExterno);
         
-            CommandResponse.Data = JsonConvert.SerializeObject(new AutenticadorExternoDTO(){
+            CommandResponse.Data = new AutenticadorExternoDTO(){
                     Id = newAutenticadorExterno.Id, 
                     Id_Proveedor = newAutenticadorExterno.Id_Proveedor, 
                     Id_Usuario = newAutenticadorExterno.Id_Usuario, 
@@ -75,7 +74,7 @@ namespace AUT2Services.Domain.Commands.AutenticadoresExternos.Handlers
                     ValidadorPrimario = newAutenticadorExterno.ValidadorPrimario, 
                     AutenticadorExternoBase = newAutenticadorExterno.AutenticadorExternoBase, 
                     Activo = newAutenticadorExterno.Activo 
-                });
+                };
             CommandResponse.Result = true;
 
             return await Commit(_autenticadorExternoRepository.UnitOfWork);

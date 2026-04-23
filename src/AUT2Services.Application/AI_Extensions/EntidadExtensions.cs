@@ -47,9 +47,9 @@ public static class EntidadExtensions
             (Guid)entidad.Id_Usuario!, 
             (string)entidad.TipoDeEntidad!, 
             (string)entidad.CorreoElectronico!, 
-            (DateTimeOffset)entidad.FechaInicioAutorizacion!, 
-            (DateTimeOffset)entidad.FechaTerminoAutorizacion!, 
-            (DateTimeOffset)entidad.FechaCreacion!, 
+            entidad.FechaInicioAutorizacion, 
+            entidad.FechaTerminoAutorizacion, 
+            entidad.FechaCreacion, 
             (bool)entidad.Principal!, 
             (bool)entidad.EntidadBase! 
             );

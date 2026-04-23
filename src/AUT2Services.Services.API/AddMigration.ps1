@@ -5,16 +5,37 @@
 # Date Generated File : 2025-12-03 11:34:56.415
 # -------------------------------------------------
 param(
- [parameter(mandatory)] 
- [string] $MigrationName)
+ [parameter(mandatory)]
+ [string] $MigrationName,
+ [string] $Environment = "Development"
+)
 
-Write-Host "Adding PostgreSql migration" -ForegroundColor Green
+$ErrorActionPreference = "Stop"
+$projectRoot = (Resolve-Path $PSScriptRoot).Path
 
-$env:ASPNETCORE_DB_PROVIDER = "postgresql"
-dotnet ef migrations add $migrationName --context AUT2ServicesContext --project ../AUT2Services.Infra.Migrations.PostgreSql
+function Add-MigrationForProvider {
+    param(
+        [string] $Provider,
+        [string] $ProjectPath
+    )
 
-Write-Host "Adding Sql Server migration" -ForegroundColor Green
+    Write-Host "Adding $Provider migration" -ForegroundColor Green
+    $env:ASPNETCORE_ENVIRONMENT = $Environment
+    $env:DB_PROVIDER = $Provider
+    Remove-Item Env:ConnectionStrings__AUT2ServicesConnection -ErrorAction SilentlyContinue
 
-$env:ASPNETCORE_DB_PROVIDER = "sqlserver"
-dotnet ef migrations add $migrationName --context AUT2ServicesContext --project ../AUT2Services.Infra.Migrations.SqlServer
+    dotnet ef migrations add $MigrationName `
+        --context AUT2ServicesContext `
+        --project $ProjectPath `
+        --startup-project $projectRoot
+}
+
+Push-Location $projectRoot
+try {
+    Add-MigrationForProvider -Provider "postgresql" -ProjectPath "..\AUT2Services.Infra.Migrations.PostgreSql\AUT2Services.Infra.Migrations.PostgreSql.csproj"
+    Add-MigrationForProvider -Provider "sqlserver" -ProjectPath "..\AUT2Services.Infra.Migrations.SqlServer\AUT2Services.Infra.Migrations.SqlServer.csproj"
+}
+finally {
+    Pop-Location
+}
 

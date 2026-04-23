@@ -2,10 +2,10 @@
 {
     public abstract class ValueObject<T> where T : ValueObject<T>
     {
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var valueObject = obj as T;
-            return EqualsCore(valueObject!);
+            return valueObject is not null && EqualsCore(valueObject);
         }
 
         protected abstract bool EqualsCore(T other);

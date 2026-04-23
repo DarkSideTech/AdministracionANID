@@ -1,14 +1,14 @@
-﻿using AUT2Services.Infra.Security.Enumerations;
+using AUT2Services.Domain.Core.Time;
+using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Records;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace AUT2Services.Infra.Security.Services;
 
-public class AuthCookieService() : IAuthCookieService
+public class AuthCookieService(IClock clock) : IAuthCookieService
 {
-    public void AppendAuthCookies(HttpResponse response, AccessTokenResult accessToken, DateTime refreshTokenExpiresAtUtc, string refreshToken)
+    public void AppendAuthCookies(HttpResponse response, AccessTokenResult accessToken, DateTimeOffset? refreshTokenExpiresAtUtc, string refreshToken)
     {
         response.Cookies.Append(
             EnumAuthCookieNames.AccessToken,
@@ -29,15 +29,15 @@ public class AuthCookieService() : IAuthCookieService
         response.Cookies.Delete(EnumAuthCookieNames.RefreshToken, BuildDeleteCookieOptions());
     }
 
-    private CookieOptions BuildCookieOptions(DateTime expiresAtUtc) => new()
+    private CookieOptions BuildCookieOptions(DateTimeOffset? expiresAtUtc) => new()
     {
         HttpOnly = true,
-        Secure = false, //true para produccion
+        Secure = false,
         SameSite = SameSiteMode.Strict,
         Expires = expiresAtUtc,
         IsEssential = true,
         Path = "/"
     };
 
-    private CookieOptions BuildDeleteCookieOptions() => BuildCookieOptions(DateTime.UtcNow.AddDays(-1));
+    private CookieOptions BuildDeleteCookieOptions() => BuildCookieOptions(clock.UtcNow.AddDays(-1));
 }

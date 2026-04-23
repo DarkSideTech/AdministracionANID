@@ -7,6 +7,7 @@
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.ValidacionEnrrolamientos;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,16 @@ namespace AUT2Services.Services.API.Controllers;
 public class ValidacionEnrrolamientoController : ApiController
 {
     private readonly IValidacionEnrrolamientoServiceApp _validacionEnrrolamientoServiceApp;
+    private readonly IAuditJournalReader _auditJournalReader;
     private readonly ILogger<ValidacionEnrrolamientoController> _logger;
 
-    public ValidacionEnrrolamientoController(IValidacionEnrrolamientoServiceApp validacionEnrrolamientoServiceApp, ILogger<ValidacionEnrrolamientoController> logger)
+    public ValidacionEnrrolamientoController(
+        IValidacionEnrrolamientoServiceApp validacionEnrrolamientoServiceApp,
+        IAuditJournalReader auditJournalReader,
+        ILogger<ValidacionEnrrolamientoController> logger)
     {
         _validacionEnrrolamientoServiceApp = validacionEnrrolamientoServiceApp;
+        _auditJournalReader = auditJournalReader;
         _logger = logger;
     }
 
@@ -98,6 +104,14 @@ public class ValidacionEnrrolamientoController : ApiController
             idValidaEnrrolamiento_Usuario 
         ); 
     } 
+
+    [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
+    [HttpGet("BuscarTrazabilidadPor_Id")]
+    public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
+    {
+        var timeline = await _auditJournalReader.GetAggregateTimelineAsync(id);
+        return Ok(OrderAuditTimelineDescending(timeline));
+    }
 
 }
 

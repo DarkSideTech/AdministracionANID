@@ -15,9 +15,10 @@ namespace AUT2Services.Domain.Commands.Entidades
         public Guid Id_Usuario { get; protected set; } = Guid.Empty; 
         public string TipoDeEntidad { get; protected set; } = string.Empty; 
         public string CorreoElectronico { get; protected set; } = string.Empty; 
-        public DateTimeOffset FechaInicioAutorizacion { get; protected set; } = DateTimeOffset.MinValue; 
-        public DateTimeOffset FechaTerminoAutorizacion { get; protected set; } = DateTimeOffset.MinValue; 
-        public DateTimeOffset FechaCreacion { get; protected set; } = DateTimeOffset.MinValue; 
+        public bool PermitirCorreoElectronicoVacio { get; protected set; } = false;
+        public DateTimeOffset? FechaInicioAutorizacion { get; protected set; }
+        public DateTimeOffset? FechaTerminoAutorizacion { get; protected set; }
+        public DateTimeOffset? FechaCreacion { get; protected set; }
         public bool Principal { get; protected set; } = false; 
         public bool EntidadBase { get; protected set; } = true; 
     }

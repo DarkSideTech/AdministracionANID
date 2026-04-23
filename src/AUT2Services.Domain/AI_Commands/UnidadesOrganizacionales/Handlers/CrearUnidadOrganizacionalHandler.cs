@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.UnidadesOrganizacionales.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.UnidadesOrganizacionales.Handlers;
 
@@ -49,7 +49,7 @@ public partial class UnidadOrganizacionalCommandHandler :
                 newUnidadOrganizacional.CambiarUnidadOrganizacionalBase(false);
         newUnidadOrganizacional.CambiarActivo(true);
 
-        newUnidadOrganizacional.AddDomainEvent(new UnidadOrganizacionalEventCreado(
+        AddCreateDomainEvent(command, newUnidadOrganizacional, new UnidadOrganizacionalEventCreado(
             newUnidadOrganizacional.Id, 
         newUnidadOrganizacional.Id_Organizacion, 
         newUnidadOrganizacional.Codigo, 
@@ -58,11 +58,11 @@ public partial class UnidadOrganizacionalCommandHandler :
         newUnidadOrganizacional.UnidadOrganizacionalBase, 
         newUnidadOrganizacional.Activo 
             )
-        );
+        , newUnidadOrganizacional);
 
         _unidadOrganizacionalRepository.Crear(newUnidadOrganizacional);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new UnidadOrganizacionalDTO(){
+        CommandResponse.Data = new UnidadOrganizacionalDTO(){
             Id = newUnidadOrganizacional.Id, 
             Id_Organizacion = newUnidadOrganizacional.Id_Organizacion, 
             Codigo = newUnidadOrganizacional.Codigo, 
@@ -70,7 +70,7 @@ public partial class UnidadOrganizacionalCommandHandler :
             Descripcion = newUnidadOrganizacional.Descripcion, 
             UnidadOrganizacionalBase = newUnidadOrganizacional.UnidadOrganizacionalBase, 
             Activo = newUnidadOrganizacional.Activo 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_unidadOrganizacionalRepository.UnitOfWork);

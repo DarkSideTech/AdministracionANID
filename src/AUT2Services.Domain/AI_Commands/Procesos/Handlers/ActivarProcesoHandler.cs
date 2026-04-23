@@ -10,7 +10,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Events.Procesos.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.Procesos.Handlers
 {
@@ -61,15 +61,14 @@ namespace AUT2Services.Domain.Commands.Procesos.Handlers
 
         newProceso.CambiarActivo(true);
 
-            newProceso.AddDomainEvent(new ProcesoEventActivada(
+            AddUpdateDomainEvent(command, newProceso, new ProcesoEventActivada(
                     newProceso.Id, 
                     newProceso.Activo 
-                    )
-                );
+                    ), existProceso, newProceso);
 
             _procesoRepository.Modificar(newProceso);
         
-            CommandResponse.Data = JsonConvert.SerializeObject(new ProcesoDTO(){
+            CommandResponse.Data = new ProcesoDTO(){
                     Id = newProceso.Id, 
                     IdMacro_Proceso = newProceso.IdMacro_Proceso, 
                     Codigo = newProceso.Codigo, 
@@ -83,7 +82,7 @@ namespace AUT2Services.Domain.Commands.Procesos.Handlers
                     ProcesoBase = newProceso.ProcesoBase, 
                     MaximaAsignacionDeRoles = newProceso.MaximaAsignacionDeRoles, 
                     Activo = newProceso.Activo 
-                });
+                };
             CommandResponse.Result = true;
 
             return await Commit(_procesoRepository.UnitOfWork);

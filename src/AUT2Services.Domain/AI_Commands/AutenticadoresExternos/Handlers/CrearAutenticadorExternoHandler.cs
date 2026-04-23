@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.AutenticadoresExternos.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.AutenticadoresExternos.Handlers;
 
@@ -57,19 +57,18 @@ public partial class AutenticadorExternoCommandHandler :
             newAutenticadorExterno.CambiarValidadorPrimario(true);
         }
 
-        newAutenticadorExterno.AddDomainEvent(new AutenticadorExternoEventCreado(
+        AddCreateDomainEvent(command, newAutenticadorExterno, new AutenticadorExternoEventCreado(
             newAutenticadorExterno.Id, 
-        newAutenticadorExterno.Id_Proveedor, 
-        newAutenticadorExterno.Id_Usuario, 
-        newAutenticadorExterno.NombreUsuario, 
-        newAutenticadorExterno.ClaveDeAcceso, 
-        newAutenticadorExterno.NombreADesplegar 
-            )
-        );
+            newAutenticadorExterno.Id_Proveedor, 
+            newAutenticadorExterno.Id_Usuario, 
+            newAutenticadorExterno.NombreUsuario, 
+            newAutenticadorExterno.ClaveDeAcceso, 
+            newAutenticadorExterno.NombreADesplegar 
+            ), newAutenticadorExterno);
 
         _autenticadorExternoRepository.Crear(newAutenticadorExterno);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new AutenticadorExternoDTO(){
+        CommandResponse.Data = new AutenticadorExternoDTO(){
             Id = newAutenticadorExterno.Id, 
             Id_Proveedor = newAutenticadorExterno.Id_Proveedor, 
             Id_Usuario = newAutenticadorExterno.Id_Usuario, 
@@ -79,7 +78,7 @@ public partial class AutenticadorExternoCommandHandler :
             ValidadorPrimario = newAutenticadorExterno.ValidadorPrimario, 
             AutenticadorExternoBase = newAutenticadorExterno.AutenticadorExternoBase, 
             Activo = newAutenticadorExterno.Activo 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_autenticadorExternoRepository.UnitOfWork);

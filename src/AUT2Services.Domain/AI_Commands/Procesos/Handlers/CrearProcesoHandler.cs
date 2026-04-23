@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.Procesos.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.Procesos.Handlers;
 
@@ -56,7 +56,7 @@ public partial class ProcesoCommandHandler :
         newProceso.CambiarMaximaAsignacionDeRoles(1);
         newProceso.CambiarActivo(true);
 
-        newProceso.AddDomainEvent(new ProcesoEventCreado(
+        AddCreateDomainEvent(command, newProceso, new ProcesoEventCreado(
             newProceso.Id, 
         newProceso.IdMacro_Proceso, 
         newProceso.Codigo, 
@@ -71,11 +71,11 @@ public partial class ProcesoCommandHandler :
         newProceso.MaximaAsignacionDeRoles, 
         newProceso.Activo 
             )
-        );
+        , newProceso);
 
         _procesoRepository.Crear(newProceso);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ProcesoDTO(){
+        CommandResponse.Data = new ProcesoDTO(){
             Id = newProceso.Id, 
             IdMacro_Proceso = newProceso.IdMacro_Proceso, 
             Codigo = newProceso.Codigo, 
@@ -89,7 +89,7 @@ public partial class ProcesoCommandHandler :
             ProcesoBase = newProceso.ProcesoBase, 
             MaximaAsignacionDeRoles = newProceso.MaximaAsignacionDeRoles, 
             Activo = newProceso.Activo 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_procesoRepository.UnitOfWork);

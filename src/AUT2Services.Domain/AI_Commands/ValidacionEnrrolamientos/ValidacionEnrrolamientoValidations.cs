@@ -46,20 +46,18 @@ public abstract class ValidacionEnrrolamientoValidations<T> : AbstractValidator<
     protected void Validate_FechaValidacion()
     {
         RuleFor(rf => rf.FechaValidacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaValidacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaValidacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaValidacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 
     protected void Validate_FechaRegistro()
     {
         RuleFor(rf => rf.FechaRegistro)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaRegistro no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaRegistro)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaRegistro!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 

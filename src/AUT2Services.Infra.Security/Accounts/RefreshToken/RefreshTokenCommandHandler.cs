@@ -1,14 +1,16 @@
-﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Time;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
+using AUT2Services.Infra.Security.Models;
 using AUT2Services.Infra.Security.Records;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.RefreshToken;
 
@@ -25,6 +27,7 @@ public class RefreshTokenCommandHandler : CommandHandler,
     private readonly AUT2ServicesContext aUT2ServicesContext;
     private readonly IAuthCookieService authCookieService;
     private readonly ICurrentUserService currentUserService;
+    private readonly IClock clock;
 
     public RefreshTokenCommandHandler(
         UserManager<Usuario> userManager,
@@ -36,8 +39,8 @@ public class RefreshTokenCommandHandler : CommandHandler,
         ICsrfService csrfService,
         AUT2ServicesContext aUT2ServicesContext,
         IAuthCookieService authCookieService,
-        ICurrentUserService currentUserService
-        )
+        ICurrentUserService currentUserService,
+        IClock clock)
     {
         this.userManager = userManager;
         this.tokenService = tokenService;
@@ -49,7 +52,7 @@ public class RefreshTokenCommandHandler : CommandHandler,
         this.aUT2ServicesContext = aUT2ServicesContext;
         this.authCookieService = authCookieService;
         this.currentUserService = currentUserService;
-        this.tokenService = tokenService;
+        this.clock = clock;
     }
 
     public async Task<CommandResponse> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
@@ -92,7 +95,7 @@ public class RefreshTokenCommandHandler : CommandHandler,
                 return CommandResponse;
             }
 
-            if (existingRefreshToken.IsExpired)
+            if (existingRefreshToken.IsExpired(clock))
             {
                 authCookieService.ClearAuthCookies(command.Response);
                 AddError("RefreshToken ha expirado.");
@@ -122,6 +125,8 @@ public class RefreshTokenCommandHandler : CommandHandler,
                 return CommandResponse;
             }
 
+            usuario = existingRefreshToken.User;
+
             if (!existingRefreshToken.User.EmailConfirmed)
             {
                 await tokenService.RevokeSessionAsync(existingRefreshToken.SessionId, EnumRefreshTokenRevocationReasons.Logout);
@@ -131,19 +136,41 @@ public class RefreshTokenCommandHandler : CommandHandler,
                 return CommandResponse;
             }
 
-            var rotatedRefreshToken = tokenService.CreateRefreshToken(existingRefreshToken.SessionId, existingRefreshToken.SelectedOrganization);
-            existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
+            var persistedSelection = SelectedOrganizationSessionSerializer.Parse(existingRefreshToken.SelectedOrganization);
+            var hasSelectedOrganizationForRotation = existingRefreshToken.Id_Entidad.HasValue
+                && !string.IsNullOrWhiteSpace(persistedSelection.OrganizationCode);
+            var idEntidadForRotation = existingRefreshToken.Id_Entidad;
+            var selectedContextForRotation = hasSelectedOrganizationForRotation
+                ? await currentUserService.GetSelectedSessionContextAsync(
+                    idEntidadForRotation!.Value,
+                    persistedSelection.IdRol,
+                    cancellationToken)
+                : null;
+            var idRolSeleccionadoForRotation = persistedSelection.IdRol ?? selectedContextForRotation?.EntidadRolSeleccionado?.Id_Rol;
+
+            var rotatedRefreshToken = tokenService.CreateRefreshToken(
+                existingRefreshToken.SessionId,
+                SelectedOrganizationSessionSerializer.Serialize(
+                    selectedContextForRotation?.CodigoOrganizacionSeleccionada ?? persistedSelection.OrganizationCode,
+                    idRolSeleccionadoForRotation));
+            existingRefreshToken.RevokedAtUtc = clock.UtcNow;
             existingRefreshToken.RevocationReason = EnumRefreshTokenRevocationReasons.Rotated;
             existingRefreshToken.ReplacedByTokenHash = rotatedRefreshToken.RefreshToken.TokenHash;
 
             rotatedRefreshToken.RefreshToken.UserId = existingRefreshToken.UserId;
+            rotatedRefreshToken.RefreshToken.Id_Entidad = existingRefreshToken.Id_Entidad;
             aUT2ServicesContext.RefreshTokens.Add(rotatedRefreshToken.RefreshToken);
             await aUT2ServicesContext.SaveChangesAsync();
 
-            accessToken = await tokenService.GenerateAccessTokenAsync(
-                existingRefreshToken.User,
-                existingRefreshToken.SessionId,
-                existingRefreshToken.Id_Entidad);
+            accessToken = string.IsNullOrWhiteSpace(persistedSelection.OrganizationCode)
+                ? await tokenService.GenerateAccessTokenAsync(
+                    existingRefreshToken.User,
+                    existingRefreshToken.SessionId)
+                : await tokenService.GenerateAccessTokenAsync(
+                    existingRefreshToken.User,
+                    existingRefreshToken.SessionId,
+                    existingRefreshToken.Id_Entidad,
+                    idRolSeleccionadoForRotation);
 
             authCookieService.AppendAuthCookies(
                 command.Response,
@@ -152,24 +179,56 @@ public class RefreshTokenCommandHandler : CommandHandler,
                 rotatedRefreshToken.PlainTextToken);
 
             csrfService.EnsureTokenCookie(command.Response);
-
         }
         catch (Exception ex)
         {
             AddError($"Error al momento de validar y generar el refreshtoken, message [{ex.Message}]");
             CommandResponse.Data = string.Empty;
             CommandResponse.Result = false;
+            return CommandResponse;
         }
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
+        var persistedSessionSelection = SelectedOrganizationSessionSerializer.Parse(existingRefreshToken.SelectedOrganization);
+        var hasSelectedOrganization = existingRefreshToken.Id_Entidad.HasValue
+            && !string.IsNullOrWhiteSpace(persistedSessionSelection.OrganizationCode);
+        var idEntidad = existingRefreshToken.Id_Entidad;
+        var selectedContext = hasSelectedOrganization
+            ? await currentUserService.GetSelectedSessionContextAsync(
+                idEntidad!.Value,
+                persistedSessionSelection.IdRol,
+                cancellationToken)
+            : null;
+        var idRolSeleccionado = persistedSessionSelection.IdRol ?? selectedContext?.EntidadRolSeleccionado?.Id_Rol;
+
+        var procesosActivos = hasSelectedOrganization && idRolSeleccionado.HasValue
+            ? await currentUserService.GetProcesosActivosPorEntidadAsync(
+                idEntidad!.Value,
+                idRolSeleccionado.Value,
+                cancellationToken)
+            : null;
+
+        CommandResponse.Data = new ProfileLogin(
             AccessTokenExpiracion: accessToken.ExpiresAtUtc,
             OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
-            User: await tokenService.CreateUserDtoAsync(existingRefreshToken!.User!, (Guid)existingRefreshToken.Id_Entidad!),
-            ProcesosActivos: await currentUserService.GetProcesosActivosAsync(cancellationToken) ?? null,
-            CodigoOrganizacionSeleccionada: existingRefreshToken.SelectedOrganization,
-            IdEntidadSeleccionada: existingRefreshToken.Id_Entidad.ToString(),
-            SeleccionOrganizacionRequerida: string.IsNullOrWhiteSpace(existingRefreshToken.SelectedOrganization)
-            ));
+            UnidadesOrganizacionalesPorUsuario: hasSelectedOrganization
+                ? await currentUserService.GetUnidadesOrganizacionalesEntidadRolPorUsuarioAsync(
+                    idEntidad!.Value,
+                    Guid.Parse(usuario.Id),
+                    cancellationToken)
+                : [],
+            User: await tokenService.CreateUserDtoAsync(
+                existingRefreshToken.User!,
+                idEntidad!.Value,
+                selectedContext?.EntidadRolSeleccionado),
+            ProcesosActivos: procesosActivos,
+            CodigoOrganizacionSeleccionada: selectedContext?.CodigoOrganizacionSeleccionada ?? persistedSessionSelection.OrganizationCode,
+            NombreOrganizacionSeleccionada: selectedContext?.NombreOrganizacionSeleccionada,
+            CodigoUnidadOrganizacionalSeleccionada: selectedContext?.CodigoUnidadOrganizacionalSeleccionada,
+            NombreUnidadOrganizacionalSeleccionada: selectedContext?.NombreUnidadOrganizacionalSeleccionada,
+            IdEntidadSeleccionada: hasSelectedOrganization ? idEntidad!.Value.ToString() : null,
+            EntidadRolSeleccionado: selectedContext?.EntidadRolSeleccionado,
+            SeleccionOrganizacionRequerida: string.IsNullOrWhiteSpace(persistedSessionSelection.OrganizationCode)
+        );
         CommandResponse.Result = true;
 
         return CommandResponse;

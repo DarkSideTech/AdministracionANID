@@ -35,9 +35,9 @@ public partial class  EntidadCommandHandler :
                 return CommandResponse;
             }
  
-        existEntidad.AddDomainEvent(new EntidadEventEliminado(
-            existEntidad.Id 
-        ));
+        AddDeleteDomainEvent(command, existEntidad, new EntidadEventEliminado(
+            existEntidad.Id
+        ), existEntidad);
 
         _entidadRepository.Eliminar(existEntidad);
 

@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.PoliticasAsignadas.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Handlers;
 
@@ -49,30 +49,29 @@ public partial class PoliticaAsignadaCommandHandler :
             command.PoliticaAsignadaBase 
         );
 
-                newPoliticaAsignada.CambiarFechaInicioAsignacion(DateTimeOffset.Now);
-        newPoliticaAsignada.CambiarFechaTerminoAsignacion(DateTimeOffset.MinValue);
-        newPoliticaAsignada.CambiarFechaCreacion(DateTimeOffset.Now);
+                newPoliticaAsignada.CambiarFechaInicioAsignacion(_clock.UtcNow);
+        newPoliticaAsignada.CambiarFechaTerminoAsignacion(null);
+        newPoliticaAsignada.CambiarFechaCreacion(_clock.UtcNow);
         newPoliticaAsignada.CambiarRolRequiereValidacion(false);
         newPoliticaAsignada.CambiarRolAsignadoValidado(true);
         newPoliticaAsignada.CambiarPoliticaAsignadaBase(false);
 
-        newPoliticaAsignada.AddDomainEvent(new PoliticaAsignadaEventCreadoAsignadoNuevaEntidadPersona(
+        AddCreateDomainEvent(command, newPoliticaAsignada, new PoliticaAsignadaEventCreadoAsignadoNuevaEntidadPersona(
             newPoliticaAsignada.Id, 
-        newPoliticaAsignada.Id_Entidad, 
-        newPoliticaAsignada.Id_Rol, 
-        newPoliticaAsignada.Id_Proceso, 
-        newPoliticaAsignada.FechaInicioAsignacion, 
-        newPoliticaAsignada.FechaTerminoAsignacion, 
-        newPoliticaAsignada.FechaCreacion, 
-        newPoliticaAsignada.RolRequiereValidacion, 
-        newPoliticaAsignada.RolAsignadoValidado, 
-        newPoliticaAsignada.PoliticaAsignadaBase 
-            )
-        );
+            newPoliticaAsignada.Id_Entidad, 
+            newPoliticaAsignada.Id_Rol, 
+            newPoliticaAsignada.Id_Proceso, 
+            newPoliticaAsignada.FechaInicioAsignacion, 
+            newPoliticaAsignada.FechaTerminoAsignacion, 
+            newPoliticaAsignada.FechaCreacion, 
+            newPoliticaAsignada.RolRequiereValidacion, 
+            newPoliticaAsignada.RolAsignadoValidado, 
+            newPoliticaAsignada.PoliticaAsignadaBase 
+            ), newPoliticaAsignada);
 
         _politicaAsignadaRepository.Crear(newPoliticaAsignada);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new PoliticaAsignadaDTO(){
+        CommandResponse.Data = new PoliticaAsignadaDTO(){
             Id = newPoliticaAsignada.Id, 
             Id_Entidad = newPoliticaAsignada.Id_Entidad, 
             Id_Rol = newPoliticaAsignada.Id_Rol, 
@@ -83,7 +82,7 @@ public partial class PoliticaAsignadaCommandHandler :
             RolRequiereValidacion = newPoliticaAsignada.RolRequiereValidacion, 
             RolAsignadoValidado = newPoliticaAsignada.RolAsignadoValidado, 
             PoliticaAsignadaBase = newPoliticaAsignada.PoliticaAsignadaBase 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_politicaAsignadaRepository.UnitOfWork);

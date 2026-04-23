@@ -5,7 +5,6 @@
 // Date Generated File : 2026-04-05 15:14:10.098
 // -------------------------------------------------
 using AUT2Services.Domain.Core.Events;
-using AUT2Services.Domain.DTOs;
 
 namespace AUT2Services.Domain.Events.Entidades.Events;
 
@@ -13,7 +12,7 @@ public class EntidadEventAutorizacionFinalizada : Event
 {
     public EntidadEventAutorizacionFinalizada(
         Guid id, 
-            DateTimeOffset fechaTerminoAutorizacion 
+        DateTimeOffset? fechaTerminoAutorizacion 
         )
     {
         Id = id;
@@ -23,6 +22,6 @@ public class EntidadEventAutorizacionFinalizada : Event
     }
 
     public Guid Id { get; private set; } = Guid.Empty;
-    public DateTimeOffset FechaTerminoAutorizacion  { get; private set; } = DateTimeOffset.MinValue; 
+    public DateTimeOffset? FechaTerminoAutorizacion  { get; private set; }
 }
 

@@ -10,7 +10,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Events.UnidadesOrganizacionales.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.UnidadesOrganizacionales.Handlers
 {
@@ -55,15 +55,14 @@ namespace AUT2Services.Domain.Commands.UnidadesOrganizacionales.Handlers
 
             newUnidadOrganizacional.CambiarActivo(false);
 
-            newUnidadOrganizacional.AddDomainEvent(new UnidadOrganizacionalEventDesactivado(
+            AddUpdateDomainEvent(command, newUnidadOrganizacional, new UnidadOrganizacionalEventDesactivado(
                     newUnidadOrganizacional.Id, 
                     newUnidadOrganizacional.Activo 
-                    )
-                );
+                    ), existUnidadOrganizacional, newUnidadOrganizacional);
 
             _unidadOrganizacionalRepository.Modificar(newUnidadOrganizacional);
         
-            CommandResponse.Data = JsonConvert.SerializeObject(new UnidadOrganizacionalDTO(){
+            CommandResponse.Data = new UnidadOrganizacionalDTO(){
                     Id = newUnidadOrganizacional.Id, 
                     Id_Organizacion = newUnidadOrganizacional.Id_Organizacion, 
                     Codigo = newUnidadOrganizacional.Codigo, 
@@ -71,7 +70,7 @@ namespace AUT2Services.Domain.Commands.UnidadesOrganizacionales.Handlers
                     Descripcion = newUnidadOrganizacional.Descripcion, 
                     UnidadOrganizacionalBase = newUnidadOrganizacional.UnidadOrganizacionalBase, 
                     Activo = newUnidadOrganizacional.Activo 
-                });
+                };
             CommandResponse.Result = true;
 
             return await Commit(_unidadOrganizacionalRepository.UnitOfWork);

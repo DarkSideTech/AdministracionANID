@@ -14,8 +14,8 @@ namespace AUT2Services.Domain.Commands.ValidacionEnrrolamientos
         public Guid IdValidado_Usuario { get; protected set; } = Guid.Empty; 
         public Guid IdValidaEnrrolamiento_Usuario { get; protected set; } = Guid.Empty; 
         public bool EnrrolamientoAceptado { get; protected set; } = false; 
-        public DateTimeOffset FechaValidacion { get; protected set; } = DateTimeOffset.MinValue; 
-        public DateTimeOffset FechaRegistro { get; protected set; } = DateTimeOffset.MinValue; 
+        public DateTimeOffset? FechaValidacion { get; protected set; }
+        public DateTimeOffset? FechaRegistro { get; protected set; }
         public bool Activo { get; protected set; } = true; 
     }
 }

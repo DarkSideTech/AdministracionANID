@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.PoliticasAsignadas.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Handlers;
 
@@ -51,21 +51,20 @@ public partial class PoliticaAsignadaCommandHandler :
 
             newPoliticaAsignada.CambiarRolAsignadoValidado(!newPoliticaAsignada.RolRequiereValidacion);
 
-        newPoliticaAsignada.AddDomainEvent(new PoliticaAsignadaEventCreado(
+        AddCreateDomainEvent(command, newPoliticaAsignada, new PoliticaAsignadaEventCreado(
             newPoliticaAsignada.Id, 
-        newPoliticaAsignada.Id_Entidad, 
-        newPoliticaAsignada.Id_Rol, 
-        newPoliticaAsignada.Id_Proceso, 
-        newPoliticaAsignada.RolRequiereValidacion, 
-        newPoliticaAsignada.FechaInicioAsignacion, 
-        newPoliticaAsignada.FechaCreacion, 
-        newPoliticaAsignada.PoliticaAsignadaBase 
-            )
-        );
+            newPoliticaAsignada.Id_Entidad, 
+            newPoliticaAsignada.Id_Rol, 
+            newPoliticaAsignada.Id_Proceso, 
+            newPoliticaAsignada.RolRequiereValidacion, 
+            newPoliticaAsignada.FechaInicioAsignacion, 
+            newPoliticaAsignada.FechaCreacion, 
+            newPoliticaAsignada.PoliticaAsignadaBase 
+            ), newPoliticaAsignada);
 
         _politicaAsignadaRepository.Crear(newPoliticaAsignada);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new PoliticaAsignadaDTO(){
+        CommandResponse.Data = new PoliticaAsignadaDTO(){
             Id = newPoliticaAsignada.Id, 
             Id_Entidad = newPoliticaAsignada.Id_Entidad, 
             Id_Rol = newPoliticaAsignada.Id_Rol, 
@@ -76,7 +75,7 @@ public partial class PoliticaAsignadaCommandHandler :
             RolRequiereValidacion = newPoliticaAsignada.RolRequiereValidacion, 
             RolAsignadoValidado = newPoliticaAsignada.RolAsignadoValidado, 
             PoliticaAsignadaBase = newPoliticaAsignada.PoliticaAsignadaBase 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_politicaAsignadaRepository.UnitOfWork);

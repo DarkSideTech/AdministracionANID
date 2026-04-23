@@ -11,7 +11,7 @@ using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Events.ValidacionEnrrolamientos.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.ValidacionEnrrolamientos.Handlers;
 
@@ -46,22 +46,22 @@ public partial class ValidacionEnrrolamientoCommandHandler :
             command.Activo 
         );
 
-                newValidacionEnrrolamiento.CambiarFechaRegistro(DateTimeOffset.Now);
+        newValidacionEnrrolamiento.CambiarFechaRegistro(_clock.UtcNow);
         newValidacionEnrrolamiento.CambiarActivo(true);
 
-        newValidacionEnrrolamiento.AddDomainEvent(new ValidacionEnrrolamientoEventCreado(
+        AddCreateDomainEvent(command, newValidacionEnrrolamiento, new ValidacionEnrrolamientoEventCreado(
             newValidacionEnrrolamiento.Id, 
-        newValidacionEnrrolamiento.IdValidado_Usuario, 
-        newValidacionEnrrolamiento.IdValidaEnrrolamiento_Usuario, 
-        newValidacionEnrrolamiento.EnrrolamientoAceptado, 
-        newValidacionEnrrolamiento.FechaValidacion, 
-        newValidacionEnrrolamiento.FechaRegistro 
+            newValidacionEnrrolamiento.IdValidado_Usuario, 
+            newValidacionEnrrolamiento.IdValidaEnrrolamiento_Usuario, 
+            newValidacionEnrrolamiento.EnrrolamientoAceptado, 
+            newValidacionEnrrolamiento.FechaValidacion, 
+            newValidacionEnrrolamiento.FechaRegistro 
             )
-        );
+        , newValidacionEnrrolamiento);
 
         _validacionEnrrolamientoRepository.Crear(newValidacionEnrrolamiento);
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ValidacionEnrrolamientoDTO(){
+        CommandResponse.Data = new ValidacionEnrrolamientoDTO(){
             Id = newValidacionEnrrolamiento.Id, 
             IdValidado_Usuario = newValidacionEnrrolamiento.IdValidado_Usuario, 
             IdValidaEnrrolamiento_Usuario = newValidacionEnrrolamiento.IdValidaEnrrolamiento_Usuario, 
@@ -69,7 +69,7 @@ public partial class ValidacionEnrrolamientoCommandHandler :
             FechaValidacion = newValidacionEnrrolamiento.FechaValidacion, 
             FechaRegistro = newValidacionEnrrolamiento.FechaRegistro, 
             Activo = newValidacionEnrrolamiento.Activo 
-        });
+        };
 
         CommandResponse.Result = true;
         return await Commit(_validacionEnrrolamientoRepository.UnitOfWork);

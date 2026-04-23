@@ -10,7 +10,7 @@ using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Events.Entidades.Events;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Domain.Commands.Entidades.Handlers
 {
@@ -61,26 +61,24 @@ namespace AUT2Services.Domain.Commands.Entidades.Handlers
                     existEntidadPrincipal.EntidadBase
                     );
 
-                newEntidadPrincipal.AddDomainEvent(new EntidadEventEntidadCambiadaAPrincipal(
+                AddUpdateDomainEvent(command, newEntidadPrincipal, new EntidadEventEntidadCambiadaAPrincipal(
                     newEntidadPrincipal.Id,
                     newEntidadPrincipal.Principal
-                    )
-                );
+                    ), existEntidadPrincipal, newEntidadPrincipal);
 
                 _entidadRepository.Modificar(newEntidadPrincipal);
             }
 
             newEntidad.CambiarPrincipal(true);
 
-            newEntidad.AddDomainEvent(new EntidadEventEntidadCambiadaAPrincipal(
+            AddUpdateDomainEvent(command, newEntidad, new EntidadEventEntidadCambiadaAPrincipal(
                     newEntidad.Id, 
                     newEntidad.Principal 
-                    )
-                );
+                    ), existEntidad, newEntidad);
 
             _entidadRepository.Modificar(newEntidad);
         
-            CommandResponse.Data = JsonConvert.SerializeObject(new EntidadDTO(){
+            CommandResponse.Data = new EntidadDTO(){
                     Id = newEntidad.Id, 
                     Id_UnidadOrganizacional = newEntidad.Id_UnidadOrganizacional, 
                     Id_Usuario = newEntidad.Id_Usuario, 
@@ -91,7 +89,7 @@ namespace AUT2Services.Domain.Commands.Entidades.Handlers
                     FechaCreacion = newEntidad.FechaCreacion, 
                     Principal = newEntidad.Principal, 
                     EntidadBase = newEntidad.EntidadBase 
-                });
+                };
             CommandResponse.Result = true;
 
             return await Commit(_entidadRepository.UnitOfWork);

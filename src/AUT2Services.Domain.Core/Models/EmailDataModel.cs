@@ -9,6 +9,7 @@ public class EmailDataModel
     public string Subject { get; set; } = string.Empty;
     public string BodyType { get; set; } = EnumEmailBodyType.TEXT_BODY;
     public string Body { get; set; } = string.Empty;
+    public string? ValidationToken { get; set; }
 }
 
 public class AddressMailbox

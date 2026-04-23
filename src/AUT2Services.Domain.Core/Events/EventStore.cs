@@ -12,7 +12,11 @@
         }
 
         // EF Constructor
-        protected EventStore() { }
+        protected EventStore()
+        {
+            Data = string.Empty;
+            User = string.Empty;
+        }
 
         public Guid Id { get; private set; }
 

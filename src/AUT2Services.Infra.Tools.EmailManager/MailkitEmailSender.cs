@@ -1,23 +1,29 @@
-﻿using AUT2Services.Domain.Core.Messaging;
+using AUT2Services.Domain.Core.Enumerations;
+using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Core.Models;
-using MailKit.Net.Smtp;
-using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System.Security.Authentication;
 
 namespace AUT2Services.Infra.Tools.EmailManager;
 
 public class MailkitEmailSender : IEmailMessageSender
 {
+    private const int DefaultSmtpTimeoutMilliseconds = 15000;
     private readonly SendEmailOptions sendEmailOptions;
+    private readonly IMailkitSmtpClientFactory smtpClientFactory;
+    private readonly ILogger<MailkitEmailSender> logger;
 
     public MailkitEmailSender(
-        IOptions<SendEmailOptions> sendEmailOptions
-        )
+        IOptions<SendEmailOptions> sendEmailOptions,
+        IMailkitSmtpClientFactory smtpClientFactory,
+        ILogger<MailkitEmailSender> logger)
     {
         this.sendEmailOptions = sendEmailOptions.Value;
+        this.smtpClientFactory = smtpClientFactory;
+        this.logger = logger;
     }
-
 
     public async Task<ResultModel> SendEmail(EmailDataModel emailData)
     {
@@ -66,30 +72,56 @@ public class MailkitEmailSender : IEmailMessageSender
         }
 
         var builder = new BodyBuilder();
+        if (string.Equals(emailData.BodyType, EnumEmailBodyType.HTML_BODY, StringComparison.OrdinalIgnoreCase))
+        {
+            builder.HtmlBody = emailData.Body;
+        }
+        else
+        {
+            builder.TextBody = emailData.Body;
+        }
 
-        builder.HtmlBody = emailData.Body;
         message.Body = builder.ToMessageBody();
 
-        using (var client = new SmtpClient())
+        using var client = smtpClientFactory.Create();
+
+        try
         {
-            try
-            {
-                await client.ConnectAsync(sendEmailOptions.SmtpClient, sendEmailOptions.Port, SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync(sendEmailOptions.Remitente, sendEmailOptions.Password);
-                await client.SendAsync(message);
-            }
-            catch (AuthenticationException e)
-            {
-                result.Data = $"Authentication error: {e.Message}";
-            }
-            catch (Exception e)
-            {
-                result.Data = $"An error occurred: {e.Message}";
-            }
-            finally
+            client.Timeout = DefaultSmtpTimeoutMilliseconds;
+
+            await client.ConnectAsync(sendEmailOptions.SmtpClient, sendEmailOptions.Port, sendEmailOptions.EnableSsl);
+            await client.AuthenticateAsync(sendEmailOptions.Remitente, sendEmailOptions.Password);
+            await client.SendAsync(message);
+
+            logger.LogInformation(
+                "Correo enviado via SMTP a {RecipientCount} destinatario(s) con asunto {Subject}.",
+                emailData.ToMailboxAddresses.Count,
+                emailData.Subject);
+
+            result.Result = true;
+            result.Data = "Correo enviado correctamente.";
+        }
+        catch (AuthenticationException e)
+        {
+            logger.LogError(
+                e,
+                "Error de autenticacion SMTP para el remitente configurado {Remitente}.",
+                sendEmailOptions.Remitente);
+            result.Data = "No fue posible autenticarse contra el servidor de correo configurado.";
+        }
+        catch (Exception e)
+        {
+            logger.LogError(
+                e,
+                "Error enviando correo SMTP a {Recipients}.",
+                string.Join(", ", emailData.ToMailboxAddresses.Select(item => item.Address)));
+            result.Data = "No fue posible enviar el correo electronico con la configuracion actual.";
+        }
+        finally
+        {
+            if (client.IsConnected)
             {
                 await client.DisconnectAsync(true);
-                result.Result = true;
             }
         }
 

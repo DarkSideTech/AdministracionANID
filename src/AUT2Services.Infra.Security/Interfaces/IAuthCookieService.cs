@@ -5,6 +5,6 @@ namespace AUT2Services.Infra.Security.Interfaces;
 
 public interface IAuthCookieService
 {
-    void AppendAuthCookies(HttpResponse response, AccessTokenResult accessToken, DateTime refreshTokenExpiresAtUtc, string refreshToken);
+    void AppendAuthCookies(HttpResponse response, AccessTokenResult accessToken, DateTimeOffset? refreshTokenExpiresAtUtc, string refreshToken);
     void ClearAuthCookies(HttpResponse response);
 }

@@ -12,8 +12,8 @@ public class ValidacionEnrrolamientoDTO
     public Guid IdValidado_Usuario { get; set; } = Guid.Empty;
     public Guid IdValidaEnrrolamiento_Usuario { get; set; } = Guid.Empty;
     public bool EnrrolamientoAceptado { get; set; } = false;
-    public DateTimeOffset FechaValidacion { get; set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaRegistro { get; set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset? FechaValidacion { get; set; }
+    public DateTimeOffset? FechaRegistro { get; set; }
     public bool Activo { get; set; } = true;
 }
 

@@ -19,7 +19,9 @@ public class ServicioDeDominioController : ApiController
     private readonly IServicioDeDominioServiceApp _servicioDeDominioServiceApp;
     private readonly ILogger<ServicioDeDominioController> _logger;
 
-    public ServicioDeDominioController(IServicioDeDominioServiceApp servicioDeDominioServiceApp, ILogger<ServicioDeDominioController> logger)
+    public ServicioDeDominioController(
+        IServicioDeDominioServiceApp servicioDeDominioServiceApp, 
+        ILogger<ServicioDeDominioController> logger)
     {
         _servicioDeDominioServiceApp = servicioDeDominioServiceApp;
         _logger = logger;
@@ -68,7 +70,7 @@ public class ServicioDeDominioController : ApiController
 
     [Authorize]
     [HttpGet("BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion")]
-    public async Task<EntidadViewModel> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion( 
+    public async Task<EntidadViewModel?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion( 
             Guid id_Usuario, 
             Guid id_Organizacion 
         ) 
@@ -78,13 +80,5 @@ public class ServicioDeDominioController : ApiController
             id_Organizacion 
         ); 
     } 
-
-    [Authorize]
-    [HttpGet("BuscarOrganizacionesPor_Usuario")]
-    public async Task<IEnumerable<OrganizacionPorUsuarioViewModel>> BuscarOrganizacionesPor_Usuario() 
-    {
-        return await _servicioDeDominioServiceApp.BuscarOrganizacionesPor_Usuario(); 
-    } 
-
 }
 

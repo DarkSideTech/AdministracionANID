@@ -7,6 +7,7 @@
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.AutenticadoresExternos;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,16 @@ namespace AUT2Services.Services.API.Controllers;
 public class AutenticadorExternoController : ApiController
 {
     private readonly IAutenticadorExternoServiceApp _autenticadorExternoServiceApp;
+    private readonly IAuditJournalReader _auditJournalReader;
     private readonly ILogger<AutenticadorExternoController> _logger;
 
-    public AutenticadorExternoController(IAutenticadorExternoServiceApp autenticadorExternoServiceApp, ILogger<AutenticadorExternoController> logger)
+    public AutenticadorExternoController(
+        IAutenticadorExternoServiceApp autenticadorExternoServiceApp,
+        IAuditJournalReader auditJournalReader,
+        ILogger<AutenticadorExternoController> logger)
     {
         _autenticadorExternoServiceApp = autenticadorExternoServiceApp;
+        _auditJournalReader = auditJournalReader;
         _logger = logger;
     }
 
@@ -123,6 +129,14 @@ public class AutenticadorExternoController : ApiController
             id_Usuario 
         ); 
     } 
+
+    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
+    [HttpGet("BuscarTrazabilidadPor_Id")]
+    public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
+    {
+        var timeline = await _auditJournalReader.GetAggregateTimelineAsync(id);
+        return Ok(OrderAuditTimelineDescending(timeline));
+    }
 
 }
 

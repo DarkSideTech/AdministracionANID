@@ -12,12 +12,14 @@ namespace AUT2Services.Infra.Security.Accounts.Logout;
 
 public class LogoutCommandHandler(
     ITokenService tokenService,
+    IAuthCookieService authCookieService,
     ICsrfService csrfService,
     AUT2ServicesContext aUT2ServicesContext,
     ICurrentUserService currentUserService) : CommandHandler,
     IRequestHandler<LogoutCommand, CommandResponse>
 {
     private readonly ITokenService tokenService = tokenService;
+    private readonly IAuthCookieService authCookieService = authCookieService;
     private readonly ICsrfService csrfService = csrfService;
     private readonly AUT2ServicesContext aUT2ServicesContext = aUT2ServicesContext;
     private readonly ICurrentUserService currentUserService = currentUserService;
@@ -70,6 +72,12 @@ public class LogoutCommandHandler(
             AddError($"No es posible generar un logout completo para el usuario, message [{ex.Message}]");
             CommandResponse.Data = string.Empty;
             CommandResponse.Result = false;
+        }
+        finally
+        {
+            authCookieService.ClearAuthCookies(command.Response);
+            command.Request.Cookies.TryGetValue(EnumCsrfNames.Cookie, out var existingToken);
+            csrfService.EnsureTokenCookie(command.Response, existingToken);
         }
 
         CommandResponse.Result = true;

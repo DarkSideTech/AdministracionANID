@@ -48,39 +48,42 @@ public abstract class EntidadValidations<T> : AbstractValidator<T> where T : Ent
     protected void Validate_CorreoElectronico()
     {
         RuleFor(rf => rf.CorreoElectronico)
-            .NotEmpty() 
-                .WithMessage("El valor ingresado para el campo CorreoElectronico no puede estar vacio") 
-            .EmailAddress() 
-                .WithMessage("El correo electronico ingresado no es valido"); 
+            .NotEmpty()
+                .WithMessage("El valor ingresado para el campo CorreoElectronico no puede estar vacio")
+            .EmailAddress()
+                .WithMessage("El correo electronico ingresado no es valido")
+            .When(rf => !rf.PermitirCorreoElectronicoVacio);
+
+        RuleFor(rf => rf.CorreoElectronico)
+            .EmailAddress()
+                .WithMessage("El correo electronico ingresado no es valido")
+            .When(rf => rf.PermitirCorreoElectronicoVacio && !string.IsNullOrWhiteSpace(rf.CorreoElectronico));
     } 
 
     protected void Validate_FechaInicioAutorizacion()
     {
         RuleFor(rf => rf.FechaInicioAutorizacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaInicioAutorizacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaInicioAutorizacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaInicioAutorizacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 
     protected void Validate_FechaTerminoAutorizacion()
     {
         RuleFor(rf => rf.FechaTerminoAutorizacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaTerminoAutorizacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaTerminoAutorizacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaTerminoAutorizacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 
     protected void Validate_FechaCreacion()
     {
         RuleFor(rf => rf.FechaCreacion)
-            .NotEqual(DateTimeOffset.MinValue) 
             .NotEmpty() 
                 .WithMessage("El valor ingresado para el campo FechaCreacion no puede estar vacio") 
-            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaCreacion)) 
+            .Must((x, y) => CommonValidator.DateTimeValidator(x.FechaCreacion!)) 
                 .WithMessage("El valor ingresado debe ser una fecha y hora validos"); 
     } 
 

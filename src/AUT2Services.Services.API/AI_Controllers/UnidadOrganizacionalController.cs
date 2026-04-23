@@ -7,6 +7,7 @@
 using AUT2Services.Application.Interfaces;
 using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.UnidadesOrganizacionales;
+using AUT2Services.Domain.Core.Auditing;
 using AUT2Services.Domain.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,16 @@ namespace AUT2Services.Services.API.Controllers;
 public class UnidadOrganizacionalController : ApiController
 {
     private readonly IUnidadOrganizacionalServiceApp _unidadOrganizacionalServiceApp;
+    private readonly IAuditJournalReader _auditJournalReader;
     private readonly ILogger<UnidadOrganizacionalController> _logger;
 
-    public UnidadOrganizacionalController(IUnidadOrganizacionalServiceApp unidadOrganizacionalServiceApp, ILogger<UnidadOrganizacionalController> logger)
+    public UnidadOrganizacionalController(
+        IUnidadOrganizacionalServiceApp unidadOrganizacionalServiceApp,
+        IAuditJournalReader auditJournalReader,
+        ILogger<UnidadOrganizacionalController> logger)
     {
         _unidadOrganizacionalServiceApp = unidadOrganizacionalServiceApp;
+        _auditJournalReader = auditJournalReader;
         _logger = logger;
     }
 
@@ -108,6 +114,14 @@ public class UnidadOrganizacionalController : ApiController
             id_Organizacion 
         ); 
     } 
+
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD_UNIDAD)]
+    [HttpGet("BuscarTrazabilidadPor_Id")]
+    public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
+    {
+        var timeline = await _auditJournalReader.GetAggregateTimelineAsync(id);
+        return Ok(OrderAuditTimelineDescending(timeline));
+    }
 
 }
 

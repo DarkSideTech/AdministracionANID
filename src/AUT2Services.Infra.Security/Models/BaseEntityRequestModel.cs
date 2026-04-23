@@ -4,5 +4,5 @@ public class BaseEntityRequestModel
 {
     public Guid Id_Entidad { get; set; }
     public Guid Id_UnidadOrganizacional { get; set; }
-    public string NombreOrganizacion { get; set; }
+    public string NombreOrganizacion { get; set; } = string.Empty;
 }

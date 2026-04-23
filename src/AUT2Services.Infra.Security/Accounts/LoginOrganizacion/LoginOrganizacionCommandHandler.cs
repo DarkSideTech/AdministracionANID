@@ -1,4 +1,4 @@
-﻿using AUT2Services.Domain.Core.Commands;
+using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Interfaces;
@@ -6,8 +6,9 @@ using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
 using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
+using AUT2Services.Infra.Security.Models;
 using AUT2Services.Infra.Security.Records;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.LoginOrganizacion;
 
@@ -15,6 +16,7 @@ public class LoginOrganizacionCommandHandler(
     ISecurityRepository securityRepository,
     ITokenService tokenService,
     IOrganizacionRepository organizacionRepository,
+    IEntidadRepository entidadRepository,
     IAuthCookieService authCookieService,
     ICsrfService csrfService,
     AUT2ServicesContext aUT2ServicesContext,
@@ -24,6 +26,7 @@ public class LoginOrganizacionCommandHandler(
     private readonly ISecurityRepository securityRepository = securityRepository;
     private readonly ITokenService tokenService = tokenService;
     private readonly IOrganizacionRepository organizacionRepository = organizacionRepository;
+    private readonly IEntidadRepository entidadRepository = entidadRepository;
     private readonly IAuthCookieService authCookieService = authCookieService;
     private readonly ICsrfService csrfService = csrfService;
     private readonly AUT2ServicesContext aUT2ServicesContext = aUT2ServicesContext;
@@ -43,6 +46,7 @@ public class LoginOrganizacionCommandHandler(
         Entidad? entidad = null;
         Organizacion? organizacion = null;
         Usuario? usuario = null;
+        Guid? idRolSeleccionado = null;
 
         try
         {
@@ -64,7 +68,13 @@ public class LoginOrganizacionCommandHandler(
                 usuario = user;
             }
 
-            if (string.IsNullOrEmpty(command.Organizacion))
+            if (string.IsNullOrWhiteSpace(command.Organizacion))
+            {
+                AddError("La organizacion no existe");
+                return CommandResponse;
+            }
+
+            if (!string.IsNullOrEmpty(command.Organizacion))
             {
                 organizacion = await organizacionRepository.BuscarPor_Codigo(command.Organizacion!);
 
@@ -75,20 +85,50 @@ public class LoginOrganizacionCommandHandler(
                 }
 
                 entidad = await securityRepository.BuscarEntidadPrincipalPorUsuarioOrganizacion(Guid.Parse(user.Id), organizacion.Id);
+                if (entidad is null)
+                {
+                    var unidadesDisponibles = await securityRepository.BuscarUnidadesOrganizacionalesEntidadRolPor_Id_Organizacion(
+                        organizacion.Id,
+                        Guid.Parse(user.Id));
+
+                    var entidadFallbackId = unidadesDisponibles
+                        .Select(item => item.Id_Entidad)
+                        .FirstOrDefault(item => Guid.TryParse(item, out _));
+
+                    if (Guid.TryParse(entidadFallbackId, out var idEntidadFallback))
+                    {
+                        entidad = await entidadRepository.BuscarPor_Id(idEntidadFallback);
+                    }
+                }
             }
 
             if (entidad is null)
             {
-                AddError($"La entidad asociada al usuario no existe");
+                AddError("El usuario no cuenta con entidades habilitadas para la organizacion seleccionada.");
+                return CommandResponse;
+            }
+
+            var selectedContextForToken = await currentUserService.GetSelectedSessionContextAsync(
+                entidad.Id,
+                cancellationToken: command.Context.RequestAborted);
+            idRolSeleccionado = selectedContextForToken?.EntidadRolSeleccionado?.Id_Rol;
+            if (!idRolSeleccionado.HasValue)
+            {
+                AddError("No fue posible determinar el rol activo de la organizacion seleccionada.");
                 return CommandResponse;
             }
 
             await tokenService.RevokeSessionAsync(currentUserService.SessionId, EnumRefreshTokenRevocationReasons.SecondLogin);
 
             var sessionId = Guid.NewGuid().ToString("N");
-            accessTokenResult = await tokenService.GenerateAccessTokenAsync(usuario, sessionId, entidad.Id);
-            var refreshToken = tokenService.CreateRefreshToken(sessionId, organizacion!.Codigo);
+            accessTokenResult = await tokenService.GenerateAccessTokenAsync(usuario, sessionId, entidad.Id, idRolSeleccionado.Value);
+            var refreshToken = tokenService.CreateRefreshToken(
+                sessionId,
+                SelectedOrganizationSessionSerializer.Serialize(
+                    selectedContextForToken?.CodigoOrganizacionSeleccionada ?? organizacion!.Codigo,
+                    idRolSeleccionado.Value));
             refreshToken.RefreshToken.UserId = usuario.Id;
+            refreshToken.RefreshToken.Id_Entidad = entidad.Id;
 
             aUT2ServicesContext.RefreshTokens.Add(refreshToken.RefreshToken);
             await aUT2ServicesContext.SaveChangesAsync(cancellationToken);
@@ -106,17 +146,46 @@ public class LoginOrganizacionCommandHandler(
             AddError($"Error al momento de obtener los datos del usuario, message [{ex.Message}]");
             CommandResponse.Data = string.Empty;
             CommandResponse.Result = false;
+            return CommandResponse;
         }
 
-        CommandResponse.Data = JsonConvert.SerializeObject(new ProfileLogin(
-            AccessTokenExpiracion: accessTokenResult!.ExpiresAtUtc,
+        if (accessTokenResult is null || usuario is null || entidad is null || organizacion is null)
+        {
+            AddError("No fue posible completar el login para la organizacion seleccionada.");
+            return CommandResponse;
+        }
+
+        var selectedContext = await currentUserService.GetSelectedSessionContextAsync(
+            entidad.Id,
+            cancellationToken: command.Context.RequestAborted);
+        var idRolSeleccionadoContext = selectedContext?.EntidadRolSeleccionado?.Id_Rol;
+        var procesosActivos = idRolSeleccionadoContext.HasValue
+            ? await currentUserService.GetProcesosActivosPorEntidadAsync(
+                entidad.Id,
+                idRolSeleccionadoContext.Value,
+                command.Context.RequestAborted)
+            : null;
+
+        CommandResponse.Data = new ProfileLogin(
+            AccessTokenExpiracion: accessTokenResult.ExpiresAtUtc,
             OrganizacionesPorUsuario: await tokenService.BuscarOrganizacionesPorIdUsuario(usuario.Id),
-            User: await tokenService.CreateUserDtoAsync(usuario, entidad!.Id),
-            ProcesosActivos: await currentUserService.GetProcesosActivosAsync(cancellationToken) ?? null,
-            CodigoOrganizacionSeleccionada: organizacion!.Codigo,
+            UnidadesOrganizacionalesPorUsuario: await currentUserService.GetUnidadesOrganizacionalesEntidadRolPorUsuarioAsync(
+                entidad.Id,
+                Guid.Parse(usuario.Id),
+                command.Context.RequestAborted),
+            User: await tokenService.CreateUserDtoAsync(
+                usuario,
+                entidad.Id,
+                selectedContext?.EntidadRolSeleccionado),
+            ProcesosActivos: procesosActivos,
+            CodigoOrganizacionSeleccionada: selectedContext?.CodigoOrganizacionSeleccionada ?? organizacion.Codigo,
+            NombreOrganizacionSeleccionada: selectedContext?.NombreOrganizacionSeleccionada ?? organizacion.Nombre,
+            CodigoUnidadOrganizacionalSeleccionada: selectedContext?.CodigoUnidadOrganizacionalSeleccionada,
+            NombreUnidadOrganizacionalSeleccionada: selectedContext?.NombreUnidadOrganizacionalSeleccionada,
             IdEntidadSeleccionada: entidad.Id.ToString(),
+            EntidadRolSeleccionado: selectedContext?.EntidadRolSeleccionado,
             SeleccionOrganizacionRequerida: false
-        ));
+        );
         CommandResponse.Result = true;
 
         return CommandResponse;

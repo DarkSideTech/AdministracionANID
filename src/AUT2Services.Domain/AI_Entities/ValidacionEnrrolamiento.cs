@@ -17,8 +17,8 @@ public class ValidacionEnrrolamiento : Entity, IAggregateRoot
         Guid idValidado_Usuario, 
         Guid idValidaEnrrolamiento_Usuario, 
         bool enrrolamientoAceptado, 
-        DateTimeOffset fechaValidacion, 
-        DateTimeOffset fechaRegistro, 
+        DateTimeOffset? fechaValidacion, 
+        DateTimeOffset? fechaRegistro, 
         bool activo 
         )
     {
@@ -34,8 +34,8 @@ public class ValidacionEnrrolamiento : Entity, IAggregateRoot
     public Guid IdValidado_Usuario { get; private set; } = Guid.Empty;
     public Guid IdValidaEnrrolamiento_Usuario { get; private set; } = Guid.Empty;
     public bool EnrrolamientoAceptado { get; private set; } = false;
-    public DateTimeOffset FechaValidacion { get; private set; } = DateTimeOffset.MinValue;
-    public DateTimeOffset FechaRegistro { get; private set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset? FechaValidacion { get; private set; }
+    public DateTimeOffset? FechaRegistro { get; private set; }
     public bool Activo { get; private set; } = true;
 
     public void CambiarEnrrolamientoAceptado(bool nuevoValor)
@@ -43,12 +43,12 @@ public class ValidacionEnrrolamiento : Entity, IAggregateRoot
         EnrrolamientoAceptado = nuevoValor;
     }
 
-    public void CambiarFechaValidacion(DateTimeOffset nuevoValor)
+    public void CambiarFechaValidacion(DateTimeOffset? nuevoValor)
     {
         FechaValidacion = nuevoValor;
     }
 
-    public void CambiarFechaRegistro(DateTimeOffset nuevoValor)
+    public void CambiarFechaRegistro(DateTimeOffset? nuevoValor)
     {
         FechaRegistro = nuevoValor;
     }

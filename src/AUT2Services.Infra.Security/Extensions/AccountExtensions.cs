@@ -1,9 +1,16 @@
-﻿using AUT2Services.Infra.Security.Accounts.Login;
+using AUT2Services.Infra.Security.Accounts.CambioUnidadOrganizacionalEntidadRol;
+using AUT2Services.Infra.Security.Accounts.ConfirmaCambioClave;
+using AUT2Services.Infra.Security.Accounts.EmailConfirmationToken;
+using AUT2Services.Infra.Security.Accounts.Login;
+using AUT2Services.Infra.Security.Accounts.LoginClaveUnica;
 using AUT2Services.Infra.Security.Accounts.LoginOrganizacion;
+using AUT2Services.Infra.Security.Accounts.ModificaCorreoElectronico;
+using AUT2Services.Infra.Security.Accounts.ModificaUsuario;
 using AUT2Services.Infra.Security.Accounts.RefreshToken;
+using AUT2Services.Infra.Security.Accounts.ReenviaCodigoCambioClave;
 using AUT2Services.Infra.Security.Accounts.Register;
-using AUT2Services.Infra.Security.Accounts.ReSendEmailConfirmation;
-using AUT2Services.Infra.Security.Accounts.ValidateEmail;
+using AUT2Services.Infra.Security.Accounts.ResendEmailConfirmationToken;
+using AUT2Services.Infra.Security.Accounts.SolicitaCambioClave;
 using AUT2Services.Infra.Security.Records;
 using AUT2Services.Infra.Security.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +19,7 @@ namespace AUT2Services.Infra.Security.Extensions;
 
 public static class AccountExtensions
 {
-    public static LoginCommand ToLoginCommand(this LoginViewModel viewModel,HttpRequest request, HttpResponse response)
+    public static LoginCommand ToLoginCommand(this LoginViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         if (viewModel is null) return null;
 
@@ -38,6 +45,35 @@ public static class AccountExtensions
         };
     }
 
+    public static CambioUnidadOrganizacionalEntidadRolCommand ToCambioUnidadOrganizacionalEntidadRolCommand(this CambioUnidadOrganizacionalEntidadRolViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext httpContext)
+    {
+        if (viewModel is null) return null;
+
+        return new CambioUnidadOrganizacionalEntidadRolCommand()
+        {
+            Id_Entidad = viewModel.Id_Entidad,
+            Id_Rol = viewModel.Id_Rol,
+            Request = request,
+            Response = response,
+            Context = httpContext
+        };
+    }
+
+    public static LoginClaveUnicaCommand ToLoginClaveUnicaCommand(this LoginClaveUnicaViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new LoginClaveUnicaCommand()
+        {
+            ClientId = viewModel.ClientId,
+            RedirectUri = viewModel.RedirectUri,
+            Code = viewModel.Code,
+            State = viewModel.State,
+            Request = request,
+            Response = response
+        };
+    }
+
     public static RegisterCommand ToRegisterCommand(this RegisterViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         if (viewModel is null) return null;
@@ -45,6 +81,7 @@ public static class AccountExtensions
         return new RegisterCommand()
         {
             CorreoElectronico = viewModel.CorreoElectronico,
+            NumeroDeTelefono = viewModel.NumeroDeTelefono,
             Nacionalidad = viewModel.Nacionalidad,
             TipoDeUsuario = viewModel.TipoDeUsuario,
             DocumentoDeIdentidad = viewModel.DocumentoDeIdentidad,
@@ -69,8 +106,8 @@ public static class AccountExtensions
     {
         if (viewModel is null) return null;
 
-        return new RefreshTokenCommand() 
-        { 
+        return new RefreshTokenCommand()
+        {
             Request = request,
             Response = response
         };
@@ -96,6 +133,91 @@ public static class AccountExtensions
         return new ResendEmailConfirmationTokenCommand()
         {
             Email = requestRecord.Email,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static ModificaUsuarioCommand ToModificaUsuarioCommand(this ModificaUsuarioViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new ModificaUsuarioCommand()
+        {
+            IdUsuario = viewModel.IdUsuario,
+            CorreoElectronico = viewModel.CorreoElectronico,
+            NumeroDeTelefono = viewModel.NumeroDeTelefono,
+            Nacionalidad = viewModel.Nacionalidad,
+            TipoDeUsuario = viewModel.TipoDeUsuario,
+            DocumentoDeIdentidad = viewModel.DocumentoDeIdentidad,
+            NumeroDeDocumento = viewModel.NumeroDeDocumento,
+            CodigoValidadorDocumento = viewModel.CodigoValidadorDocumento,
+            PrimerNombre = viewModel.PrimerNombre,
+            SegundoNombre = viewModel.SegundoNombre,
+            PrimerApellido = viewModel.PrimerApellido,
+            SegundoApellido = viewModel.SegundoApellido,
+            SexoDeclarativo = viewModel.SexoDeclarativo,
+            SexoRegistral = viewModel.SexoRegistral,
+            FechaDeNacimiento = viewModel.FechaDeNacimiento,
+            Contraseña = viewModel.Contraseña,
+            ConfirmaContraseña = viewModel.ConfirmaContraseña,
+            TerminosYCondiciones = viewModel.TerminosYCondiciones,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static ModificaCorreoElectronicoCommand ToModificaCorreoElectronicoCommand(this ModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new ModificaCorreoElectronicoCommand()
+        {
+            IdUsuario = viewModel.IdUsuario,
+            NuevoCorreoElectronico = viewModel.NuevoCorreoElectronico,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static SolicitaCambioClaveCommand ToSolicitaCambioClaveCommand(this SolicitaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new SolicitaCambioClaveCommand()
+        {
+            IdUsuario = viewModel.IdUsuario,
+            ClaveActual = viewModel.ClaveActual,
+            NuevaClave = viewModel.NuevaClave,
+            ConfirmaNuevaClave = viewModel.ConfirmaNuevaClave,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static ReenviaCodigoCambioClaveCommand ToReenviaCodigoCambioClaveCommand(this ReenviaCodigoCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new ReenviaCodigoCambioClaveCommand()
+        {
+            IdUsuario = viewModel.IdUsuario,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static ConfirmaCambioClaveCommand ToConfirmaCambioClaveCommand(this ConfirmaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new ConfirmaCambioClaveCommand()
+        {
+            IdUsuario = viewModel.IdUsuario,
+            ClaveActual = viewModel.ClaveActual,
+            NuevaClave = viewModel.NuevaClave,
+            ConfirmaNuevaClave = viewModel.ConfirmaNuevaClave,
+            CodigoValidacion = viewModel.CodigoValidacion,
             Request = request,
             Response = response
         };

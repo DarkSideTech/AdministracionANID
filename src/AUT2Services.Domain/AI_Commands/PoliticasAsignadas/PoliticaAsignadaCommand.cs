@@ -14,9 +14,9 @@ namespace AUT2Services.Domain.Commands.PoliticasAsignadas
         public Guid Id_Entidad { get; protected set; } = Guid.Empty; 
         public Guid Id_Rol { get; protected set; } = Guid.Empty; 
         public Guid Id_Proceso { get; protected set; } = Guid.Empty; 
-        public DateTimeOffset FechaInicioAsignacion { get; protected set; } = DateTimeOffset.MinValue; 
-        public DateTimeOffset FechaTerminoAsignacion { get; protected set; } = DateTimeOffset.MinValue; 
-        public DateTimeOffset FechaCreacion { get; protected set; } = DateTimeOffset.MinValue; 
+        public DateTimeOffset? FechaInicioAsignacion { get; protected set; }
+        public DateTimeOffset? FechaTerminoAsignacion { get; protected set; }
+        public DateTimeOffset? FechaCreacion { get; protected set; }
         public bool RolRequiereValidacion { get; protected set; } = false; 
         public bool RolAsignadoValidado { get; protected set; } = false; 
         public bool PoliticaAsignadaBase { get; protected set; } = false; 

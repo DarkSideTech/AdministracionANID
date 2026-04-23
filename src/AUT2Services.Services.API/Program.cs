@@ -5,8 +5,9 @@
 // Date Generated File : 2025-12-03 11:34:56.414
 // -------------------------------------------------
 using AUT2Services.Domain.Core.Models;
-using AUT2Services.Infra.Security.Models;
+using AUT2Services.Infra.DataMongoDB.Extensions;
 using AUT2Services.Services.API.Configurations;
+using AUT2Services.Infra.Security.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,26 +16,21 @@ builder.AddApiConfiguration();
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.JwtOptionsKey));
 
-builder.Services.Configure<SendEmailOptions>(
-    builder.Configuration.GetSection(SendEmailOptions.EmailOptionsKey));
+builder.Services.AddExternalIntegrationOptions(builder.Configuration);
 
+builder.Services.Configure<ClaveUnicaOptions>(
+    builder.Configuration.GetSection(ClaveUnicaOptions.ClaveUnicaOptionsKey));
+
+builder.Services.AddMemoryCache();
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
+builder.Services.AddMongoAuditProjection(builder.Configuration);
 builder.AddDependencyInjectionConfiguration();
-builder.Services.AddSwaggerConfiguration();
+builder.Services.AddOpenApiConfiguration();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.AddCorsConfiguration(builder.Environment.IsDevelopment());
 
-//builder.Services.AddEndpointsApiExplorer(); // Essential for Minimal APIs with Swagger
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
-
 var app = builder.Build();
-
-if (builder.Configuration["DB_PROVIDER"] == "postgresql")
-{
-    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-}
 
 if (app.Environment.IsDevelopment())
 {
@@ -48,7 +44,7 @@ else
 
 try
 {
-    app.UseSwaggerSetup(builder.Configuration);
+    app.UseOpenApiSetup(builder.Configuration);
 }
 catch (Exception ex)
 {
@@ -56,13 +52,10 @@ catch (Exception ex)
 	throw;
 }
 
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
 app.UseCors("AllowDinamicRules");
-
+app.UseRateLimiter();
 app.UseAuthentication();
+app.UseMiddleware<AuditExecutionContextMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

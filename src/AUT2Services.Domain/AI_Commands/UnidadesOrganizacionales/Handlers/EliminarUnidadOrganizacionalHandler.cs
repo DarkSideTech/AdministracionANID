@@ -35,9 +35,9 @@ public partial class  UnidadOrganizacionalCommandHandler :
             return CommandResponse;
         }
  
-        existUnidadOrganizacional.AddDomainEvent(new UnidadOrganizacionalEventEliminado(
+        AddDeleteDomainEvent(command, existUnidadOrganizacional, new UnidadOrganizacionalEventEliminado(
             existUnidadOrganizacional.Id 
-        ));
+        ), existUnidadOrganizacional);
 
         _unidadOrganizacionalRepository.Eliminar(existUnidadOrganizacional);
 

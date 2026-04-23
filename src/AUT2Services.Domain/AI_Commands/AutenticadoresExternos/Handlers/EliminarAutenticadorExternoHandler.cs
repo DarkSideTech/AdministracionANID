@@ -41,9 +41,9 @@ public partial class  AutenticadorExternoCommandHandler :
             return CommandResponse;
         }
  
-        existAutenticadorExterno.AddDomainEvent(new AutenticadorExternoEventEliminado(
-            existAutenticadorExterno.Id 
-        ));
+        AddDeleteDomainEvent(command, existAutenticadorExterno, new AutenticadorExternoEventEliminado(
+            existAutenticadorExterno.Id
+        ), existAutenticadorExterno);
 
         _autenticadorExternoRepository.Eliminar(existAutenticadorExterno);
 

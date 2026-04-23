@@ -12,6 +12,6 @@ public class InformacionAdicionalModel
     public string? SegundoApellido { get; set; } = string.Empty;
     public string? SexoDeclarativo { get; set; } = string.Empty;
     public string? SexoRegistral { get; set; } = string.Empty;
-    public DateTime? FechaDeNacimiento { get; set; } = DateTime.MinValue;
+    public DateOnly? FechaDeNacimiento { get; set; }
     public bool? TerminosYCondiciones { get; set; } = true;
 }

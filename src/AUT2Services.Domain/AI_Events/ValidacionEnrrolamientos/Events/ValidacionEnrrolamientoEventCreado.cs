@@ -16,8 +16,8 @@ public class ValidacionEnrrolamientoEventCreado : Event
             Guid idValidado_Usuario, 
             Guid idValidaEnrrolamiento_Usuario, 
             bool enrrolamientoAceptado, 
-            DateTimeOffset fechaValidacion, 
-            DateTimeOffset fechaRegistro 
+            DateTimeOffset? fechaValidacion, 
+            DateTimeOffset? fechaRegistro 
         )
     {
         Id = id;
@@ -34,7 +34,7 @@ public class ValidacionEnrrolamientoEventCreado : Event
     public Guid IdValidado_Usuario  { get; private set; } = Guid.Empty; 
     public Guid IdValidaEnrrolamiento_Usuario  { get; private set; } = Guid.Empty; 
     public bool EnrrolamientoAceptado  { get; private set; } = false; 
-    public DateTimeOffset FechaValidacion  { get; private set; } = DateTimeOffset.MinValue; 
-    public DateTimeOffset FechaRegistro  { get; private set; } = DateTimeOffset.MinValue; 
+    public DateTimeOffset? FechaValidacion  { get; private set; }
+    public DateTimeOffset? FechaRegistro  { get; private set; }
 }
 
