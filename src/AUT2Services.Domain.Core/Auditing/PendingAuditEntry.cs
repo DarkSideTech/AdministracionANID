@@ -10,5 +10,6 @@ public sealed class PendingAuditEntry
     public AuditOperationType OperationType { get; init; }
     public object? Before { get; init; }
     public object? After { get; init; }
+    public bool IncludeSnapshot { get; init; }
     public int CaptureOrder { get; init; }
 }

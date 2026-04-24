@@ -39,4 +39,10 @@ public class ModificaUsuarioCommand : Command
     public bool? TerminosYCondiciones { get; set; } = true;
     public required HttpRequest Request { get; set; }
     public required HttpResponse Response { get; set; }
+
+    public override bool IsValid()
+    {
+        CommandResponse.ValidationResult = new ModificaUsuarioCommandValidations().Validate(this);
+        return CommandResponse.ValidationResult.IsValid;
+    }
 }

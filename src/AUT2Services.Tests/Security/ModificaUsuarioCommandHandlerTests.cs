@@ -63,9 +63,37 @@ public class ModificaUsuarioCommandHandlerTests
         Assert.AreEqual("Janhsen", updatedInfo.SegundoApellido);
         Assert.AreEqual("HOMBRE", updatedInfo.SexoDeclarativo);
         Assert.AreEqual("MASCULINO", updatedInfo.SexoRegistral);
-        Assert.AreEqual(1, identityHost.DbContext.AuditOutboxMessages.Count(message => message.EventType == "UsuarioModificado"));
+        var traceabilityMessage = identityHost.DbContext.AuditOutboxMessages.Single(message => message.EventType == "UsuarioModificado");
+        Assert.IsFalse(string.IsNullOrWhiteSpace(traceabilityMessage.SnapshotJson));
+        StringAssert.Contains(traceabilityMessage.SnapshotJson, "\"PrimerNombre\":\"Marcelo\"");
         Assert.AreEqual(new DateOnly(1990, 10, 20), updatedInfo.FechaDeNacimiento);
         Assert.AreEqual(originalInfo.TerminosYCondiciones, updatedInfo.TerminosYCondiciones);
+    }
+
+    [TestMethod]
+    public async Task Handle_ForAuthenticatedOperator_UpdatesTargetUser()
+    {
+        using var identityHost = new IdentityTestHost(nameof(Handle_ForAuthenticatedOperator_UpdatesTargetUser));
+        var operador = await CreateUserAsync(identityHost, "operator-update@example.com", EnumTipoDeUsuario.EXTRANJERO);
+        var usuarioObjetivo = await CreateUserAsync(identityHost, "target-update@example.com", EnumTipoDeUsuario.EXTRANJERO);
+
+        var handler = CreateHandler(identityHost, operador.Id);
+        var command = CreateCommand(usuarioObjetivo.Id, usuarioObjetivo.Email!, EnumTipoDeUsuario.EXTRANJERO);
+        command.PrimerNombre = "Actualizado";
+        command.PrimerApellido = "Operador";
+        command.NumeroDeTelefono = "+56922223333";
+
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        Assert.IsTrue(response.Result);
+
+        var refreshedUser = await identityHost.UserManager.FindByIdAsync(usuarioObjetivo.Id);
+        Assert.IsNotNull(refreshedUser);
+        Assert.AreEqual("+56922223333", refreshedUser!.PhoneNumber);
+
+        var updatedInfo = refreshedUser.InformacionAdicional.ToInformacionAdicionalModel();
+        Assert.AreEqual("Actualizado", updatedInfo.PrimerNombre);
+        Assert.AreEqual("Operador", updatedInfo.PrimerApellido);
     }
 
     [TestMethod]
@@ -96,7 +124,9 @@ public class ModificaUsuarioCommandHandlerTests
         Assert.AreEqual(originalInfo.PrimerApellido, updatedInfo.PrimerApellido);
         Assert.AreEqual(originalInfo.SexoDeclarativo, updatedInfo.SexoDeclarativo);
         Assert.AreEqual("NO_BINARIO", updatedInfo.SexoRegistral);
-        Assert.AreEqual(1, identityHost.DbContext.AuditOutboxMessages.Count(message => message.EventType == "UsuarioModificado"));
+        var traceabilityMessage = identityHost.DbContext.AuditOutboxMessages.Single(message => message.EventType == "UsuarioModificado");
+        Assert.IsFalse(string.IsNullOrWhiteSpace(traceabilityMessage.SnapshotJson));
+        StringAssert.Contains(traceabilityMessage.SnapshotJson, "\"SexoRegistral\":\"NO_BINARIO\"");
     }
 
     private static ModificaUsuarioCommandHandler CreateHandler(IdentityTestHost identityHost, string userId)

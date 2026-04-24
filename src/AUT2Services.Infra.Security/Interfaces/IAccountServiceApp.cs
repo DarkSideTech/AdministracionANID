@@ -29,7 +29,15 @@ public interface IAccountServiceApp
 
     Task<CommandResponse> CurrentUserAsync(HttpRequest request, HttpResponse response, HttpContext context);
 
+    Task<CommandResponse> BuscarUsuariosPaginadosAsync(BuscarUsuariosPaginadosViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context);
+
     Task<CommandResponse> ModificaUsuarioAsync(ModificaUsuarioViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ActivarUsuarioAsync(ActivarUsuarioViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> DesactivarUsuarioAsync(DesactivarUsuarioViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> AdminModificaCorreoElectronicoAsync(AdminModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response);
 
     Task<CommandResponse> ModificaCorreoElectronicoAsync(ModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response);
 
@@ -38,4 +46,10 @@ public interface IAccountServiceApp
     Task<CommandResponse> ReenviaCodigoCambioClaveAsync(ReenviaCodigoCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response);
 
     Task<CommandResponse> ConfirmaCambioClaveAsync(ConfirmaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> SolicitaRecuperacionClaveAsync(SolicitaRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ReenviaCodigoRecuperacionClaveAsync(ReenviaCodigoRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ConfirmaRecuperacionClaveAsync(ConfirmaRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response);
 }

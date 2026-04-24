@@ -2,11 +2,17 @@
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Infra.Security.Accounts.CambioUnidadOrganizacionalEntidadRol;
 using AUT2Services.Infra.Security.Accounts.ConfirmaCambioClave;
+using AUT2Services.Infra.Security.Accounts.ConfirmaRecuperacionClave;
 using AUT2Services.Infra.Security.Accounts.CurrentUser;
 using AUT2Services.Infra.Security.Accounts.Logout;
+using AUT2Services.Infra.Security.Accounts.BuscarUsuariosPaginados;
+using AUT2Services.Infra.Security.Accounts.ActivarUsuario;
+using AUT2Services.Infra.Security.Accounts.DesactivarUsuario;
 using AUT2Services.Infra.Security.Accounts.ModificaCorreoElectronico;
 using AUT2Services.Infra.Security.Accounts.ReenviaCodigoCambioClave;
+using AUT2Services.Infra.Security.Accounts.ReenviaCodigoRecuperacionClave;
 using AUT2Services.Infra.Security.Accounts.SolicitaCambioClave;
+using AUT2Services.Infra.Security.Accounts.SolicitaRecuperacionClave;
 using AUT2Services.Infra.Security.Accounts.Yo;
 using AUT2Services.Infra.Security.Extensions;
 using AUT2Services.Infra.Security.Interfaces;
@@ -96,9 +102,29 @@ public class AccountServiceApp : IAccountServiceApp
         });
     }
 
+    public Task<CommandResponse> BuscarUsuariosPaginadosAsync(BuscarUsuariosPaginadosViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context)
+    {
+        return mediator.SendCommand(viewModel.ToBuscarUsuariosPaginadosCommand(request, response, context));
+    }
+
     public Task<CommandResponse> ModificaUsuarioAsync(ModificaUsuarioViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         return mediator.SendCommand(viewModel.ToModificaUsuarioCommand(request, response));
+    }
+
+    public Task<CommandResponse> ActivarUsuarioAsync(ActivarUsuarioViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToActivarUsuarioCommand(request, response));
+    }
+
+    public Task<CommandResponse> DesactivarUsuarioAsync(DesactivarUsuarioViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToDesactivarUsuarioCommand(request, response));
+    }
+
+    public Task<CommandResponse> AdminModificaCorreoElectronicoAsync(AdminModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToAdminModificaCorreoElectronicoCommand(request, response));
     }
 
     public Task<CommandResponse> ModificaCorreoElectronicoAsync(ModificaCorreoElectronicoViewModel viewModel, HttpRequest request, HttpResponse response)
@@ -119,5 +145,20 @@ public class AccountServiceApp : IAccountServiceApp
     public Task<CommandResponse> ConfirmaCambioClaveAsync(ConfirmaCambioClaveViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         return mediator.SendCommand(viewModel.ToConfirmaCambioClaveCommand(request, response));
+    }
+
+    public Task<CommandResponse> SolicitaRecuperacionClaveAsync(SolicitaRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToSolicitaRecuperacionClaveCommand(request, response));
+    }
+
+    public Task<CommandResponse> ReenviaCodigoRecuperacionClaveAsync(ReenviaCodigoRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToReenviaCodigoRecuperacionClaveCommand(request, response));
+    }
+
+    public Task<CommandResponse> ConfirmaRecuperacionClaveAsync(ConfirmaRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToConfirmaRecuperacionClaveCommand(request, response));
     }
 }

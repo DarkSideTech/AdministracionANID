@@ -363,6 +363,7 @@ public sealed class AUT2ServicesContext : IdentityDbContext<Usuario, Rol, string
             OccurredAtUtc = pendingAuditEntry.DomainEvent.Timestamp,
             PersistedAtUtc = persistedAtUtc,
             SnapshotJson = pendingAuditEntry.OperationType == AuditOperationType.Create
+                           || (pendingAuditEntry.OperationType == AuditOperationType.Update && pendingAuditEntry.IncludeSnapshot)
                 ? _auditSerializer!.Serialize(pendingAuditEntry.After)
                 : null,
             DispatchStatus = 0,

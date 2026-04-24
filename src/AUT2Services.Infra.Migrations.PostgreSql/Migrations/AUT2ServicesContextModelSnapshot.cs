@@ -1772,6 +1772,13 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("ChallengePurpose")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValue("PASSWORD_CHANGE");
+
                     b.Property<DateTimeOffset?>("ConsumedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -1807,7 +1814,7 @@ namespace AUT2Services.Infra.Migrations.PostgreSql.Migrations
 
                     b.HasIndex("UserId", "CreatedAtUtc");
 
-                    b.HasIndex("UserId", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
+                    b.HasIndex("UserId", "ChallengePurpose", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
 
                     b.ToTable("PasswordChangeChallenges", (string)null);
                 });

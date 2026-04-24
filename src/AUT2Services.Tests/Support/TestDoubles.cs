@@ -104,6 +104,11 @@ internal sealed class StubPasswordChangeChallengeMessageService(
             });
     }
 
+    public PasswordChangeChallengeDispatch CreateRecoveryDispatch(Usuario usuario, DateTimeOffset expiresAtUtc)
+    {
+        return CreateDispatch(usuario, expiresAtUtc);
+    }
+
     public bool IsCodeMatch(string userId, string inputCode, string expectedHash)
     {
         return string.Equals(inputCode, code, StringComparison.Ordinal)

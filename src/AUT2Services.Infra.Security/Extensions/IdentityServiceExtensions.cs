@@ -106,6 +106,25 @@ public class IdentityServiceExtensions
                         AutoReplenishment = true
                     });
             });
+
+            options.AddPolicy(EnumPolicyMaster.PASSWORD_RECOVERY, httpContext =>
+            {
+                var settings = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<EmailValidationOptions>>()
+                    .Value;
+
+                var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: remoteIp,
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = Math.Max(1, settings.ResendRequestsPerWindow),
+                        Window = TimeSpan.FromMinutes(Math.Max(1, settings.ResendWindowMinutes)),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    });
+            });
         });
 
         builder.Services.AddHostedService<ExpiredRefreshTokenCleanupService>();

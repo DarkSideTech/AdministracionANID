@@ -115,11 +115,40 @@ public partial class AccountController : ApiController
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.CurrentUserAsync(Request, Response, context));
     }
 
+    [HttpPost("buscarusuariospaginados")]
+    [Authorize]
+    public async Task<IActionResult> BuscarUsuariosPaginados(BuscarUsuariosPaginadosViewModel viewModel)
+    {
+        var context = HttpContext;
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.BuscarUsuariosPaginadosAsync(viewModel, Request, Response, context));
+    }
+
     [HttpPost("modificausuario")]
     [Authorize]
     public async Task<IActionResult> ModificaUsuario(ModificaUsuarioViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ModificaUsuarioAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("activarusuario")]
+    [Authorize]
+    public async Task<IActionResult> ActivarUsuario(ActivarUsuarioViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivarUsuarioAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("desactivarusuario")]
+    [Authorize]
+    public async Task<IActionResult> DesactivarUsuario(DesactivarUsuarioViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivarUsuarioAsync(viewModel, Request, Response));
+    }
+
+    [HttpPost("adminmodificacorreoelectronico")]
+    [Authorize]
+    public async Task<IActionResult> AdminModificaCorreoElectronico(AdminModificaCorreoElectronicoViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.AdminModificaCorreoElectronicoAsync(viewModel, Request, Response));
     }
 
     [HttpPost("modificacorreoelectronico")]
@@ -148,6 +177,30 @@ public partial class AccountController : ApiController
     public async Task<IActionResult> ConfirmaCambioClave(ConfirmaCambioClaveViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ConfirmaCambioClaveAsync(viewModel, Request, Response));
+    }
+
+    [HttpPost("solicitarecuperacionclave")]
+    [AllowAnonymous]
+    [EnableRateLimiting(EnumPolicyMaster.PASSWORD_RECOVERY)]
+    public async Task<IActionResult> SolicitaRecuperacionClave(SolicitaRecuperacionClaveViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.SolicitaRecuperacionClaveAsync(viewModel, Request, Response));
+    }
+
+    [HttpPost("reenviacodigorecuperacionclave")]
+    [AllowAnonymous]
+    [EnableRateLimiting(EnumPolicyMaster.PASSWORD_RECOVERY)]
+    public async Task<IActionResult> ReenviaCodigoRecuperacionClave(ReenviaCodigoRecuperacionClaveViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ReenviaCodigoRecuperacionClaveAsync(viewModel, Request, Response));
+    }
+
+    [HttpPost("confirmarecuperacionclave")]
+    [AllowAnonymous]
+    [EnableRateLimiting(EnumPolicyMaster.PASSWORD_RECOVERY)]
+    public async Task<IActionResult> ConfirmaRecuperacionClave(ConfirmaRecuperacionClaveViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ConfirmaRecuperacionClaveAsync(viewModel, Request, Response));
     }
 
 }

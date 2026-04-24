@@ -21,7 +21,27 @@ public sealed class PasswordChangeChallengeMessageService(
     {
         var code = GenerateCode(passwordChangeOptions.CodeLength);
         var codeHash = ComputeCodeHash(usuario.Id, code);
-        var emailMessage = BuildEmailMessage(usuario, code, expiresAtUtc);
+        var emailMessage = BuildEmailMessage(
+            usuario,
+            code,
+            expiresAtUtc,
+            "Código de validación para cambio de clave",
+            "Recibimos una solicitud para cambiar tu clave de acceso. Usa el siguiente código de validación:",
+            "ANID: Código de validación para cambio de clave");
+        return new PasswordChangeChallengeDispatch(code, codeHash, emailMessage);
+    }
+
+    public PasswordChangeChallengeDispatch CreateRecoveryDispatch(Usuario usuario, DateTimeOffset expiresAtUtc)
+    {
+        var code = GenerateCode(passwordChangeOptions.CodeLength);
+        var codeHash = ComputeCodeHash(usuario.Id, code);
+        var emailMessage = BuildEmailMessage(
+            usuario,
+            code,
+            expiresAtUtc,
+            "Código de validación para recuperar clave",
+            "Recibimos una solicitud para recuperar tu clave de acceso. Usa el siguiente código de validación:",
+            "ANID: Código de validación para recuperar clave");
         return new PasswordChangeChallengeDispatch(code, codeHash, emailMessage);
     }
 
@@ -38,7 +58,13 @@ public sealed class PasswordChangeChallengeMessageService(
             Encoding.UTF8.GetBytes(expectedHash));
     }
 
-    private EmailDataModel BuildEmailMessage(Usuario usuario, string code, DateTimeOffset expiresAtUtc)
+    private EmailDataModel BuildEmailMessage(
+        Usuario usuario,
+        string code,
+        DateTimeOffset expiresAtUtc,
+        string title,
+        string intro,
+        string subject)
     {
         var body = $@"
 <!DOCTYPE html>
@@ -46,7 +72,7 @@ public sealed class PasswordChangeChallengeMessageService(
   <head>
     <meta charset=""UTF-8"">
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-    <title>Código de validación para cambio de clave</title>
+    <title>{title}</title>
   </head>
   <body style=""margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f4f4f4;"">
     <table border=""0"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
@@ -62,7 +88,7 @@ public sealed class PasswordChangeChallengeMessageService(
               <td style=""padding:24px;text-align:center;"">
                 <h2 style=""color:#333333;margin:0 0 16px 0;font-size:22px;"">Hola {usuario.NombreADesplegar ?? "Usuario"}</h2>
                 <p style=""color:#555555;line-height:1.6;margin:0 0 24px 0;"">
-                  Recibimos una solicitud para cambiar tu clave de acceso. Usa el siguiente código de validación:
+                  {intro}
                 </p>
                 <div style=""margin:0 0 24px 0;padding:16px;background-color:#f8f9fa;border:1px dashed #d52b1e;word-break:break-all;font-family:Consolas,monospace;font-size:24px;color:#d52b1e;letter-spacing:4px;font-weight:bold;"">
                   {code}
@@ -90,7 +116,7 @@ public sealed class PasswordChangeChallengeMessageService(
             ToMailboxAddresses = [new() { Address = usuario.Email ?? string.Empty, Name = usuario.NombreADesplegar ?? string.Empty }],
             Body = body,
             BodyType = EnumEmailBodyType.HTML_BODY,
-            Subject = "ANID: Código de validación para cambio de clave"
+            Subject = subject
         };
     }
 

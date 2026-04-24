@@ -4,6 +4,7 @@ public sealed class PasswordChangeChallenge
 {
     public Guid Id { get; set; }
     public string UserId { get; set; } = string.Empty;
+    public string ChallengePurpose { get; set; } = PasswordChangeChallengePurposes.PasswordChange;
     public string CodeHash { get; set; } = string.Empty;
     public string? RequestPath { get; set; }
     public int FailedAttempts { get; set; }

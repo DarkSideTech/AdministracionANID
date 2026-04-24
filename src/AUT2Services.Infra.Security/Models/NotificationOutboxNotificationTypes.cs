@@ -5,4 +5,5 @@ public static class NotificationOutboxNotificationTypes
     public const string EmailConfirmation = "EMAIL_CONFIRMATION";
     public const string ZendeskForeignUserRegistration = "ZENDESK_FOREIGN_USER_REGISTRATION";
     public const string PasswordChangeVerificationCode = "PASSWORD_CHANGE_VERIFICATION_CODE";
+    public const string PasswordRecoveryVerificationCode = "PASSWORD_RECOVERY_VERIFICATION_CODE";
 }

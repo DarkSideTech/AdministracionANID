@@ -1,0 +1,30 @@
+namespace AUT2Services.Infra.Security.Records;
+
+public sealed record UsuarioPaginadoItemResponse(
+    string? IdUsuario,
+    string? NumeroDeTelefono,
+    string? Descripcion,
+    string? Nacionalidad,
+    string? DocumentoDeIdentidad,
+    string? NumeroDeDocumento,
+    string? CodigoValidadorDocumento,
+    string? PrimerNombre,
+    string? SegundoNombre,
+    string? PrimerApellido,
+    string? SegundoApellido,
+    string? SexoDeclarativo,
+    string? SexoRegistral,
+    DateOnly? FechaDeNacimiento,
+    string? CorreoElectronico,
+    string? TipoDeUsuario,
+    string? NombreUsuarioNormalizado,
+    bool CorreoElectronicoConfirmado,
+    bool NumeroDeTelefonoConfirmado,
+    bool DobleFactorHabilitado,
+    string? IdPersona,
+    string? NombreADesplegar,
+    bool? Activo,
+    bool? UsuarioBase,
+    bool? RequiereValidacionEnrrolamiento,
+    string? EstadoDeUsuario
+);

@@ -15,7 +15,7 @@ public sealed class NoOpAuditBuffer : IAuditBuffer
     {
     }
 
-    public void TrackUpdate<TAggregate>(Command command, Event domainEvent, TAggregate before, TAggregate after)
+    public void TrackUpdate<TAggregate>(Command command, Event domainEvent, TAggregate before, TAggregate after, bool includeSnapshot = false)
     {
     }
 

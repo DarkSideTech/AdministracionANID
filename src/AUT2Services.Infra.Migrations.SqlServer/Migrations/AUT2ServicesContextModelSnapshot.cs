@@ -1774,6 +1774,13 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("ChallengePurpose")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("PASSWORD_CHANGE");
+
                     b.Property<DateTimeOffset?>("ConsumedAtUtc")
                         .HasColumnType("datetimeoffset");
 
@@ -1809,7 +1816,7 @@ namespace AUT2Services.Infra.Migrations.SqlServer.Migrations
 
                     b.HasIndex("UserId", "CreatedAtUtc");
 
-                    b.HasIndex("UserId", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
+                    b.HasIndex("UserId", "ChallengePurpose", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
 
                     b.ToTable("PasswordChangeChallenges", (string)null);
                 });

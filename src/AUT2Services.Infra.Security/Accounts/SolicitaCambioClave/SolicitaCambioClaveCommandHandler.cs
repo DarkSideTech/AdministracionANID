@@ -127,6 +127,7 @@ public class SolicitaCambioClaveCommandHandler : CommandHandler,
             {
                 Id = Guid.NewGuid(),
                 UserId = existingUser.Id,
+                ChallengePurpose = PasswordChangeChallengePurposes.PasswordChange,
                 CodeHash = dispatch.CodeHash,
                 RequestPath = command.Request.Path,
                 FailedAttempts = 0,
@@ -229,6 +230,7 @@ public class SolicitaCambioClaveCommandHandler : CommandHandler,
         var activeChallenges = await dbContext.PasswordChangeChallenges
             .AsTracking()
             .Where(item => item.UserId == userId
+                && item.ChallengePurpose == PasswordChangeChallengePurposes.PasswordChange
                 && item.ConsumedAtUtc == null
                 && item.CancelledAtUtc == null)
             .ToListAsync(cancellationToken);

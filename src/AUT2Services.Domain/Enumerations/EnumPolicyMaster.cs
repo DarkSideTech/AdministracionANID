@@ -12,6 +12,7 @@ public static class EnumPolicyMaster
     public const string VALIDA_ASIGNACION_ROLES = nameof(VALIDA_ASIGNACION_ROLES);
     public const string VALIDA_ENRROLAMIENTO = nameof(VALIDA_ENRROLAMIENTO);
     public const string RESEND_CONFIRMATION_EMAIL = nameof(RESEND_CONFIRMATION_EMAIL);
+    public const string PASSWORD_RECOVERY = nameof(PASSWORD_RECOVERY);
 
     public static IList<string> ObtenerListaValores()
     {

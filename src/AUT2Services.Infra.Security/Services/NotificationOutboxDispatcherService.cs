@@ -241,6 +241,8 @@ public sealed class NotificationOutboxDispatcherService : BackgroundService
                 => SecurityTraceabilityEventTypes.CorreoValidacionCuentaEnviado,
             NotificationOutboxNotificationTypes.PasswordChangeVerificationCode
                 => SecurityTraceabilityEventTypes.CodigoValidacionCambioClaveEnviado,
+            NotificationOutboxNotificationTypes.PasswordRecoveryVerificationCode
+                => SecurityTraceabilityEventTypes.CodigoValidacionRecuperacionClaveEnviado,
             NotificationOutboxNotificationTypes.ZendeskForeignUserRegistration
                 => SecurityTraceabilityEventTypes.ZendeskRegistroExtranjeroEnviado,
             _ => null
@@ -267,6 +269,11 @@ public sealed class NotificationOutboxDispatcherService : BackgroundService
         if (message.DeduplicationKey?.StartsWith("password-change:", StringComparison.OrdinalIgnoreCase) == true)
         {
             return "PASSWORD_CHANGE";
+        }
+
+        if (message.DeduplicationKey?.StartsWith("password-recovery:", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return "PASSWORD_RECOVERY";
         }
 
         return "OUTBOX";

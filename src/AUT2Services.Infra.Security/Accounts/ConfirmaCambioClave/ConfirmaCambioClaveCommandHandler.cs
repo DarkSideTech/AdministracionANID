@@ -4,6 +4,7 @@ using AUT2Services.Domain.Core.Time;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
+using AUT2Services.Infra.DataTrazabilidad.Persistence;
 using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
 using AUT2Services.Infra.Security.Models;
@@ -131,6 +132,7 @@ public class ConfirmaCambioClaveCommandHandler : CommandHandler,
         var activeChallenge = await dbContext.PasswordChangeChallenges
             .AsTracking()
             .Where(item => item.UserId == existingUser.Id
+                && item.ChallengePurpose == PasswordChangeChallengePurposes.PasswordChange
                 && item.ConsumedAtUtc == null
                 && item.CancelledAtUtc == null)
             .OrderByDescending(item => item.CreatedAtUtc)

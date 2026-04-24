@@ -1,5 +1,4 @@
 using AUT2Services.Domain.Core.Commands;
-using AUT2Services.Domain.Core.CommonValidators.Validators;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Core.Messaging;
 using AUT2Services.Domain.Enumerations;
@@ -11,7 +10,6 @@ using AUT2Services.Infra.Security.Models;
 using AUT2Services.Infra.Security.Records;
 using AUT2Services.Infra.Security.Traceability;
 using Microsoft.AspNetCore.Identity;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Logging;
 
 namespace AUT2Services.Infra.Security.Accounts.ModificaUsuario;
@@ -81,12 +79,6 @@ public class ModificaUsuarioCommandHandler : CommandHandler,
             return CommandResponse;
         }
 
-        if (!string.Equals(currentUserService.UserId, command.IdUsuario, StringComparison.Ordinal))
-        {
-            AddError("No tienes permisos para modificar este usuario.");
-            return CommandResponse;
-        }
-
         var existingUser = await userManager.FindByIdAsync(command.IdUsuario!);
         if (existingUser is null)
         {
@@ -119,18 +111,13 @@ public class ModificaUsuarioCommandHandler : CommandHandler,
         }
 
         var informacionActual = existingUser.InformacionAdicional.ToInformacionAdicionalModel();
-        var tipoDeUsuarioActual = (existingUser.TipoDeUsuario ?? string.Empty).Trim().ToUpperInvariant();
+        var tipoDeUsuarioActual = existingUser.TipoDeUsuario;
         var esUsuarioNacional = string.Equals(tipoDeUsuarioActual, EnumTipoDeUsuario.NACIONAL, StringComparison.OrdinalIgnoreCase);
         var beforeState = UsuarioTraceabilityState.FromUser(existingUser);
 
         var informacionActualizada = esUsuarioNacional
             ? BuildNationalUserInformation(informacionActual, command)
             : BuildForeignUserInformation(informacionActual, command);
-
-        if (!ValidateUpdatedInformation(informacionActualizada, tipoDeUsuarioActual))
-        {
-            return CommandResponse;
-        }
 
         existingUser.InformacionAdicional = informacionActualizada.ToJson();
         existingUser.NombreADesplegar = BuildDisplayName(
@@ -165,7 +152,8 @@ public class ModificaUsuarioCommandHandler : CommandHandler,
                 {
                     ActionContext = "PROFILE_UPDATE",
                     RequestPath = command.Request.Path
-                });
+                },
+                includeSnapshot: true);
 
             if (!await dbContext.Commit())
             {
@@ -231,73 +219,6 @@ public class ModificaUsuarioCommandHandler : CommandHandler,
             FechaDeNacimiento = command.FechaDeNacimiento ?? informacionActual.FechaDeNacimiento,
             TerminosYCondiciones = informacionActual.TerminosYCondiciones
         };
-    }
-
-    private bool ValidateUpdatedInformation(InformacionAdicionalModel informacionActualizada, string tipoDeUsuarioActual)
-    {
-        if (!CommonValidator.EnumerationValidator(typeof(EnumSexoRegistral), informacionActualizada.SexoRegistral))
-        {
-            AddError("El valor ingresado para el campo SexoRegistral debe ser un valor valido definido en la enumeracion.");
-            return false;
-        }
-
-        if (string.Equals(tipoDeUsuarioActual, EnumTipoDeUsuario.NACIONAL, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.Nacionalidad)
-            || !CommonValidator.EnumerationValidator(typeof(EnumNacionalidad), informacionActualizada.Nacionalidad))
-        {
-            AddError("El valor ingresado para el campo Nacionalidad debe ser un valor valido definido en la enumeracion.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.DocumentoDeIdentidad)
-            || !CommonValidator.EnumerationValidator(typeof(EnumDocumentoDeIdentidad), informacionActualizada.DocumentoDeIdentidad))
-        {
-            AddError("El valor ingresado para el campo DocumentoDeIdentidad debe ser un valor valido definido en la enumeracion.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.NumeroDeDocumento) || informacionActualizada.NumeroDeDocumento.Length is < 5 or > 100)
-        {
-            AddError("El valor ingresado para el campo NumeroDeDocumento debe contener entre 5 y 100 caracteres.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.CodigoValidadorDocumento) || informacionActualizada.CodigoValidadorDocumento.Length is < 1 or > 100)
-        {
-            AddError("El valor ingresado para el campo CodigoValidadorDocumento debe contener entre 1 y 100 caracteres.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.PrimerNombre) || informacionActualizada.PrimerNombre.Length is < 2 or > 100)
-        {
-            AddError("El valor ingresado para el campo PrimerNombre debe contener entre 2 y 100 caracteres.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.PrimerApellido) || informacionActualizada.PrimerApellido.Length is < 2 or > 100)
-        {
-            AddError("El valor ingresado para el campo PrimerApellido debe contener entre 2 y 100 caracteres.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(informacionActualizada.SexoDeclarativo)
-            || !CommonValidator.EnumerationValidator(typeof(EnumSexoDeclarativo), informacionActualizada.SexoDeclarativo))
-        {
-            AddError("El valor ingresado para el campo SexoDeclarativo debe ser un valor valido definido en la enumeracion.");
-            return false;
-        }
-
-        if (!informacionActualizada.FechaDeNacimiento.HasValue)
-        {
-            AddError("El valor ingresado para el campo FechaDeNacimiento no puede estar vacio.");
-            return false;
-        }
-
-        return true;
     }
 
     private static string BuildDisplayName(string? primerNombre, string? primerApellido, string? fallbackValue)

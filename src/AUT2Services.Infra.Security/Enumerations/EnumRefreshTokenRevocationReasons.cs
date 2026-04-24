@@ -6,4 +6,5 @@ public static class EnumRefreshTokenRevocationReasons
     public const string Rotated = "Rotated";
     public const string ReuseDetected = "ReuseDetected";
     public const string SecondLogin = "SecondLogin";
+    public const string PasswordRecovery = "PasswordRecovery";
 }

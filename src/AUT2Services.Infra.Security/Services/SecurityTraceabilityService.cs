@@ -37,7 +37,13 @@ public sealed class SecurityTraceabilityService(IAuditBuffer auditBuffer) : ISec
         return true;
     }
 
-    public bool TrackUpdate(Command command, string? userId, string eventType, UsuarioTraceabilityState before, UsuarioTraceabilityState after)
+    public bool TrackUpdate(
+        Command command,
+        string? userId,
+        string eventType,
+        UsuarioTraceabilityState before,
+        UsuarioTraceabilityState after,
+        bool includeSnapshot = false)
     {
         if (!TryCreateAggregateId(userId, out var aggregateId))
         {
@@ -48,7 +54,8 @@ public sealed class SecurityTraceabilityService(IAuditBuffer auditBuffer) : ISec
             command,
             new SecurityTraceabilityEvent(aggregateId, eventType),
             before,
-            after);
+            after,
+            includeSnapshot);
         return true;
     }
 

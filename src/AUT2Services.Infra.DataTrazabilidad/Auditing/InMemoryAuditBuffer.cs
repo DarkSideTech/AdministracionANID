@@ -22,7 +22,7 @@ public sealed class InMemoryAuditBuffer : IAuditBuffer
         });
     }
 
-    public void TrackUpdate<TAggregate>(Command command, Event domainEvent, TAggregate before, TAggregate after)
+    public void TrackUpdate<TAggregate>(Command command, Event domainEvent, TAggregate before, TAggregate after, bool includeSnapshot = false)
     {
         entries.Add(new PendingAuditEntry
         {
@@ -32,6 +32,7 @@ public sealed class InMemoryAuditBuffer : IAuditBuffer
             OperationType = AuditOperationType.Update,
             Before = before,
             After = after,
+            IncludeSnapshot = includeSnapshot,
             CaptureOrder = captureOrder++
         });
     }
