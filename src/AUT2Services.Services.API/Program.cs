@@ -59,7 +59,12 @@ app.UseAuthentication();
 app.UseMiddleware<AuditExecutionContextMiddleware>();
 app.UseAuthorization();
 
-app.MapHealthChecks("/health");
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "ok",
+    service = "AUT2Services.Services.API"
+}));
+app.MapHealthChecks("/healthz");
 app.MapControllers();
 
 app.Run();
