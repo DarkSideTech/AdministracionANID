@@ -203,4 +203,75 @@ public partial class AccountController : ApiController
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ConfirmaRecuperacionClaveAsync(viewModel, Request, Response));
     }
 
+    [HttpPost("buscarrolespaginados")]
+    [Authorize]
+    public async Task<IActionResult> BuscarRolesPaginados(BuscarRolesPaginadosViewModel viewModel)
+    {
+        var context = HttpContext;
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.BuscarRolesPaginadosAsync(viewModel, Request, Response, context));
+    }
+
+    [HttpPost("modificarol")]
+    [Authorize]
+    public async Task<IActionResult> ModificaRol(ModificaRolViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ModificaRolAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("activarrol")]
+    [Authorize]
+    public async Task<IActionResult> ActivarRol(ActivarRolViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivarRolAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("desactivarrol")]
+    [Authorize]
+    public async Task<IActionResult> DesactivarRol(DesactivarRolViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivarRolAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("requierevalidacionalserasignado")]
+    [Authorize]
+    public async Task<IActionResult> RequiereValidacionAlSerAsignado(RequiereValidacionAlSerAsignadoViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.RequiereValidacionAlSerAsignadoAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("norequierevalidacionalserasignado")]
+    [Authorize]
+    public async Task<IActionResult> NoRequiereValidacionAlSerAsignado(NoRequiereValidacionAlSerAsignadoViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.NoRequiereValidacionAlSerAsignadoAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("activavalidaciondeasignacionderoles")]
+    [Authorize]
+    public async Task<IActionResult> ActivaValidacionDeAsignacionDeRoles(ActivaValidacionDeAsignacionDeRolesViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivaValidacionDeAsignacionDeRolesAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("desactivavalidaciondeasignacionderoles")]
+    [Authorize]
+    public async Task<IActionResult> DesactivaValidacionDeAsignacionDeRoles(DesactivaValidacionDeAsignacionDeRolesViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivaValidacionDeAsignacionDeRolesAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("activadetalledeautorizaciones")]
+    [Authorize]
+    public async Task<IActionResult> ActivaDetalleDeAutorizaciones(ActivaDetalleDeAutorizacionesViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivaDetalleDeAutorizacionesAsync(viewModel, Request, Response));
+    }
+
+    [HttpPut("desactivadetalledeautorizaciones")]
+    [Authorize]
+    public async Task<IActionResult> DesactivaDetalleDeAutorizaciones(DesactivaDetalleDeAutorizacionesViewModel viewModel)
+    {
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivaDetalleDeAutorizacionesAsync(viewModel, Request, Response));
+    }
+
 }

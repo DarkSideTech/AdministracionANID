@@ -567,7 +567,7 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260408205144_Inicial', N'10.0.5');
+    VALUES (N'20260408205144_Inicial', N'10.0.7');
 END;
 
 COMMIT;
@@ -705,7 +705,7 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260411163556_AddAuditTraceability', N'10.0.5');
+    VALUES (N'20260411163556_AddAuditTraceability', N'10.0.7');
 END;
 
 COMMIT;
@@ -752,7 +752,7 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260412004336_AddAuditAggregateCursorConcurrencyToken', N'10.0.5');
+    VALUES (N'20260412004336_AddAuditAggregateCursorConcurrencyToken', N'10.0.7');
 END;
 
 COMMIT;
@@ -822,7 +822,94 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260414014343_AddNotificationOutbox', N'10.0.5');
+    VALUES (N'20260414014343_AddNotificationOutbox', N'10.0.7');
+END;
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260416223845_AddPasswordChangeChallenges'
+)
+BEGIN
+    CREATE TABLE [PasswordChangeChallenges] (
+        [Id] uniqueidentifier NOT NULL,
+        [UserId] nvarchar(100) NOT NULL,
+        [CodeHash] nvarchar(256) NOT NULL,
+        [RequestPath] nvarchar(512) NULL,
+        [FailedAttempts] int NOT NULL DEFAULT 0,
+        [ResendCount] int NOT NULL DEFAULT 0,
+        [CreatedAtUtc] datetimeoffset NOT NULL,
+        [LastSentAtUtc] datetimeoffset NOT NULL,
+        [ExpiresAtUtc] datetimeoffset NOT NULL,
+        [ConsumedAtUtc] datetimeoffset NULL,
+        [CancelledAtUtc] datetimeoffset NULL,
+        CONSTRAINT [PK_PasswordChangeChallenges] PRIMARY KEY ([Id])
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260416223845_AddPasswordChangeChallenges'
+)
+BEGIN
+    CREATE INDEX [IX_PasswordChangeChallenges_UserId_CreatedAtUtc] ON [PasswordChangeChallenges] ([UserId], [CreatedAtUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260416223845_AddPasswordChangeChallenges'
+)
+BEGIN
+    CREATE INDEX [IX_PasswordChangeChallenges_UserId_ExpiresAtUtc_ConsumedAtUtc_CancelledAtUtc] ON [PasswordChangeChallenges] ([UserId], [ExpiresAtUtc], [ConsumedAtUtc], [CancelledAtUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260416223845_AddPasswordChangeChallenges'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20260416223845_AddPasswordChangeChallenges', N'10.0.7');
+END;
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260424120001_AddPasswordRecoveryChallengePurpose'
+)
+BEGIN
+    DROP INDEX [IX_PasswordChangeChallenges_UserId_ExpiresAtUtc_ConsumedAtUtc_CancelledAtUtc] ON [PasswordChangeChallenges];
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260424120001_AddPasswordRecoveryChallengePurpose'
+)
+BEGIN
+    ALTER TABLE [PasswordChangeChallenges] ADD [ChallengePurpose] nvarchar(50) NOT NULL DEFAULT N'PASSWORD_CHANGE';
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260424120001_AddPasswordRecoveryChallengePurpose'
+)
+BEGIN
+    CREATE INDEX [IX_PasswordChangeChallenges_UserId_Purpose_Expires] ON [PasswordChangeChallenges] ([UserId], [ChallengePurpose], [ExpiresAtUtc], [ConsumedAtUtc], [CancelledAtUtc]);
+END;
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260424120001_AddPasswordRecoveryChallengePurpose'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20260424120001_AddPasswordRecoveryChallengePurpose', N'10.0.7');
 END;
 
 COMMIT;

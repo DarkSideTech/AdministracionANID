@@ -11,6 +11,7 @@ using AUT2Services.Infra.Security.Accounts.DesactivarUsuario;
 using AUT2Services.Infra.Security.Accounts.ModificaCorreoElectronico;
 using AUT2Services.Infra.Security.Accounts.ReenviaCodigoCambioClave;
 using AUT2Services.Infra.Security.Accounts.ReenviaCodigoRecuperacionClave;
+using AUT2Services.Infra.Security.Accounts.Roles;
 using AUT2Services.Infra.Security.Accounts.SolicitaCambioClave;
 using AUT2Services.Infra.Security.Accounts.SolicitaRecuperacionClave;
 using AUT2Services.Infra.Security.Accounts.Yo;
@@ -160,5 +161,55 @@ public class AccountServiceApp : IAccountServiceApp
     public Task<CommandResponse> ConfirmaRecuperacionClaveAsync(ConfirmaRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         return mediator.SendCommand(viewModel.ToConfirmaRecuperacionClaveCommand(request, response));
+    }
+
+    public Task<CommandResponse> BuscarRolesPaginadosAsync(BuscarRolesPaginadosViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context)
+    {
+        return mediator.SendCommand(viewModel.ToBuscarRolesPaginadosCommand(request, response, context));
+    }
+
+    public Task<CommandResponse> ModificaRolAsync(ModificaRolViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToModificaRolCommand(request, response));
+    }
+
+    public Task<CommandResponse> ActivarRolAsync(ActivarRolViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToActivarRolCommand(request, response));
+    }
+
+    public Task<CommandResponse> DesactivarRolAsync(DesactivarRolViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToDesactivarRolCommand(request, response));
+    }
+
+    public Task<CommandResponse> RequiereValidacionAlSerAsignadoAsync(RequiereValidacionAlSerAsignadoViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToRequiereValidacionAlSerAsignadoCommand(request, response));
+    }
+
+    public Task<CommandResponse> NoRequiereValidacionAlSerAsignadoAsync(NoRequiereValidacionAlSerAsignadoViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToNoRequiereValidacionAlSerAsignadoCommand(request, response));
+    }
+
+    public Task<CommandResponse> ActivaValidacionDeAsignacionDeRolesAsync(ActivaValidacionDeAsignacionDeRolesViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToActivaValidacionDeAsignacionDeRolesCommand(request, response));
+    }
+
+    public Task<CommandResponse> DesactivaValidacionDeAsignacionDeRolesAsync(DesactivaValidacionDeAsignacionDeRolesViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToDesactivaValidacionDeAsignacionDeRolesCommand(request, response));
+    }
+
+    public Task<CommandResponse> ActivaDetalleDeAutorizacionesAsync(ActivaDetalleDeAutorizacionesViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToActivaDetalleDeAutorizacionesCommand(request, response));
+    }
+
+    public Task<CommandResponse> DesactivaDetalleDeAutorizacionesAsync(DesactivaDetalleDeAutorizacionesViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        return mediator.SendCommand(viewModel.ToDesactivaDetalleDeAutorizacionesCommand(request, response));
     }
 }

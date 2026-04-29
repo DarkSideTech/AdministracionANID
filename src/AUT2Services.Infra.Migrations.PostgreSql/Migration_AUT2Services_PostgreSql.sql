@@ -542,7 +542,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260408205139_Inicial') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260408205139_Inicial', '10.0.5');
+    VALUES ('20260408205139_Inicial', '10.0.7');
     END IF;
 END $EF$;
 COMMIT;
@@ -667,7 +667,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260411163537_AddAuditTraceability') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260411163537_AddAuditTraceability', '10.0.5');
+    VALUES ('20260411163537_AddAuditTraceability', '10.0.7');
     END IF;
 END $EF$;
 COMMIT;
@@ -701,7 +701,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260412004336_AddAuditAggregateCursorConcurrencyToken') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260412004336_AddAuditAggregateCursorConcurrencyToken', '10.0.5');
+    VALUES ('20260412004336_AddAuditAggregateCursorConcurrencyToken', '10.0.7');
     END IF;
 END $EF$;
 COMMIT;
@@ -764,7 +764,84 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260414014337_AddNotificationOutbox') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260414014337_AddNotificationOutbox', '10.0.5');
+    VALUES ('20260414014337_AddNotificationOutbox', '10.0.7');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260416223834_AddPasswordChangeChallenges') THEN
+    CREATE TABLE "PasswordChangeChallenges" (
+        "Id" uuid NOT NULL,
+        "UserId" character varying(100) NOT NULL,
+        "CodeHash" character varying(256) NOT NULL,
+        "RequestPath" character varying(512),
+        "FailedAttempts" integer NOT NULL DEFAULT 0,
+        "ResendCount" integer NOT NULL DEFAULT 0,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        "LastSentAtUtc" timestamp with time zone NOT NULL,
+        "ExpiresAtUtc" timestamp with time zone NOT NULL,
+        "ConsumedAtUtc" timestamp with time zone,
+        "CancelledAtUtc" timestamp with time zone,
+        CONSTRAINT "PK_PasswordChangeChallenges" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260416223834_AddPasswordChangeChallenges') THEN
+    CREATE INDEX "IX_PasswordChangeChallenges_UserId_CreatedAtUtc" ON "PasswordChangeChallenges" ("UserId", "CreatedAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260416223834_AddPasswordChangeChallenges') THEN
+    CREATE INDEX "IX_PasswordChangeChallenges_UserId_ExpiresAtUtc_ConsumedAtUtc_~" ON "PasswordChangeChallenges" ("UserId", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260416223834_AddPasswordChangeChallenges') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260416223834_AddPasswordChangeChallenges', '10.0.7');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260424120000_AddPasswordRecoveryChallengePurpose') THEN
+    DROP INDEX "IX_PasswordChangeChallenges_UserId_ExpiresAtUtc_ConsumedAtUtc_~";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260424120000_AddPasswordRecoveryChallengePurpose') THEN
+    ALTER TABLE "PasswordChangeChallenges" ADD "ChallengePurpose" character varying(50) NOT NULL DEFAULT 'PASSWORD_CHANGE';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260424120000_AddPasswordRecoveryChallengePurpose') THEN
+    CREATE INDEX "IX_PasswordChangeChallenges_UserId_Purpose_Expires" ON "PasswordChangeChallenges" ("UserId", "ChallengePurpose", "ExpiresAtUtc", "ConsumedAtUtc", "CancelledAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260424120000_AddPasswordRecoveryChallengePurpose') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260424120000_AddPasswordRecoveryChallengePurpose', '10.0.7');
     END IF;
 END $EF$;
 COMMIT;

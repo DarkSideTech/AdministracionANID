@@ -16,6 +16,7 @@ using AUT2Services.Infra.Security.Accounts.ReenviaCodigoCambioClave;
 using AUT2Services.Infra.Security.Accounts.ReenviaCodigoRecuperacionClave;
 using AUT2Services.Infra.Security.Accounts.Register;
 using AUT2Services.Infra.Security.Accounts.ResendEmailConfirmationToken;
+using AUT2Services.Infra.Security.Accounts.Roles;
 using AUT2Services.Infra.Security.Accounts.SolicitaCambioClave;
 using AUT2Services.Infra.Security.Accounts.SolicitaRecuperacionClave;
 using AUT2Services.Infra.Security.Records;
@@ -320,4 +321,98 @@ public static class AccountExtensions
             Response = response
         };
     }
+
+    public static BuscarRolesPaginadosCommand ToBuscarRolesPaginadosCommand(this BuscarRolesPaginadosViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext httpContext)
+    {
+        if (viewModel is null) return null;
+
+        return new BuscarRolesPaginadosCommand()
+        {
+            NumeroDePagina = viewModel.NumeroDePagina,
+            CantidadPorPagina = viewModel.CantidadPorPagina,
+            Busqueda = viewModel.Busqueda,
+            Request = request,
+            Response = response,
+            Context = httpContext
+        };
+    }
+
+    public static ModificaRolCommand ToModificaRolCommand(this ModificaRolViewModel viewModel, HttpRequest request, HttpResponse response)
+    {
+        if (viewModel is null) return null;
+
+        return new ModificaRolCommand()
+        {
+            IdRol = viewModel.IdRol,
+            Descripcion = viewModel.Descripcion,
+            ValidaEnrrolamiento = viewModel.ValidaEnrrolamiento,
+            ValidaAsignacionDeRoles = viewModel.ValidaAsignacionDeRoles,
+            Request = request,
+            Response = response
+        };
+    }
+
+    public static ActivarRolCommand ToActivarRolCommand(this ActivarRolViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static DesactivarRolCommand ToDesactivarRolCommand(this DesactivarRolViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static RequiereValidacionAlSerAsignadoCommand ToRequiereValidacionAlSerAsignadoCommand(this RequiereValidacionAlSerAsignadoViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static NoRequiereValidacionAlSerAsignadoCommand ToNoRequiereValidacionAlSerAsignadoCommand(this NoRequiereValidacionAlSerAsignadoViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static ActivaValidacionDeAsignacionDeRolesCommand ToActivaValidacionDeAsignacionDeRolesCommand(this ActivaValidacionDeAsignacionDeRolesViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static DesactivaValidacionDeAsignacionDeRolesCommand ToDesactivaValidacionDeAsignacionDeRolesCommand(this DesactivaValidacionDeAsignacionDeRolesViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static ActivaDetalleDeAutorizacionesCommand ToActivaDetalleDeAutorizacionesCommand(this ActivaDetalleDeAutorizacionesViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
+
+    public static DesactivaDetalleDeAutorizacionesCommand ToDesactivaDetalleDeAutorizacionesCommand(this DesactivaDetalleDeAutorizacionesViewModel viewModel, HttpRequest request, HttpResponse response)
+        => new()
+        {
+            IdRol = viewModel?.IdRol,
+            Request = request,
+            Response = response
+        };
 }

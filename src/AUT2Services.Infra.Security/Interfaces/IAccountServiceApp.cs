@@ -52,4 +52,24 @@ public interface IAccountServiceApp
     Task<CommandResponse> ReenviaCodigoRecuperacionClaveAsync(ReenviaCodigoRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response);
 
     Task<CommandResponse> ConfirmaRecuperacionClaveAsync(ConfirmaRecuperacionClaveViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> BuscarRolesPaginadosAsync(BuscarRolesPaginadosViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context);
+
+    Task<CommandResponse> ModificaRolAsync(ModificaRolViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ActivarRolAsync(ActivarRolViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> DesactivarRolAsync(DesactivarRolViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> RequiereValidacionAlSerAsignadoAsync(RequiereValidacionAlSerAsignadoViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> NoRequiereValidacionAlSerAsignadoAsync(NoRequiereValidacionAlSerAsignadoViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ActivaValidacionDeAsignacionDeRolesAsync(ActivaValidacionDeAsignacionDeRolesViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> DesactivaValidacionDeAsignacionDeRolesAsync(DesactivaValidacionDeAsignacionDeRolesViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> ActivaDetalleDeAutorizacionesAsync(ActivaDetalleDeAutorizacionesViewModel viewModel, HttpRequest request, HttpResponse response);
+
+    Task<CommandResponse> DesactivaDetalleDeAutorizacionesAsync(DesactivaDetalleDeAutorizacionesViewModel viewModel, HttpRequest request, HttpResponse response);
 }
