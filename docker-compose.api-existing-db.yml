@@ -6,8 +6,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5002:5002"
+    env_file:
+      - .env.container
     environment:
       ASPNETCORE_ENVIRONMENT: Container
       ASPNETCORE_URLS: http://0.0.0.0:5002
       ASPNETCORE_HTTP_PORTS: "5002"
       HTTP_PORTS: "5002"
+      JwtOptions__Key: ${JWT_OPTIONS_KEY}
+      JwtOptions__Issuer: ${JWT_OPTIONS_ISSUER}
+      JwtOptions__Audience: ${JWT_OPTIONS_AUDIENCE}
+      SendEmailOptions__Password: ${SMTP_PASSWORD}
+      ZendeskSendTicketOptions__ApiToken: ${ZENDESK_API_TOKEN}
