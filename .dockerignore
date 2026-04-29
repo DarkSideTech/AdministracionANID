@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.idea/
+.git/
+.gitignore
+.github/
+Dockerfile*
+README.md
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+TestResults/
+coverage/
+artifacts/
