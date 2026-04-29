@@ -8,6 +8,10 @@ RUN dotnet publish src/AUT2Services.Services.API/AUT2Services.Services.API.cspro
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV ASPNETCORE_URLS=http://+:5002
 ENV ASPNETCORE_ENVIRONMENT=Production
 
