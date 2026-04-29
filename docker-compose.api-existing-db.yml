@@ -1,0 +1,13 @@
+services:
+  api:
+    image: anid-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5002
+      ConnectionStrings__AUT2ServicesConnectionPostgreSql: Host=host.docker.internal;Port=5432;Database=AUT2Services;Username=postgres;Password=postgres
+      ConnectionStrings__MongoAuditProjection: mongodb://host.docker.internal:27017
