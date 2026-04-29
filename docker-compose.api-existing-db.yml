@@ -7,14 +7,7 @@ services:
     ports:
       - "5002:5002"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Container
       ASPNETCORE_URLS: http://0.0.0.0:5002
       ASPNETCORE_HTTP_PORTS: "5002"
       HTTP_PORTS: "5002"
-      ConnectionStrings__AUT2ServicesConnectionPostgreSql: Host=host.docker.internal;Port=5432;Database=AUT2Services;Username=postgres;Password=postgres
-      MongoAuditProjection__Enabled: "true"
-      MongoAuditProjection__ConnectionString: mongodb://host.docker.internal:27017
-      MongoAuditProjection__DatabaseName: AUT2ServicesTraceability
-      MongoAuditProjection__CollectionName: audit_trail
-      MongoAuditProjection__BatchSize: "100"
-      MongoAuditProjection__IntervalSeconds: "5"
