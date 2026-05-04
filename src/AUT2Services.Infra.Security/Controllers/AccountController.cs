@@ -211,6 +211,14 @@ public partial class AccountController : ApiController
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.BuscarRolesPaginadosAsync(viewModel, Request, Response, context));
     }
 
+    [HttpPost("buscarroles")]
+    [Authorize]
+    public async Task<IActionResult> BuscarRoles(BuscarRolesViewModel viewModel)
+    {
+        var context = HttpContext;
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.BuscarRolesAsync(viewModel, Request, Response, context));
+    }
+
     [HttpPost("modificarol")]
     [Authorize]
     public async Task<IActionResult> ModificaRol(ModificaRolViewModel viewModel)

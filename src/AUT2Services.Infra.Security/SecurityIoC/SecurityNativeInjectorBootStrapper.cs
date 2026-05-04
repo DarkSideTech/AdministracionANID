@@ -63,6 +63,7 @@ public class SecurityNativeInjectorBootStrapper
         services.AddScoped<IRequestHandler<BuscarUsuariosPaginadosCommand, CommandResponse>, BuscarUsuariosPaginadosCommandHandler>();
         services.AddScoped<IRequestHandler<ActivarUsuarioCommand, CommandResponse>, ActivarUsuarioCommandHandler>();
         services.AddScoped<IRequestHandler<DesactivarUsuarioCommand, CommandResponse>, DesactivarUsuarioCommandHandler>();
+        services.AddScoped<IRequestHandler<BuscarRolesCommand, CommandResponse>, BuscarRolesCommandHandler>();
         services.AddScoped<IRequestHandler<BuscarRolesPaginadosCommand, CommandResponse>, BuscarRolesPaginadosCommandHandler>();
         services.AddScoped<IRequestHandler<ModificaRolCommand, CommandResponse>, ModificaRolCommandHandler>();
         services.AddScoped<IRequestHandler<ActivarRolCommand, CommandResponse>, ActivarRolCommandHandler>();

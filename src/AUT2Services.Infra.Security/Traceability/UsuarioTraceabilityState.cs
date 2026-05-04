@@ -39,6 +39,8 @@ public sealed record UsuarioTraceabilityState
     public DateTimeOffset? ProcessedAtUtc { get; init; }
     public DateTimeOffset? RespondedAtUtc { get; init; }
     public Guid? ChallengeId { get; init; }
+    public Guid? IdUsuarioValidado { get; init; }
+    public Guid? IdUsuarioValidador { get; init; }
 
     public static UsuarioTraceabilityState FromUser(Usuario user)
     {

@@ -23,4 +23,6 @@ public static class SecurityTraceabilityEventTypes
     public const string CodigoValidacionRecuperacionClaveEnviado = "CodigoValidacionRecuperacionClaveEnviado";
     public const string ValidacionRecuperacionClaveRespondida = "ValidacionRecuperacionClaveRespondida";
     public const string ClaveAccesoRecuperada = "ClaveAccesoRecuperada";
+    public const string EnrrolamientoValidado = "EnrrolamientoValidado";
+    public const string EnrrolamientoValidacionRealizada = "EnrrolamientoValidacionRealizada";
 }

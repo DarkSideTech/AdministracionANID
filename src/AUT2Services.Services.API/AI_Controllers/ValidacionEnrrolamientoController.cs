@@ -59,7 +59,7 @@ public class ValidacionEnrrolamientoController : ApiController
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _validacionEnrrolamientoServiceApp.Desactivar(dataViewModel));
     } 
 
-    [AllowAnonymous]
+    [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
     [HttpGet("BuscarPor_Id")]
     public async Task<ValidacionEnrrolamientoViewModel> BuscarPor_Id( 
             Guid id 
@@ -70,7 +70,7 @@ public class ValidacionEnrrolamientoController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
     [HttpGet("BuscarPor_IdValidado_Usuario_IdValidaEnrrolamiento_Usuario")]
     public async Task<ValidacionEnrrolamientoViewModel> BuscarPor_IdValidado_Usuario_IdValidaEnrrolamiento_Usuario( 
             Guid idValidado_Usuario, 
@@ -83,7 +83,7 @@ public class ValidacionEnrrolamientoController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
     [HttpGet("BuscarPor_IdValidado_Usuario")]
     public async Task<IEnumerable<ValidacionEnrrolamientoViewModel>> BuscarPor_IdValidado_Usuario( 
             Guid idValidado_Usuario 
@@ -94,7 +94,7 @@ public class ValidacionEnrrolamientoController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
     [HttpGet("BuscarPor_IdValidaEnrrolamiento_Usuario")]
     public async Task<IEnumerable<ValidacionEnrrolamientoViewModel>> BuscarPor_IdValidaEnrrolamiento_Usuario( 
             Guid idValidaEnrrolamiento_Usuario 

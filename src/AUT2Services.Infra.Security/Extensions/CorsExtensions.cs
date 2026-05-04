@@ -10,9 +10,7 @@ public class CorsExtensions
         {
             options.AddPolicy("AllowDinamicRules", policy =>
             {
-                var hasWildcardOrigin = allowedOrigins.Any(origin => origin.Trim() == "*");
-
-                if (environment_develop || hasWildcardOrigin)
+                if (environment_develop)
                 {
                     policy.AllowAnyOrigin()
                           .AllowAnyHeader()

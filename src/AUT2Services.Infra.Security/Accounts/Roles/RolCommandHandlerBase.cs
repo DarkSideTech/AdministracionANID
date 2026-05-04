@@ -10,8 +10,8 @@ namespace AUT2Services.Infra.Security.Accounts.Roles;
 public abstract class RolCommandHandlerBase : CommandHandler
 {
     protected readonly RoleManager<Rol> RoleManager;
+    protected readonly ICurrentUserService CurrentUserService;
     private readonly ICsrfService csrfService;
-    private readonly ICurrentUserService currentUserService;
     private readonly ISessionValidationService sessionValidationService;
 
     protected RolCommandHandlerBase(
@@ -22,7 +22,7 @@ public abstract class RolCommandHandlerBase : CommandHandler
     {
         RoleManager = roleManager;
         this.csrfService = csrfService;
-        this.currentUserService = currentUserService;
+        CurrentUserService = currentUserService;
         this.sessionValidationService = sessionValidationService;
     }
 
@@ -39,17 +39,17 @@ public abstract class RolCommandHandlerBase : CommandHandler
 
     protected async Task<bool> ValidateAuthenticatedSessionAsync(CancellationToken cancellationToken)
     {
-        if (!currentUserService.IsAuthenticated || string.IsNullOrWhiteSpace(currentUserService.UserId))
+        if (!CurrentUserService.IsAuthenticated || string.IsNullOrWhiteSpace(CurrentUserService.UserId))
         {
             AddError("Usuario no autorizado.");
             return false;
         }
 
-        var principal = currentUserService.GetClaimsPrincipal(cancellationToken);
+        var principal = CurrentUserService.GetClaimsPrincipal(cancellationToken);
         var securityStamp = principal?.FindFirst(EnumTokenValidationClaims.SecurityStamp)?.Value;
         var isSessionValid = await sessionValidationService.IsSessionValidAsync(
-            currentUserService.UserId,
-            currentUserService.SessionId,
+            CurrentUserService.UserId,
+            CurrentUserService.SessionId,
             securityStamp,
             cancellationToken);
 

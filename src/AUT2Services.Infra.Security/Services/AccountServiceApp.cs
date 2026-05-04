@@ -168,6 +168,11 @@ public class AccountServiceApp : IAccountServiceApp
         return mediator.SendCommand(viewModel.ToBuscarRolesPaginadosCommand(request, response, context));
     }
 
+    public Task<CommandResponse> BuscarRolesAsync(BuscarRolesViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context)
+    {
+        return mediator.SendCommand(viewModel.ToBuscarRolesCommand(request, response, context));
+    }
+
     public Task<CommandResponse> ModificaRolAsync(ModificaRolViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         return mediator.SendCommand(viewModel.ToModificaRolCommand(request, response));

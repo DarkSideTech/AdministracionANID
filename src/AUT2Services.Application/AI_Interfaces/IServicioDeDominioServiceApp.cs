@@ -12,15 +12,31 @@ namespace AUT2Services.Application.Interfaces;
 
 public interface IServicioDeDominioServiceApp : IDisposable
 {
+    Task<CommandResponse> BuscarUsuariosPendientesEnrrolamiento(BuscarUsuariosPendientesEnrrolamientoServicioDeDominioViewModel data);
     Task<CommandResponse> ValidaEnrrolamiento(ValidaEnrrolamientoServicioDeDominioViewModel data); 
     Task<CommandResponse> ValidaAsignacionDeRol(ValidaAsignacionDeRolServicioDeDominioViewModel data); 
     Task<CommandResponse> CrearEntidad(CrearEntidadServicioDeDominioViewModel data); 
+    Task<CommandResponse> EliminarEntidad(EliminarEntidadServicioDeDominioViewModel data); 
+    Task<CommandResponse> SincronizarPoliticasAsignadas(SincronizarPoliticasAsignadasServicioDeDominioViewModel data);
     Task<CommandResponse> MarcarEntidadComoPrincipal(MarcarEntidadComoPrincipalServicioDeDominioViewModel data); 
   
     Task<IEnumerable<UnidadOrganizacionalViewModel>> BuscarUnidadesOrganizacionalesPor_Id_Usuario_Id_Organizacion(
         Guid id_Usuario, 
         Guid id_Organizacion 
         ); 
+
+    Task<IEnumerable<EntidadParaAsignarPoliticaViewModel>> BuscarEntidadesParaAsignarPolitica(
+        Guid id_Usuario,
+        Guid id_UnidadOrganizacional
+        );
+
+    Task<IEnumerable<EntidadParaAsignarPoliticaViewModel>> BuscarEntidadesParaAsignarPoliticaPorOrganizacion(
+        Guid id_Organizacion
+        );
+
+    Task<IEnumerable<PoliticaAsignadaParaEntidadViewModel>> BuscarPoliticasAsignadasPorEntidad(
+        Guid id_Entidad
+        );
 
     Task<EntidadViewModel?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(
         Guid id_Usuario, 

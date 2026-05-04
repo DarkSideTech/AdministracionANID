@@ -1,12 +1,20 @@
 using AUT2Services.Domain.Core.Auditing;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace AUT2Services.Infra.DataMongoDB.Models;
 
 public sealed class MongoAuditTimelineDocument
 {
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; init; }
+
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid CorrelationId { get; init; }
+
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid AggregateId { get; init; }
+
     public string AggregateType { get; init; } = string.Empty;
     public long AggregateRevision { get; init; }
     public string EventType { get; init; } = string.Empty;

@@ -91,7 +91,7 @@ public class OrganizacionController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
     [HttpGet("BuscarPor_Codigo")]
     public async Task<OrganizacionViewModel> BuscarPor_Codigo( 
             string codigo 

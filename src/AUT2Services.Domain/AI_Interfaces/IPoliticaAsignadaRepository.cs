@@ -26,6 +26,9 @@ public interface IPoliticaAsignadaRepository : IRepository<PoliticaAsignada>
     Task<IEnumerable<PoliticaAsignada>> BuscarPor_Id_Entidad(
         Guid id_Entidad 
         );
+    Task<IEnumerable<PoliticaAsignada>> BuscarPor_Id_Entidades(
+        IEnumerable<Guid> ids_Entidad
+        );
     Task<IEnumerable<PoliticaAsignada>> BuscarPor_Id_Rol(
         Guid id_Rol 
         );

@@ -30,7 +30,7 @@ public partial class PoliticaAsignadaCommandHandler :
 
         var existPoliticaAsignada = await _politicaAsignadaRepository.BuscarPor_Id_Entidad_Id_Rol_Id_Proceso(command.Id_Entidad, command.Id_Rol, command.Id_Proceso);
 
-        if(existPoliticaAsignada is not null)
+        if(existPoliticaAsignada.Any())
         {
             AddError($"Ya existe PoliticaAsignada para la busqueda : Id_Entidad [{command.Id_Entidad}] Id_Rol [{command.Id_Rol}] Id_Proceso [{command.Id_Proceso}] ");
             return CommandResponse;

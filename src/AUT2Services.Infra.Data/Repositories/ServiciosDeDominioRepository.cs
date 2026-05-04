@@ -61,6 +61,183 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
         return result;
     }
 
+    public async Task<IEnumerable<EntidadParaAsignarPoliticaDTO>> BuscarEntidadesParaAsignarPolitica(
+        Guid id_Usuario,
+        Guid id_UnidadOrganizacional,
+        DateTimeOffset fechaConsulta)
+    {
+        var usuario = await db.Users
+            .AsNoTracking()
+            .Where(user => user.Id == id_Usuario.ToString())
+            .Select(user => new
+            {
+                user.NombreADesplegar,
+                user.Email
+            })
+            .FirstOrDefaultAsync();
+
+        if (usuario is null)
+        {
+            return [];
+        }
+
+        return await (
+            from entidad in db.Entidad.AsNoTracking()
+
+            join unidadOrganizacional in db.UnidadOrganizacional.AsNoTracking()
+                on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+
+            where entidad.Id_Usuario == id_Usuario
+                && entidad.Id_UnidadOrganizacional == id_UnidadOrganizacional
+                && (entidad.FechaInicioAutorizacion == null || entidad.FechaInicioAutorizacion <= fechaConsulta)
+                && (entidad.FechaTerminoAutorizacion == null || entidad.FechaTerminoAutorizacion > fechaConsulta)
+
+            orderby entidad.Principal descending,
+                entidad.TipoDeEntidad,
+                entidad.CorreoElectronico
+
+            select new EntidadParaAsignarPoliticaDTO
+            {
+                IdEntidad = entidad.Id,
+                IdUsuario = entidad.Id_Usuario,
+                NombreUsuario = usuario.NombreADesplegar ?? usuario.Email ?? string.Empty,
+                IdUnidadOrganizacional = unidadOrganizacional.Id,
+                CodigoUnidadOrganizacional = unidadOrganizacional.Codigo,
+                NombreUnidadOrganizacional = unidadOrganizacional.Nombre,
+                TipoDeEntidad = entidad.TipoDeEntidad,
+                CorreoElectronico = entidad.CorreoElectronico,
+                Principal = entidad.Principal
+            })
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<EntidadParaAsignarPoliticaDTO>> BuscarEntidadesParaAsignarPoliticaPor_Id_Organizacion(
+        Guid id_Organizacion,
+        DateTimeOffset fechaConsulta,
+        IReadOnlyCollection<Guid>? ids_UnidadesOrganizacionales)
+    {
+        var filtraUnidades = ids_UnidadesOrganizacionales is not null;
+        if (filtraUnidades && ids_UnidadesOrganizacionales!.Count == 0)
+        {
+            return [];
+        }
+
+        var rows = await (
+            from entidad in db.Entidad.AsNoTracking()
+
+            join unidadOrganizacional in db.UnidadOrganizacional.AsNoTracking()
+                on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+
+            where unidadOrganizacional.Id_Organizacion == id_Organizacion
+                && (!filtraUnidades || ids_UnidadesOrganizacionales!.Contains(unidadOrganizacional.Id))
+                && (entidad.FechaInicioAutorizacion == null || entidad.FechaInicioAutorizacion <= fechaConsulta)
+                && (entidad.FechaTerminoAutorizacion == null || entidad.FechaTerminoAutorizacion > fechaConsulta)
+
+            select new
+            {
+                Entidad = entidad,
+                UnidadOrganizacional = unidadOrganizacional
+            })
+            .ToListAsync();
+
+        var idsUsuarios = rows
+            .Select(item => item.Entidad.Id_Usuario.ToString())
+            .Distinct()
+            .ToArray();
+
+        var usuarios = await db.Users
+            .AsNoTracking()
+            .Where(user => idsUsuarios.Contains(user.Id))
+            .Select(user => new
+            {
+                user.Id,
+                user.NombreADesplegar,
+                user.Email
+            })
+            .ToDictionaryAsync(user => user.Id);
+
+        return rows
+            .Select(item =>
+            {
+                usuarios.TryGetValue(item.Entidad.Id_Usuario.ToString(), out var usuario);
+                return new EntidadParaAsignarPoliticaDTO
+                {
+                    IdEntidad = item.Entidad.Id,
+                    IdUsuario = item.Entidad.Id_Usuario,
+                    NombreUsuario = usuario?.NombreADesplegar ?? usuario?.Email ?? string.Empty,
+                    IdUnidadOrganizacional = item.UnidadOrganizacional.Id,
+                    CodigoUnidadOrganizacional = item.UnidadOrganizacional.Codigo,
+                    NombreUnidadOrganizacional = item.UnidadOrganizacional.Nombre,
+                    TipoDeEntidad = item.Entidad.TipoDeEntidad,
+                    CorreoElectronico = item.Entidad.CorreoElectronico,
+                    Principal = item.Entidad.Principal
+                };
+            })
+            .OrderBy(item => item.NombreUsuario)
+            .ThenBy(item => item.CodigoUnidadOrganizacional)
+            .ThenBy(item => item.TipoDeEntidad)
+            .ToArray();
+    }
+
+    public async Task<IEnumerable<PoliticaAsignadaParaEntidadDTO>> BuscarPoliticasAsignadasPor_Id_Entidad(
+        Guid id_Entidad,
+        DateTimeOffset fechaConsulta)
+    {
+        var rows = await (
+            from politicaAsignada in db.PoliticaAsignada.AsNoTracking()
+
+            join proceso in db.Proceso.AsNoTracking()
+                on politicaAsignada.Id_Proceso equals proceso.Id
+
+            where politicaAsignada.Id_Entidad == id_Entidad
+                && (politicaAsignada.FechaInicioAsignacion == null || politicaAsignada.FechaInicioAsignacion <= fechaConsulta)
+                && (politicaAsignada.FechaTerminoAsignacion == null || politicaAsignada.FechaTerminoAsignacion > fechaConsulta)
+
+            select new
+            {
+                PoliticaAsignada = politicaAsignada,
+                Proceso = proceso
+            })
+            .ToListAsync();
+
+        var idsRoles = rows
+            .Select(item => item.PoliticaAsignada.Id_Rol.ToString())
+            .Distinct()
+            .ToArray();
+
+        var roles = await db.Roles
+            .AsNoTracking()
+            .Where(rol => idsRoles.Contains(rol.Id))
+            .Select(rol => new
+            {
+                rol.Id,
+                rol.NormalizedName,
+                rol.Name
+            })
+            .ToDictionaryAsync(rol => rol.Id);
+
+        return rows
+            .Select(item =>
+            {
+                roles.TryGetValue(item.PoliticaAsignada.Id_Rol.ToString(), out var rol);
+                return new PoliticaAsignadaParaEntidadDTO
+                {
+                    IdPoliticaAsignada = item.PoliticaAsignada.Id,
+                    IdEntidad = item.PoliticaAsignada.Id_Entidad,
+                    IdRol = item.PoliticaAsignada.Id_Rol,
+                    NombreRol = rol?.NormalizedName ?? rol?.Name ?? string.Empty,
+                    IdProceso = item.PoliticaAsignada.Id_Proceso,
+                    CodigoProceso = item.Proceso.Codigo,
+                    NombreProceso = item.Proceso.Nombre,
+                    RolRequiereValidacion = item.PoliticaAsignada.RolRequiereValidacion,
+                    RolAsignadoValidado = item.PoliticaAsignada.RolAsignadoValidado
+                };
+            })
+            .OrderBy(item => item.NombreRol)
+            .ThenBy(item => item.CodigoProceso)
+            .ToArray();
+    }
+
     public async Task<EntidadDTO?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(
         Guid id_Usuario,
         Guid id_Organizacion

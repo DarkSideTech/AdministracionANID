@@ -36,7 +36,8 @@ public partial class  PoliticaAsignadaCommandHandler :
             }
  
         AddDeleteDomainEvent(command, existPoliticaAsignada, new PoliticaAsignadaEventEliminado(
-            existPoliticaAsignada.Id
+            existPoliticaAsignada.Id,
+            command.AuditAggregateId
         ), existPoliticaAsignada);
 
         _politicaAsignadaRepository.Eliminar(existPoliticaAsignada);

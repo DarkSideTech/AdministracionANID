@@ -53,6 +53,22 @@ public class EntidadRepository : IEntidadRepository
                 ); 
     } 
 
+    public async Task<IEnumerable<Entidad>> BuscarPor_Ids(
+            IEnumerable<Guid> ids
+        )
+    {
+        var idsArray = ids.Distinct().ToArray();
+        if (idsArray.Length == 0)
+        {
+            return [];
+        }
+
+        return await DbSet
+                .AsNoTracking()
+                .Where(data => idsArray.Contains(data.Id))
+                .ToListAsync();
+    }
+
     public async Task<Entidad> BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal( 
             Guid id_Usuario, 
             Guid id_UnidadOrganizacional 
@@ -91,6 +107,25 @@ public class EntidadRepository : IEntidadRepository
                 ) 
                 .ToListAsync(); 
     } 
+
+    public async Task<IEnumerable<Entidad>> BuscarPor_Id_Usuario_Id_Organizacion(
+            Guid id_Usuario,
+            Guid id_Organizacion,
+            DateTimeOffset fechaConsulta
+        )
+    {
+        return await (
+                from entidad in DbSet.AsNoTracking()
+                join unidadOrganizacional in Db.UnidadOrganizacional.AsNoTracking()
+                    on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+                where entidad.Id_Usuario.Equals(id_Usuario)
+                    && unidadOrganizacional.Id_Organizacion.Equals(id_Organizacion)
+                    && (entidad.FechaInicioAutorizacion == null || entidad.FechaInicioAutorizacion <= fechaConsulta)
+                    && (entidad.FechaTerminoAutorizacion == null || entidad.FechaTerminoAutorizacion > fechaConsulta)
+                select entidad
+            )
+            .ToListAsync();
+    }
 
     public async Task<IEnumerable<Entidad>> BuscarPor_Id_UnidadOrganizacional( 
             Guid id_UnidadOrganizacional 

@@ -21,6 +21,9 @@ public interface IProcesoServiceApp : IDisposable
     Task<IEnumerable<ProcesoViewModel>> BuscarTodos(
         ); 
 
+    Task<IEnumerable<ProcesoSeleccionViewModel>> BuscarActivosParaSeleccion(
+        );
+
     Task<ProcesoViewModel> BuscarPor_Id(
         Guid id 
         ); 

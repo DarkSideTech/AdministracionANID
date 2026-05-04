@@ -60,6 +60,17 @@ public class ProcesoServiceApp : IProcesoServiceApp
         )).ToViewModel(); 
     } 
 
+    public async Task<IEnumerable<ProcesoSeleccionViewModel>> BuscarActivosParaSeleccion()
+    {
+        return (await _procesoRepository.BuscarActivosParaSeleccion())
+            .Select(proceso => new ProcesoSeleccionViewModel
+            {
+                Id = proceso.Id,
+                Codigo = proceso.Codigo,
+                Nombre = proceso.Nombre
+            });
+    }
+
     public async Task<ProcesoViewModel> BuscarPor_Id( 
         Guid id 
         )

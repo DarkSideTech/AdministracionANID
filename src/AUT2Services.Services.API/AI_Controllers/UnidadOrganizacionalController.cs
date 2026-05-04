@@ -104,7 +104,7 @@ public class UnidadOrganizacionalController : ApiController
         ); 
     } 
 
-    [AllowAnonymous]
+    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
     [HttpGet("BuscarPor_Id_Organizacion")]
     public async Task<IEnumerable<UnidadOrganizacionalViewModel>> BuscarPor_Id_Organizacion( 
             Guid id_Organizacion 

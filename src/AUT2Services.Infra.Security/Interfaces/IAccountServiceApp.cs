@@ -55,6 +55,8 @@ public interface IAccountServiceApp
 
     Task<CommandResponse> BuscarRolesPaginadosAsync(BuscarRolesPaginadosViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context);
 
+    Task<CommandResponse> BuscarRolesAsync(BuscarRolesViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext context);
+
     Task<CommandResponse> ModificaRolAsync(ModificaRolViewModel viewModel, HttpRequest request, HttpResponse response);
 
     Task<CommandResponse> ActivarRolAsync(ActivarRolViewModel viewModel, HttpRequest request, HttpResponse response);

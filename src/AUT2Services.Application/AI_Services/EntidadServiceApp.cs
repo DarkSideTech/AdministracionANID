@@ -10,6 +10,7 @@ using AUT2Services.Application.ViewModels;
 using AUT2Services.Application.ViewModels.Entidades;
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
+using AUT2Services.Domain.Core.Time;
 using AUT2Services.Domain.Interfaces;
 
 namespace AUT2Services.Application.Services;
@@ -18,14 +19,17 @@ public class EntidadServiceApp : IEntidadServiceApp
 {
         private readonly IEntidadRepository _entidadRepository;
         private readonly IMediatorHandler _mediator;
+        private readonly IClock _clock;
 
     public EntidadServiceApp(
                 IEntidadRepository entidadRepository,
-                IMediatorHandler mediator
+                IMediatorHandler mediator,
+                IClock clock
         )
     {
                 _entidadRepository = entidadRepository ?? throw new ArgumentNullException(nameof(entidadRepository));
                 _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+                _clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
     public async Task<CommandResponse> Crear(CrearEntidadViewModel command)
@@ -97,6 +101,18 @@ public class EntidadServiceApp : IEntidadServiceApp
             id_Usuario 
         )).ToViewModel(); 
     } 
+
+    public async Task<IEnumerable<EntidadViewModel>> BuscarPor_Id_Usuario_Id_Organizacion(
+        Guid id_Usuario,
+        Guid id_Organizacion
+        )
+    {
+        return (await _entidadRepository.BuscarPor_Id_Usuario_Id_Organizacion(
+            id_Usuario,
+            id_Organizacion,
+            _clock.UtcNow
+        )).ToViewModel();
+    }
 
     public async Task<IEnumerable<EntidadViewModel>> BuscarPor_Id_UnidadOrganizacional( 
         Guid id_UnidadOrganizacional 

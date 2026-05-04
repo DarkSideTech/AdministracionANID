@@ -1,6 +1,7 @@
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Core.Time;
+using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
@@ -133,6 +134,15 @@ public class RefreshTokenCommandHandler : CommandHandler,
                 authCookieService.ClearAuthCookies(command.Response);
                 csrfService.EnsureTokenCookie(command.Response);
                 AddError("Debes confirmar tu correo electrónico antes de actualizar la sesión.");
+                return CommandResponse;
+            }
+
+            if (!string.Equals(existingRefreshToken.User.EstadoDeUsuario, EnumEstadoDeUsuario.REGISTRADO, StringComparison.OrdinalIgnoreCase))
+            {
+                await tokenService.RevokeSessionAsync(existingRefreshToken.SessionId, EnumRefreshTokenRevocationReasons.Logout);
+                authCookieService.ClearAuthCookies(command.Response);
+                csrfService.EnsureTokenCookie(command.Response);
+                AddError("El usuario no se encuentra en estado REGISTRADO. Debe completar la validacion de enrrolamiento.");
                 return CommandResponse;
             }
 

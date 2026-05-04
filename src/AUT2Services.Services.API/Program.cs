@@ -28,7 +28,6 @@ builder.AddDependencyInjectionConfiguration();
 builder.Services.AddOpenApiConfiguration();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-builder.Services.AddHealthChecks();
 builder.AddCorsConfiguration(builder.Environment.IsDevelopment());
 
 var app = builder.Build();
@@ -59,12 +58,6 @@ app.UseAuthentication();
 app.UseMiddleware<AuditExecutionContextMiddleware>();
 app.UseAuthorization();
 
-app.MapGet("/health", () => Results.Ok(new
-{
-    status = "ok",
-    service = "AUT2Services.Services.API"
-}));
-app.MapHealthChecks("/healthz");
 app.MapControllers();
 
 app.Run();

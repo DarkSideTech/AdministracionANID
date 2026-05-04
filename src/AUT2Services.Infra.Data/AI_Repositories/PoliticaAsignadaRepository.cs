@@ -81,6 +81,22 @@ public class PoliticaAsignadaRepository : IPoliticaAsignadaRepository
                 .ToListAsync(); 
     } 
 
+    public async Task<IEnumerable<PoliticaAsignada>> BuscarPor_Id_Entidades(
+            IEnumerable<Guid> ids_Entidad
+        )
+    {
+        var ids = ids_Entidad.Distinct().ToArray();
+        if (ids.Length == 0)
+        {
+            return [];
+        }
+
+        return await DbSet
+                .AsNoTracking()
+                .Where(data => ids.Contains(data.Id_Entidad))
+                .ToListAsync();
+    }
+
     public async Task<IEnumerable<PoliticaAsignada>> BuscarPor_Id_Rol( 
             Guid id_Rol 
         ) 

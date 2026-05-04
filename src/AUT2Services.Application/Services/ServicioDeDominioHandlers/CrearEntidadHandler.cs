@@ -1,4 +1,5 @@
 using AUT2Services.Application.ViewModels.ServiciosDeDominio;
+using AUT2Services.Application.Extensions;
 using AUT2Services.Domain.Commands.Entidades.Commands;
 using AUT2Services.Domain.Commands.PoliticasAsignadas.Commands;
 using AUT2Services.Domain.Core.Commands;
@@ -19,20 +20,54 @@ public partial class ServicioDeDominioServiceApp
         };
         result.ValidationResult.Errors = [];
 
-        var existUnidadOrganizacional = await unidadOrganizacionalRepository.BuscarPor_Id((Guid)command.Id_UnidadOrganizacional!);
+        if (command.Id_UnidadOrganizacional is null || command.Id_UnidadOrganizacional == Guid.Empty)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), "El Id_UnidadOrganizacional es obligatorio para crear la entidad"));
+            return result;
+        }
+
+        if (command.Id_Usuario is null || command.Id_Usuario == Guid.Empty)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), "El Id_Usuario es obligatorio para crear la entidad"));
+            return result;
+        }
+
+        var idUnidadOrganizacional = command.Id_UnidadOrganizacional.Value;
+        var idUsuario = command.Id_Usuario.Value;
+
+        var existUnidadOrganizacional = await unidadOrganizacionalRepository.BuscarPor_Id(idUnidadOrganizacional);
 
         if (existUnidadOrganizacional is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"La unidad organizaciona id [{command.Id_UnidadOrganizacional}] no existe, no es posible crear la entidad"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"La unidad organizaciona id [{idUnidadOrganizacional}] no existe, no es posible crear la entidad"));
+            return result;
+        }
+
+        if (!await UsuarioActualPuedeOperarUnidadOrganizacional(
+                existUnidadOrganizacional,
+                nameof(CrearEntidad),
+                result.ValidationResult.Errors))
+        {
             return result;
         }
 
         var existUser = await userManager.Users
-                .FirstOrDefaultAsync(x => x.Id == command.Id_Usuario.ToString());
+                .FirstOrDefaultAsync(x => x.Id == idUsuario.ToString());
 
         if (existUser is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"El usuario id [{command.Id_Usuario}] no existe, no es posible crear la entidad"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"El usuario id [{idUsuario}] no existe, no es posible crear la entidad"));
+            return result;
+        }
+
+        var existEntidad = await entidadRepository.BuscarPor_Id_Usuario_Id_UnidadOrganizacional(
+            idUsuario,
+            idUnidadOrganizacional);
+
+        if (existEntidad is not null)
+        {
+            result.Result = true;
+            result.Data = existEntidad.ToViewModel();
             return result;
         }
 
@@ -48,8 +83,8 @@ public partial class ServicioDeDominioServiceApp
         try
         {
             var crearEntidadCommand = new CrearEntidadCommand(
-                (Guid)command.Id_UnidadOrganizacional,
-                (Guid)command.Id_Usuario!,
+                idUnidadOrganizacional,
+                idUsuario,
                 command.TipoDeEntidad!,
                 command.CorreoElectronico!
                 );
@@ -68,7 +103,7 @@ public partial class ServicioDeDominioServiceApp
 
             var entidadCreada = resultCrearEntidadCommand.GetData<EntidadDTO>();
 
-            var existEntidadPrincipal = await servicioDeDominioRepository.BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion((Guid)command.Id_Usuario, (Guid)command.Id_UnidadOrganizacional);
+            var existEntidadPrincipal = await servicioDeDominioRepository.BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(idUsuario, idUnidadOrganizacional);
 
             if (existEntidadPrincipal is not null)
             {
