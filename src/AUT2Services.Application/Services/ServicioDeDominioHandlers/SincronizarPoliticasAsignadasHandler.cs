@@ -2,6 +2,7 @@ using AUT2Services.Application.ViewModels.ServiciosDeDominio;
 using AUT2Services.Domain.Commands.PoliticasAsignadas.Commands;
 using AUT2Services.Domain.Core.Commands;
 using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore;
 
 namespace AUT2Services.Application.Services.ServicioDeDominioHandlers;
 
@@ -158,11 +159,19 @@ public partial class ServicioDeDominioServiceApp
             return;
         }
 
+        var rolRequiereValidacion = await ResolverRolRequiereValidacionDeAsignacion(solicitud.IdRol);
+        if (!rolRequiereValidacion.HasValue)
+        {
+            resultado.OmitidasPorError++;
+            resultado.Errores.Add($"No existe el rol id [{solicitud.IdRol}], no es posible crear la politica asignada.");
+            return;
+        }
+
         var crearPoliticaAsignadaCommand = new CrearPoliticaAsignadaCommand(
             solicitud.IdEntidad,
             solicitud.IdRol,
             solicitud.IdProceso,
-            solicitud.RolRequiereValidacion);
+            rolRequiereValidacion.Value);
 
         var crearPoliticaAsignadaResult = await mediator.SendCommand(crearPoliticaAsignadaCommand, cancellationToken);
         if (!crearPoliticaAsignadaResult.Result)
@@ -174,6 +183,15 @@ public partial class ServicioDeDominioServiceApp
 
         resultado.Creadas++;
         politicasAsignadasExistentes[clave] = [];
+    }
+
+    private async Task<bool?> ResolverRolRequiereValidacionDeAsignacion(Guid idRol)
+    {
+        return await roleManager.Roles
+            .AsNoTracking()
+            .Where(role => role.Id == idRol.ToString())
+            .Select(role => (bool?)(role.RequiereValidacionDeAsignacion == true))
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     private async Task EliminarPoliticaAsignadaSiExiste(

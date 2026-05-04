@@ -16,11 +16,35 @@ public partial class ServicioDeDominioServiceApp
         };
         result.ValidationResult.Errors = [];
 
+        if (!command.Id_PoliticaAsignada.HasValue || command.Id_PoliticaAsignada == Guid.Empty)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(command.Id_PoliticaAsignada), "Debe informar la politica asignada a validar."));
+            return result;
+        }
+
+        if (!command.Id_Usuario_ValidaAsignacionRol.HasValue || command.Id_Usuario_ValidaAsignacionRol == Guid.Empty)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(command.Id_Usuario_ValidaAsignacionRol), "Debe informar el usuario que valida la asignacion de rol."));
+            return result;
+        }
+
         var existPoliticaAsignada = await politicaAsignadaRepository.BuscarPor_Id((Guid)command.Id_PoliticaAsignada!);
 
         if (existPoliticaAsignada is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"La politica asignada id [{command.Id_PoliticaAsignada}] no existe, no es posible validar la asignacion de rol"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(ValidaAsignacionDeRol), $"La politica asignada id [{command.Id_PoliticaAsignada}] no existe, no es posible validar la asignacion de rol."));
+            return result;
+        }
+
+        if (!existPoliticaAsignada.RolRequiereValidacion)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(existPoliticaAsignada.RolRequiereValidacion), "La politica asignada no requiere validacion de asignacion de rol."));
+            return result;
+        }
+
+        if (existPoliticaAsignada.RolAsignadoValidado)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(existPoliticaAsignada.RolAsignadoValidado), "La politica asignada ya se encuentra validada."));
             return result;
         }
 
@@ -28,7 +52,7 @@ public partial class ServicioDeDominioServiceApp
 
         if (existEntidad is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"No existe la entidad id [{existPoliticaAsignada.Id_Entidad}], no es posible validar la asignacion de rol"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(ValidaAsignacionDeRol), $"No existe la entidad id [{existPoliticaAsignada.Id_Entidad}], no es posible validar la asignacion de rol."));
             return result;
         }
 
@@ -36,7 +60,17 @@ public partial class ServicioDeDominioServiceApp
 
         if (existUnidadorganizacional is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"No existe la unidad organizacional [{existEntidad.Id_UnidadOrganizacional}], no es posible validar la asignacion de rol"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(ValidaAsignacionDeRol), $"No existe la unidad organizacional [{existEntidad.Id_UnidadOrganizacional}], no es posible validar la asignacion de rol."));
+            return result;
+        }
+
+        var rolAsignado = await roleManager.Roles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == existPoliticaAsignada.Id_Rol.ToString());
+
+        if (rolAsignado is null || rolAsignado.RequiereValidacionDeAsignacion != true)
+        {
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(rolAsignado.RequiereValidacionDeAsignacion), "El rol asignado no requiere validacion de asignacion."));
             return result;
         }
 
@@ -45,7 +79,7 @@ public partial class ServicioDeDominioServiceApp
 
         if (rolValidaAsignacionDeRol is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"No existe el rol que Valida la Asignacion De Roles"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(ValidaAsignacionDeRol), "No existe el rol VALIDA_ASIGNACION_ROLES."));
             return result;
         }
 
@@ -53,7 +87,7 @@ public partial class ServicioDeDominioServiceApp
 
         if (organizacionANID is null)
         {
-            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"La Organizacion ANID no existe, contactar co un administrador, no es posible validar la asignacion de rol"));
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(ValidaAsignacionDeRol), "La Organizacion ANID no existe, no es posible validar la asignacion de rol."));
             return result;
         }
 
@@ -63,20 +97,25 @@ public partial class ServicioDeDominioServiceApp
             existUnidadorganizacional.Id_Organizacion,
             organizacionANID.Id);
 
-        if (usuarioValidaAsignacionDeRol)
+        if (!usuarioValidaAsignacionDeRol)
         {
-            using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-            try
-            {
-                existPoliticaAsignada.CambiarRolAsignadoValidado(true);
-            }
-            catch (Exception ex)
-            {
-                await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
-                result.ValidationResult.Errors.Add(new ValidationFailure(nameof(CrearEntidad), $"Error no manejado al momento de crear una entidad nueva, error: {ex.Message}"));
-            }
-            result.Result = true;
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(command.Id_Usuario_ValidaAsignacionRol), "El usuario no tiene asignado el rol VALIDA_ASIGNACION_ROLES para la organizacion de la asignacion."));
+            return result;
+        }
+
+        using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            existPoliticaAsignada.CambiarRolAsignadoValidado(true);
+            politicaAsignadaRepository.Modificar(existPoliticaAsignada);
+            await context.SaveChangesAsync(cancellationToken);
             await context.CommitExternalTransactionAsync(transaction, cancellationToken);
+            result.Result = true;
+        }
+        catch (Exception ex)
+        {
+            await context.RollbackExternalTransactionAsync(transaction, cancellationToken);
+            result.ValidationResult.Errors.Add(new ValidationFailure(nameof(ValidaAsignacionDeRol), $"Error no manejado al validar la asignacion de rol, error: {ex.Message}"));
         }
 
         return result;

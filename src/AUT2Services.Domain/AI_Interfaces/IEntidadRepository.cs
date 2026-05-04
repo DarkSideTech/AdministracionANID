@@ -40,6 +40,9 @@ public interface IEntidadRepository : IRepository<Entidad>
     Task<IEnumerable<Entidad>> BuscarPor_Id_UnidadOrganizacional(
         Guid id_UnidadOrganizacional 
         );
+    Task<IEnumerable<Entidad>> BuscarPor_Ids_UnidadOrganizacional(
+        IEnumerable<Guid> ids_UnidadOrganizacional
+        );
     Task<Entidad> BuscarPor_Id_Usuario_TipoDeEntidad_Persona(
         Guid id_Usuario 
         );

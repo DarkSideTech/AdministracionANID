@@ -18,6 +18,18 @@ public interface IServicioDeDominioRepository
         Guid id_Entidad,
         DateTimeOffset fechaConsulta);
 
+    Task<IEnumerable<UnidadOrganizacionalAsignacionOrganizacionDTO>> BuscarUnidadesOrganizacionalesParaAsignarOrganizacion(
+        Guid id_Organizacion);
+
+    Task<AsignacionesRolesPendientesValidacionPageDTO> BuscarAsignacionesRolesPendientesValidacion(
+        Guid id_Usuario_Validador,
+        Guid id_Rol_ValidaAsignacionUsuario,
+        Guid id_Organizacion_ANID,
+        int numeroDePagina,
+        int cantidadPorPagina,
+        string? busqueda,
+        DateTimeOffset fechaConsulta);
+
     Task<EntidadDTO?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(Guid id_Usuario, Guid id_Organizaciona);
 
     Task<IEnumerable<OrganizacionPorUsuarioDTO>> BuscarOrganizacionesPor_Id_Usuario(Guid id_Usuario);

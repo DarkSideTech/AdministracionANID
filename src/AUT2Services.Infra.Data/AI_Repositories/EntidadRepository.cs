@@ -139,6 +139,22 @@ public class EntidadRepository : IEntidadRepository
                 .ToListAsync(); 
     } 
 
+    public async Task<IEnumerable<Entidad>> BuscarPor_Ids_UnidadOrganizacional(
+            IEnumerable<Guid> ids_UnidadOrganizacional
+        )
+    {
+        var ids = ids_UnidadOrganizacional.Distinct().ToArray();
+        if (ids.Length == 0)
+        {
+            return [];
+        }
+
+        return await DbSet
+                .AsNoTracking()
+                .Where(data => ids.Contains(data.Id_UnidadOrganizacional))
+                .ToListAsync();
+    }
+
     public async Task<Entidad> BuscarPor_Id_Usuario_TipoDeEntidad_Persona( 
             Guid id_Usuario 
         ) 

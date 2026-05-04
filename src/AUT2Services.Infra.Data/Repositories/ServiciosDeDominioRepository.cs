@@ -238,6 +238,209 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
             .ToArray();
     }
 
+    public async Task<IEnumerable<UnidadOrganizacionalAsignacionOrganizacionDTO>> BuscarUnidadesOrganizacionalesParaAsignarOrganizacion(
+        Guid id_Organizacion)
+    {
+        var unidades = await (
+            from unidadOrganizacional in db.UnidadOrganizacional.AsNoTracking()
+
+            join organizacion in db.Organizacion.AsNoTracking()
+                on unidadOrganizacional.Id_Organizacion equals organizacion.Id
+
+            select new
+            {
+                UnidadOrganizacional = unidadOrganizacional,
+                Organizacion = organizacion
+            })
+            .ToListAsync();
+
+        var entidadesPrincipalesPorUnidad = await db.Entidad
+            .AsNoTracking()
+            .Where(entidad => entidad.Principal)
+            .GroupBy(entidad => entidad.Id_UnidadOrganizacional)
+            .Select(group => new
+            {
+                IdUnidadOrganizacional = group.Key,
+                Cantidad = group.LongCount()
+            })
+            .ToDictionaryAsync(item => item.IdUnidadOrganizacional, item => item.Cantidad);
+
+        return unidades
+            .Select(item =>
+            {
+                entidadesPrincipalesPorUnidad.TryGetValue(item.UnidadOrganizacional.Id, out var cantidadEntidadesPrincipales);
+                return new UnidadOrganizacionalAsignacionOrganizacionDTO
+                {
+                    IdUnidadOrganizacional = item.UnidadOrganizacional.Id,
+                    IdOrganizacionActual = item.Organizacion.Id,
+                    CodigoUnidadOrganizacional = item.UnidadOrganizacional.Codigo,
+                    NombreUnidadOrganizacional = item.UnidadOrganizacional.Nombre,
+                    DescripcionUnidadOrganizacional = item.UnidadOrganizacional.Descripcion,
+                    UnidadOrganizacionalBase = item.UnidadOrganizacional.UnidadOrganizacionalBase,
+                    Activo = item.UnidadOrganizacional.Activo,
+                    CodigoOrganizacionActual = item.Organizacion.Codigo,
+                    NombreOrganizacionActual = item.Organizacion.Nombre,
+                    AsignadaAOrganizacion = item.Organizacion.Id == id_Organizacion,
+                    TieneEntidadPrincipal = cantidadEntidadesPrincipales > 0,
+                    CantidadEntidadesPrincipales = cantidadEntidadesPrincipales
+                };
+            })
+            .OrderByDescending(item => item.AsignadaAOrganizacion)
+            .ThenBy(item => item.CodigoOrganizacionActual)
+            .ThenBy(item => item.CodigoUnidadOrganizacional)
+            .ToArray();
+    }
+
+    public async Task<AsignacionesRolesPendientesValidacionPageDTO> BuscarAsignacionesRolesPendientesValidacion(
+        Guid id_Usuario_Validador,
+        Guid id_Rol_ValidaAsignacionUsuario,
+        Guid id_Organizacion_ANID,
+        int numeroDePagina,
+        int cantidadPorPagina,
+        string? busqueda,
+        DateTimeOffset fechaConsulta)
+    {
+        var idsOrganizacionesValidador = await (
+            from politicaAsignada in db.PoliticaAsignada.AsNoTracking()
+
+            join entidad in db.Entidad.AsNoTracking()
+                on politicaAsignada.Id_Entidad equals entidad.Id
+
+            join unidadOrganizacional in db.UnidadOrganizacional.AsNoTracking()
+                on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+
+            where politicaAsignada.Id_Rol == id_Rol_ValidaAsignacionUsuario
+                && politicaAsignada.RolAsignadoValidado
+                && entidad.Id_Usuario == id_Usuario_Validador
+                && (politicaAsignada.FechaInicioAsignacion == null || politicaAsignada.FechaInicioAsignacion <= fechaConsulta)
+                && (politicaAsignada.FechaTerminoAsignacion == null || politicaAsignada.FechaTerminoAsignacion > fechaConsulta)
+
+            select unidadOrganizacional.Id_Organizacion)
+            .Distinct()
+            .ToArrayAsync();
+
+        if (idsOrganizacionesValidador.Length == 0)
+        {
+            return new AsignacionesRolesPendientesValidacionPageDTO(numeroDePagina, cantidadPorPagina, 0, []);
+        }
+
+        var validadorOperaDesdeANID = idsOrganizacionesValidador.Contains(id_Organizacion_ANID);
+
+        var rows = await (
+            from politicaAsignada in db.PoliticaAsignada.AsNoTracking()
+
+            join entidad in db.Entidad.AsNoTracking()
+                on politicaAsignada.Id_Entidad equals entidad.Id
+
+            join unidadOrganizacional in db.UnidadOrganizacional.AsNoTracking()
+                on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+
+            join organizacion in db.Organizacion.AsNoTracking()
+                on unidadOrganizacional.Id_Organizacion equals organizacion.Id
+
+            join proceso in db.Proceso.AsNoTracking()
+                on politicaAsignada.Id_Proceso equals proceso.Id
+
+            join rol in db.Roles.AsNoTracking()
+                on politicaAsignada.Id_Rol.ToString() equals rol.Id
+
+            where politicaAsignada.RolRequiereValidacion
+                && !politicaAsignada.RolAsignadoValidado
+                && rol.RequiereValidacionDeAsignacion == true
+                && (validadorOperaDesdeANID || idsOrganizacionesValidador.Contains(organizacion.Id))
+                && (politicaAsignada.FechaInicioAsignacion == null || politicaAsignada.FechaInicioAsignacion <= fechaConsulta)
+                && (politicaAsignada.FechaTerminoAsignacion == null || politicaAsignada.FechaTerminoAsignacion > fechaConsulta)
+
+            select new
+            {
+                PoliticaAsignada = politicaAsignada,
+                Entidad = entidad,
+                UnidadOrganizacional = unidadOrganizacional,
+                Organizacion = organizacion,
+                Proceso = proceso,
+                Rol = rol
+            })
+            .ToListAsync();
+
+        var idsUsuarios = rows
+            .Select(item => item.Entidad.Id_Usuario.ToString())
+            .Distinct()
+            .ToArray();
+
+        var usuarios = await db.Users
+            .AsNoTracking()
+            .Where(user => idsUsuarios.Contains(user.Id))
+            .Select(user => new
+            {
+                user.Id,
+                user.NombreADesplegar,
+                user.Email
+            })
+            .ToDictionaryAsync(user => user.Id);
+
+        var items = rows
+            .Select(item =>
+            {
+                usuarios.TryGetValue(item.Entidad.Id_Usuario.ToString(), out var usuario);
+                return new AsignacionRolPendienteValidacionDTO
+                {
+                    IdPoliticaAsignada = item.PoliticaAsignada.Id,
+                    IdEntidad = item.Entidad.Id,
+                    IdUsuario = item.Entidad.Id_Usuario,
+                    NombreUsuario = usuario?.NombreADesplegar ?? usuario?.Email ?? string.Empty,
+                    CorreoElectronico = item.Entidad.CorreoElectronico,
+                    IdOrganizacion = item.Organizacion.Id,
+                    CodigoOrganizacion = item.Organizacion.Codigo,
+                    NombreOrganizacion = item.Organizacion.Nombre,
+                    IdUnidadOrganizacional = item.UnidadOrganizacional.Id,
+                    CodigoUnidadOrganizacional = item.UnidadOrganizacional.Codigo,
+                    NombreUnidadOrganizacional = item.UnidadOrganizacional.Nombre,
+                    TipoDeEntidad = item.Entidad.TipoDeEntidad,
+                    IdRol = item.PoliticaAsignada.Id_Rol,
+                    NombreRol = item.Rol.NormalizedName ?? item.Rol.Name ?? string.Empty,
+                    IdProceso = item.Proceso.Id,
+                    CodigoProceso = item.Proceso.Codigo,
+                    NombreProceso = item.Proceso.Nombre,
+                    FechaCreacion = item.PoliticaAsignada.FechaCreacion,
+                    FechaInicioAsignacion = item.PoliticaAsignada.FechaInicioAsignacion,
+                    FechaTerminoAsignacion = item.PoliticaAsignada.FechaTerminoAsignacion,
+                    RolRequiereValidacion = item.PoliticaAsignada.RolRequiereValidacion,
+                    RolAsignadoValidado = item.PoliticaAsignada.RolAsignadoValidado
+                };
+            });
+
+        if (!string.IsNullOrWhiteSpace(busqueda))
+        {
+            var busquedaNormalizada = busqueda.Trim();
+            items = items.Where(item =>
+                item.NombreUsuario.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.CorreoElectronico.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.NombreRol.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.CodigoProceso.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.NombreProceso.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.CodigoOrganizacion.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.NombreOrganizacion.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.CodigoUnidadOrganizacional.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase) ||
+                item.NombreUnidadOrganizacional.Contains(busquedaNormalizada, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var orderedItems = items
+            .OrderBy(item => item.NombreOrganizacion)
+            .ThenBy(item => item.CodigoUnidadOrganizacional)
+            .ThenBy(item => item.NombreUsuario)
+            .ThenBy(item => item.NombreRol)
+            .ThenBy(item => item.CodigoProceso)
+            .ToArray();
+
+        var total = orderedItems.LongLength;
+        var pageItems = orderedItems
+            .Skip((numeroDePagina - 1) * cantidadPorPagina)
+            .Take(cantidadPorPagina)
+            .ToArray();
+
+        return new AsignacionesRolesPendientesValidacionPageDTO(numeroDePagina, cantidadPorPagina, total, pageItems);
+    }
+
     public async Task<EntidadDTO?> BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion(
         Guid id_Usuario,
         Guid id_Organizacion
