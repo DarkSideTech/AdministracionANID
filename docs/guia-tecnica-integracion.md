@@ -743,6 +743,199 @@ Nota critica:
 
 ---
 
+## Checklist de integracion
+
+Usar este checklist antes de dar por terminada una integracion. Si alguno de estos puntos queda pendiente, la integracion puede funcionar en pruebas simples y fallar en produccion.
+
+### Cliente HTTP
+
+- [ ] Todas las llamadas usan el mismo cliente HTTP o una capa comun.
+- [ ] Las cookies se envian y reciben automaticamente.
+- [ ] No se guardan `accesstoken` ni `refreshToken` en `localStorage`, `sessionStorage` ni estado global de frontend.
+- [ ] El cliente usa URL base consistente para evitar problemas de dominio, path o SameSite.
+
+### CSRF
+
+- [ ] La aplicacion llama `GET /api/account/csrf` antes de operaciones mutantes.
+- [ ] El valor de cookie `XSRF-TOKEN` se copia al header `X-CSRF-TOKEN`.
+- [ ] Si la cookie `XSRF-TOKEN` cambia, el cliente usa el valor nuevo.
+- [ ] El manejo de CSRF esta centralizado en interceptor, middleware o helper comun.
+
+### Sesion
+
+- [ ] Despues de login se llama `GET /api/account/currentuser`.
+- [ ] Si `currentuser` indica seleccion requerida, se ejecuta `POST /api/account/loginorganizacion`.
+- [ ] Despues de `loginorganizacion` se vuelve a llamar `currentuser`.
+- [ ] El estado visual de usuario se construye desde `currentuser`, no desde datos cacheados del login.
+
+### Refresh
+
+- [ ] Ante `401`, se intenta `POST /api/account/refreshtoken` una sola vez.
+- [ ] Si el refresh funciona, se reintenta la request original solo una vez.
+- [ ] Si el refresh falla, se limpia estado local y se redirige a login.
+- [ ] No existen loops infinitos ni multiples refresh paralelos descontrolados.
+
+### Cambio de contexto
+
+- [ ] El cambio de unidad, entidad o rol usa `POST /api/account/cambiounidadorganizacionalentidadrol`.
+- [ ] Despues del cambio se llama `currentuser`.
+- [ ] Se invalidan caches, listados o formularios dependientes del contexto anterior.
+
+### Flujos complementarios
+
+- [ ] Confirmacion de email usa `POST /api/account/confirmemail`.
+- [ ] Reenvio de confirmacion maneja `429`.
+- [ ] Recuperacion de clave maneja `429`.
+- [ ] Los mensajes al usuario no exponen detalles internos de seguridad.
+
+---
+
+## Troubleshooting
+
+### Error 400 o 403 en llamadas POST
+
+Causa probable:
+
+- falta `X-CSRF-TOKEN`;
+- el header no coincide con la cookie `XSRF-TOKEN`;
+- se esta usando un token viejo despues de login, refresh o cambio de sesion.
+
+Validar:
+
+- que exista cookie `XSRF-TOKEN`;
+- que el header `X-CSRF-TOKEN` tenga exactamente el mismo valor;
+- que se haya llamado `GET /api/account/csrf` antes del primer POST;
+- que el interceptor no excluya por error la ruta llamada.
+
+Correccion recomendada:
+
+- centralizar CSRF en una sola capa;
+- leer la cookie en cada request mutante en vez de cachearla indefinidamente.
+
+### Login exitoso pero la aplicacion sigue sin permisos
+
+Causa probable:
+
+- falta ejecutar `loginorganizacion`;
+- la UI esta usando datos del login en vez de `currentuser`;
+- el usuario tiene varias opciones operativas y todavia no se fijo contexto.
+
+Validar:
+
+- respuesta de `GET /api/account/currentuser`;
+- campo de seleccion de organizacion requerida;
+- organizacion/unidad/entidad actualmente seleccionada.
+
+Correccion recomendada:
+
+- despues de login, llamar siempre `currentuser`;
+- si falta contexto, mostrar selector y ejecutar `POST /api/account/loginorganizacion`;
+- recargar `currentuser` despues de seleccionar.
+
+### Refresh entra en loop
+
+Causa probable:
+
+- el interceptor reintenta refresh sobre la misma llamada de refresh;
+- no marca la request original como reintentada;
+- hay multiples refresh paralelos sin coordinacion;
+- el refresh falla, pero el cliente no limpia sesion.
+
+Validar:
+
+- que `POST /api/account/refreshtoken` no sea interceptado para volver a refrescarse a si mismo;
+- que exista flag `_retry` o mecanismo equivalente;
+- que haya una sola promesa de refresh compartida cuando hay varias llamadas concurrentes.
+
+Correccion recomendada:
+
+- permitir un solo retry por request;
+- compartir el refresh en curso;
+- si refresh falla, limpiar estado y redirigir a login.
+
+### Cookies no se envian al backend
+
+Causa probable:
+
+- falta `withCredentials: true` o `credentials: 'include'`;
+- dominio, protocolo o puerto no coinciden;
+- configuracion SameSite/Secure no compatible con el entorno;
+- proxy o gateway elimina headers/cookies.
+
+Validar:
+
+- pestaña Network del navegador;
+- request headers y response headers;
+- existencia de `Set-Cookie` en respuestas de login;
+- envio posterior de cookies en requests protegidas.
+
+Correccion recomendada:
+
+- configurar cliente HTTP globalmente;
+- evitar mezclar dominios si no es necesario;
+- revisar configuracion de CORS, cookies y proxy en ambientes containerizados.
+
+### `currentuser` devuelve anonimo despues del login
+
+Causa probable:
+
+- cookies no quedaron persistidas;
+- login se hizo sin `withCredentials`;
+- se llamo `currentuser` contra otro host/base URL;
+- el navegador rechazo cookies por politica de seguridad.
+
+Validar:
+
+- que login responda con `Set-Cookie`;
+- que `currentuser` envie las cookies;
+- que frontend y backend usen el mismo esquema esperado de dominio/proxy.
+
+Correccion recomendada:
+
+- revisar base URL unica;
+- activar cookies en cliente;
+- verificar configuracion de gateway o reverse proxy.
+
+### Cambio de contexto no actualiza la pantalla
+
+Causa probable:
+
+- se ejecuto `cambiounidadorganizacionalentidadrol`, pero no se recargo `currentuser`;
+- hay caches locales dependientes del contexto anterior;
+- componentes mantienen estado viejo.
+
+Validar:
+
+- respuesta del endpoint de cambio;
+- nueva respuesta de `currentuser`;
+- caches de servicios, stores o queries.
+
+Correccion recomendada:
+
+- despues del cambio, invalidar datos dependientes;
+- reconstruir estado global desde `currentuser`;
+- forzar recarga controlada si el framework legacy no limpia estado correctamente.
+
+### Nuxt SSR no encuentra `document.cookie`
+
+Causa probable:
+
+- codigo ejecutado del lado servidor intenta usar APIs de navegador;
+- no se esta leyendo la cookie desde el request HTTP entrante.
+
+Validar:
+
+- si el codigo corre en server o client;
+- acceso a headers `cookie` en el contexto SSR.
+
+Correccion recomendada:
+
+- en SSR, leer cookies desde el request entrante;
+- reenviar cookies explicitamente hacia AUT2Services;
+- usar `document.cookie` solo en cliente.
+
+---
+
 ## Manejo de errores
 
 Casos relevantes:
