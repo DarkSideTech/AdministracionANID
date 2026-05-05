@@ -2,9 +2,9 @@
 
 ## Objetivo
 
-Esta guia explica, de forma practica, como otras aplicaciones pueden integrarse con la implementacion de autenticacion y sesion de este proyecto.
+Esta guia explica, de forma practica y semi tecnica, como una aplicacion cliente debe integrarse con la autenticacion y gestion de sesion implementada en este proyecto.
 
-No busca detallar internamente todo el codigo ni la logica criptografica. El foco esta en el paso a paso que una aplicacion cliente necesita seguir para operar correctamente.
+No busca documentar todo el codigo interno ni la logica criptografica. El foco esta en el flujo que debe seguir una aplicacion para registrarse, iniciar sesion, seleccionar contexto operativo, mantener la sesion y cerrarla correctamente.
 
 La guia se divide en dos escenarios:
 
@@ -15,24 +15,47 @@ La guia se divide en dos escenarios:
 
 Toda aplicacion cliente debe considerar estas reglas:
 
-- la API usa cookies para la sesion;
-- la API protege operaciones mutantes con CSRF explicito;
-- el `accesstoken` y el `refreshtoken` no se administran manualmente desde el cliente si este soporta cookies correctamente;
-- la confirmacion de email es parte del alta de usuario;
-- la sesion operativa completa requiere `Login`, seleccion de rol y `LoginOrganizacion`.
+- la API usa cookies para transportar la sesion;
+- las operaciones mutantes requieren CSRF explicito;
+- el cliente no debe administrar manualmente `accesstoken` ni `refreshtoken` si puede usar cookies correctamente;
+- la confirmacion de email forma parte del alta de usuario;
+- la sesion operativa puede requerir dos pasos: `Login` y `LoginOrganizacion`;
+- tambien existe login externo por ClaveUnica mediante `LoginClaveUnica`;
+- el estado visible de sesion debe reconstruirse usando `currentuser`.
 
 Endpoints base de referencia:
 
 - `POST /api/account/register`
 - `POST /api/account/login`
+- `POST /api/account/loginclaveunica`
 - `POST /api/account/loginorganizacion`
+- `POST /api/account/cambiounidadorganizacionalentidadrol`
 - `POST /api/account/refreshtoken`
 - `POST /api/account/logout`
 - `POST /api/account/confirmemail`
 - `POST /api/account/resendconfirmationemail`
+- `POST /api/account/solicitarecuperacionclave`
+- `POST /api/account/reenviacodigorecuperacionclave`
+- `POST /api/account/confirmarecuperacionclave`
 - `GET /api/account/csrf`
-- `GET /api/account/miinformacion`
 - `GET /api/account/currentuser`
+- `GET /api/account/miinformacion`
+
+---
+
+## Flujo recomendado de sesion
+
+Para la mayoria de las aplicaciones, el flujo correcto es:
+
+1. llamar `GET /api/account/csrf`;
+2. ejecutar `POST /api/account/login` o `POST /api/account/loginclaveunica`;
+3. consultar `GET /api/account/currentuser`;
+4. si la respuesta indica seleccion de organizacion requerida, ejecutar `POST /api/account/loginorganizacion`;
+5. reconstruir el estado visual con `currentuser`;
+6. ante expiracion, ejecutar `POST /api/account/refreshtoken` una sola vez y reintentar la operacion original;
+7. cerrar sesion con `POST /api/account/logout`.
+
+Despues de operaciones como login, login de organizacion o refresh, el cliente debe seguir confiando en cookies. Si la cookie `XSRF-TOKEN` cambia, debe usar el nuevo valor para las siguientes operaciones mutantes.
 
 ---
 
@@ -43,7 +66,7 @@ Esta seccion aplica a:
 - SPA modernas;
 - frontends web con soporte de cookies;
 - aplicaciones en Angular, React, Vue, Blazor WebAssembly, Next, Nuxt, etc.;
-- clientes que pueden manejar `credentials/include`, interceptores, middlewares o request hooks.
+- clientes que pueden manejar `withCredentials`, `credentials: 'include'`, interceptores, middlewares o request hooks.
 
 ### Paso 1. Configurar el cliente HTTP para usar cookies
 
@@ -52,16 +75,16 @@ El cliente debe enviar y recibir cookies en cada request.
 En terminos practicos:
 
 - habilitar envio de credenciales;
-- mantener un cookie jar o un mecanismo equivalente;
-- no intentar guardar manualmente el `accesstoken` y el `refreshtoken`.
+- mantener un cookie jar o mecanismo equivalente;
+- no copiar tokens desde respuestas hacia `localStorage`, `sessionStorage` ni variables globales de frontend.
 
 Que hacer:
 
 - si la tecnologia lo permite, usar una configuracion global del cliente HTTP;
 - dejar la gestion de cookies al navegador o al runtime;
-- no copiar tokens desde respuestas para guardarlos en almacenamiento local.
+- centralizar la autenticacion en un servicio comun.
 
-### Paso 2. Pedir el token CSRF al iniciar
+### Paso 2. Pedir CSRF al iniciar
 
 Antes de llamar endpoints mutantes, la aplicacion debe ejecutar:
 
@@ -69,7 +92,8 @@ Antes de llamar endpoints mutantes, la aplicacion debe ejecutar:
 
 Resultado esperado:
 
-- la API devuelve la cookie `XSRF-TOKEN`.
+- la API asegura la cookie `XSRF-TOKEN`;
+- la respuesta puede no traer contenido util en el body.
 
 Que hacer:
 
@@ -79,26 +103,27 @@ Que hacer:
 Practica recomendada:
 
 - resolver esto una sola vez en un interceptor o middleware de requests;
-- no repetir la logica en cada pantalla o formulario.
+- no repetir la logica en cada pantalla o formulario;
+- si cambia la cookie `XSRF-TOKEN`, usar siempre el valor mas reciente.
 
 ### Paso 3. Registro de usuario
 
 Para registrar:
 
 - llamar `POST /api/account/register`;
-- enviar CorreoElectronico, Nacionalidad, TipoDeUsuario, DocumentoDeIdentidad, NumeroDeDocumento, CodigoValidadorDocumento, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, SexoDeclarativo, SexoRegistral, FechaDeNacimiento, Contraseña, ConfirmaContraseña, TerminosYCondiciones;
+- enviar CorreoElectronico, Nacionalidad, TipoDeUsuario, DocumentoDeIdentidad, NumeroDeDocumento, CodigoValidadorDocumento, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, SexoDeclarativo, SexoRegistral, FechaDeNacimiento, Contraseña, ConfirmaContraseña y TerminosYCondiciones;
 - incluir cookie `XSRF-TOKEN` y header `X-CSRF-TOKEN`.
 
 Resultado esperado:
 
 - el usuario queda creado;
-- no queda autenticado;
+- no queda autenticado automaticamente;
 - la API indica que debe confirmar el email.
 
 Que hacer en la aplicacion:
 
 - mostrar un mensaje claro: "Debes confirmar tu correo antes de iniciar sesion";
-- si estas en entorno de desarrollo, puedes usar el `confirmationUrl` devuelto para pruebas;
+- si estas en entorno de desarrollo, puedes usar la URL de confirmacion devuelta para pruebas;
 - si estas en produccion, esperar el enlace real enviado por correo.
 
 ### Paso 4. Confirmacion de email
@@ -117,47 +142,88 @@ Para completar la confirmacion:
 Que hacer en la aplicacion:
 
 - crear una pantalla simple de confirmacion;
-- al recibir respuesta exitosa, redirigir a login.
+- al recibir respuesta exitosa, redirigir a login;
+- si el token expiro o ya fue usado, mostrar una salida controlada y ofrecer reenvio.
 
-### Paso 5. Login 1
+### Paso 5. Login con email y password
 
-Para iniciar sesion:
+Para iniciar sesion tradicional:
 
 - llamar `POST /api/account/login`;
-- enviar email y password;
+- enviar `email` y `password`;
 - incluir CSRF.
 
 Resultado esperado:
 
 - la API entrega cookies de sesion;
 - el usuario queda autenticado a nivel base;
-- todavia no tiene sesion operativa final si debe seleccionar rol.
+- todavia puede faltar seleccionar organizacion o contexto operativo.
 
 Que hacer despues:
 
-- consultar `GET /api/account/currentuser` o `GET /api/account/miinformacion`;
-- revisar si `SeleccionOrganizacionRequerida` viene en `true`.
+- consultar `GET /api/account/currentuser`;
+- revisar si la respuesta indica `seleccionOrganizacionRequerida`;
+- si corresponde, mostrar las opciones disponibles y continuar con `LoginOrganizacion`.
 
-### Paso 6. Seleccion de Organizacion y LoginOrganizacion
+### Paso 6. Login con ClaveUnica
 
-Si el usuario tiene mas de un rol operativo o la API exige completar el contexto:
+Para login externo con ClaveUnica:
 
-- mostrar los roles disponibles;
-- dejar que el usuario seleccione uno;
-- llamar `POST /api/account/loginorganizacion` enviando el rol en el campo `Organizacion`.
+- completar primero el flujo propio de ClaveUnica hasta obtener `code` y `state`;
+- llamar `POST /api/account/loginclaveunica`;
+- enviar `clientId`, `redirectUri`, `code` y `state`;
+- incluir CSRF.
 
 Resultado esperado:
 
-- la sesion queda rotada;
-- se conserva el rol operativo seleccionado;
+- si la validacion externa es correcta, la API emite cookies de sesion;
+- el flujo posterior es el mismo que en login tradicional;
+- puede requerir seleccion de organizacion antes de quedar operativa.
+
+Que hacer en la aplicacion:
+
+- tratar `loginclaveunica` como otro mecanismo de entrada, no como una sesion distinta;
+- despues de la respuesta, llamar `currentuser`;
+- si falta contexto, ejecutar `loginorganizacion`.
+
+### Paso 7. Seleccion de organizacion y LoginOrganizacion
+
+Si el usuario tiene mas de una opcion operativa o la API exige completar el contexto:
+
+- mostrar las organizaciones o roles disponibles;
+- dejar que el usuario seleccione una opcion;
+- llamar `POST /api/account/loginorganizacion` enviando el codigo seleccionado en el campo `Organizacion`.
+
+Resultado esperado:
+
+- la sesion queda asociada al contexto operativo seleccionado;
+- se conserva el rol, organizacion y unidad operativa vigentes;
 - la aplicacion ya puede navegar a funcionalidades protegidas.
 
 Practica recomendada:
 
 - modelar este paso como parte del onboarding de sesion;
-- no mezclarlo con formularios complejos.
+- no ocultarlo dentro de formularios complejos;
+- recargar `currentuser` despues de completarlo.
 
-### Paso 7. Cargar estado de sesion al abrir la aplicacion
+### Paso 8. Cambio de unidad, entidad o rol durante la sesion
+
+Si la aplicacion permite cambiar de contexto sin cerrar sesion, debe usar:
+
+- `POST /api/account/cambiounidadorganizacionalentidadrol`
+
+Este endpoint aplica cuando el usuario ya esta autenticado y necesita cambiar unidad organizacional, entidad o rol operativo.
+
+Que hacer:
+
+- incluir CSRF;
+- enviar los identificadores requeridos por la opcion seleccionada;
+- actualizar el estado visual llamando nuevamente `GET /api/account/currentuser`;
+- invalidar o recargar datos de pantalla que dependan del contexto anterior.
+
+No conviene simular este cambio cerrando y abriendo sesion si existe este endpoint disponible.
+
+### Paso 9. Cargar estado de sesion al abrir la aplicacion
 
 Cada vez que la aplicacion arranca:
 
@@ -171,20 +237,32 @@ Esto evita:
 - perder el contexto al refrescar la pagina;
 - duplicar logica de sesion en muchas pantallas.
 
-### Paso 8. Refresh automatico
+La respuesta puede incluir datos como:
+
+- expiracion de access token;
+- si falta seleccion de organizacion;
+- organizacion seleccionada;
+- unidad organizacional seleccionada;
+- entidad seleccionada;
+- unidades organizacionales disponibles para el usuario.
+
+### Paso 10. Refresh automatico
 
 Si una llamada autenticada devuelve `401` por expiracion de sesion:
 
 1. llamar `POST /api/account/refreshtoken`;
 2. incluir CSRF;
-3. reintentar la request original si el refresh fue exitoso.
+3. si el refresh fue exitoso, reintentar la request original una sola vez;
+4. si falla, limpiar estado local y redirigir a login.
 
 Practica recomendada:
 
 - manejarlo de forma centralizada;
-- no pedir al usuario que vuelva a loguearse de inmediato si el refresh puede resolverlo.
+- evitar ciclos infinitos de refresh;
+- no pedir al usuario que vuelva a loguearse si el refresh puede resolverlo;
+- actualizar el CSRF desde cookie si la API lo rota.
 
-### Paso 9. Logout
+### Paso 11. Logout
 
 Para cerrar sesion:
 
@@ -197,7 +275,13 @@ Resultado esperado:
 - limpia cookies de autenticacion;
 - el cliente vuelve a estado anonimo.
 
-### Paso 10. Reenvio de confirmacion
+Despues del logout:
+
+- limpiar estado visual local;
+- eliminar caches de datos protegidos;
+- redirigir a login o pantalla publica.
+
+### Paso 12. Reenvio de confirmacion y recuperacion de clave
 
 Si el usuario no confirmo el email:
 
@@ -205,18 +289,27 @@ Si el usuario no confirmo el email:
 - enviar el correo;
 - incluir CSRF.
 
+Si el usuario olvido su clave:
+
+- iniciar con `POST /api/account/solicitarecuperacionclave`;
+- si corresponde, usar `POST /api/account/reenviacodigorecuperacionclave`;
+- completar con `POST /api/account/confirmarecuperacionclave`.
+
 Importante:
 
-- la API ya tiene limites de frecuencia;
-- si se recibe `429`, se debe mostrar un mensaje simple como "Espera unos minutos antes de volver a intentar".
+- estos endpoints pueden tener limites de frecuencia;
+- si se recibe `429`, mostrar un mensaje simple como "Espera unos minutos antes de volver a intentar";
+- no exponer detalles internos de validacion ni seguridad.
 
 ### Recomendaciones para aplicaciones nuevas
 
 - resolver cookies, CSRF y refresh en una capa comun;
 - usar un servicio unico de autenticacion;
 - exponer el estado de sesion desde un solo lugar;
-- usar la respuesta de `currentuser` como contrato principal del usuario autenticado;
-- no mover tokens manualmente si la plataforma ya soporta cookies correctamente.
+- usar `currentuser` como contrato principal del usuario autenticado o anonimo con sesion ausente;
+- no mover tokens manualmente si la plataforma ya soporta cookies correctamente;
+- tratar ClaveUnica como una variante de login, no como un segundo modelo de sesion;
+- recargar datos dependientes cuando cambie organizacion, unidad, entidad o rol.
 
 ---
 
@@ -258,30 +351,33 @@ Paso a paso:
 2. capturar la cookie `XSRF-TOKEN`;
 3. conservar ese valor;
 4. para cada request mutante, enviar:
-   - la cookie `XSRF-TOKEN`
-   - el header `X-CSRF-TOKEN` con el mismo valor
+   - la cookie `XSRF-TOKEN`;
+   - el header `X-CSRF-TOKEN` con el mismo valor.
 
 Si el cliente copia el valor directo desde `Set-Cookie`, debe usar el valor interpretado correctamente, no una forma codificada inconsistente.
 
 ### Paso 3. Centralizar cookies en un modulo comun
 
-Si el sistema no tiene interceptores modernos, crea una capa pequeña y reutilizable para:
+Si el sistema no tiene interceptores modernos, crea una capa pequena y reutilizable para:
 
 - leer cookies de respuestas;
 - almacenarlas en memoria de sesion;
-- reenviarlas en requests futuros.
+- reenviarlas en requests futuros;
+- actualizar `XSRF-TOKEN` cuando la API lo vuelva a emitir.
 
 No conviene repartir esta logica en distintos puntos del sistema legado.
 
-### Paso 4. Separar claramente los tres momentos del flujo
+### Paso 4. Separar claramente los momentos del flujo
 
 En sistemas legados es importante no mezclar etapas:
 
 1. confirmacion de correo;
-2. `Login`;
-3. `LoginOrganizacion`.
+2. `Login` o `LoginClaveUnica`;
+3. `LoginOrganizacion`, si aplica;
+4. cambio de contexto, si la aplicacion lo permite;
+5. refresh o logout.
 
-La recomendacion es modelarlos como pantallas o pasos distintos, incluso si la UI es muy simple.
+La recomendacion es modelarlos como pantallas, acciones o pasos distintos, incluso si la UI es muy simple.
 
 ### Paso 5. Registro y confirmacion
 
@@ -297,21 +393,33 @@ Si el sistema no puede procesar el enlace completo, una alternativa transitoria 
 - mostrar un formulario que acepte `UserId` y `Token`;
 - invocar `POST /api/account/confirmemail`.
 
-### Paso 6. LoginOrganizacion y seleccion de la Organizacion
+### Paso 6. LoginOrganizacion y seleccion de organizacion
 
 No intentes ocultar `LoginOrganizacion` dentro de una sola llamada si el sistema legado no lo soporta bien.
 
 Mejor:
 
-1. ejecutar `login`;
+1. ejecutar `login` o `loginclaveunica`;
 2. consultar `currentuser`;
-3. mostrar seleccion de la Organizacion;
-4. ejecutar `loginOrganizacion`;
-5. continuar con la operacion.
+3. mostrar seleccion de organizacion;
+4. ejecutar `loginorganizacion`;
+5. volver a consultar `currentuser`;
+6. continuar con la operacion.
 
 Es menos elegante, pero mucho mas estable en plataformas antiguas.
 
-### Paso 7. Refresh en sistemas legados
+### Paso 7. Cambio de contexto en sistemas legados
+
+Si el sistema legado permite cambiar unidad, entidad o rol durante la sesion:
+
+- usar `POST /api/account/cambiounidadorganizacionalentidadrol`;
+- incluir CSRF y cookies vigentes;
+- recargar `currentuser` despues del cambio;
+- limpiar datos temporales asociados al contexto anterior.
+
+Si no puede garantizar esa limpieza, es preferible forzar una navegacion controlada o recarga completa de la pantalla.
+
+### Paso 8. Refresh en sistemas legados
 
 Si el cliente no soporta refresco automatico elegante:
 
@@ -322,26 +430,27 @@ Si el cliente no soporta refresco automatico elegante:
 
 No intentes automatizaciones demasiado sofisticadas si la plataforma no las resiste bien. En sistemas legados, la prioridad es previsibilidad.
 
-### Paso 8. Manejar limites y mensajes simples
+### Paso 9. Manejar limites y mensajes simples
 
-Para `resendconfirmationemail` y otros endpoints protegidos:
+Para reenvio de confirmacion, recuperacion de clave y otros endpoints protegidos por limites:
 
 - manejar `429` con un mensaje claro y corto;
 - no exponer detalles internos;
 - registrar el evento para soporte si el sistema lo permite.
 
-### Paso 9. Usar una pantalla o modulo de diagnostico
+### Paso 10. Usar una pantalla o modulo de diagnostico
 
 En integraciones legadas ayuda mucho tener una pantalla o log tecnico donde se pueda verificar:
 
 - cookies presentes;
 - ultimo valor de `XSRF-TOKEN`;
 - estado del login;
-- respuesta de `currentuser`.
+- respuesta de `currentuser`;
+- organizacion, unidad, entidad y rol actualmente seleccionados.
 
 Eso reduce mucho el tiempo de soporte cuando la integracion falla.
 
-### Paso 10. Prioridad de implementacion para legados
+### Paso 11. Prioridad de implementacion para legados
 
 Si no puedes hacer todo de una vez, implementa en este orden:
 
@@ -351,7 +460,10 @@ Si no puedes hacer todo de una vez, implementa en este orden:
 4. currentuser;
 5. loginorganizacion;
 6. refresh;
-7. confirmacion y reenvio de email.
+7. cambio de contexto;
+8. confirmacion y reenvio de email;
+9. recuperacion de clave;
+10. ClaveUnica, si el sistema la requiere.
 
 Ese orden minimiza bloqueos y permite avanzar por etapas.
 
@@ -361,7 +473,7 @@ Ese orden minimiza bloqueos y permite avanzar por etapas.
 - encapsular autenticacion en un modulo pequeno y estable;
 - usar logs utiles para soporte;
 - preferir flujos simples y visibles antes que automatismos fragiles;
-- planificar una modernizacion gradual si la plataforma consume mucho esfuerzo solo para manejar sesion y cookies.
+- planificar una modernizacion gradual si la plataforma consume mucho esfuerzo solo para manejar sesion, cookies y CSRF.
 
 ---
 
@@ -371,7 +483,7 @@ La implementacion de seguridad de este proyecto puede integrarse tanto con aplic
 
 La clave practica es esta:
 
-- aplicaciones nuevas: automatizar casi todo;
+- aplicaciones nuevas: automatizar cookies, CSRF, refresh y reconstruccion de estado;
 - aplicaciones legadas: centralizar lo minimo indispensable y avanzar por capas.
 
-Si se sigue este criterio, la integracion es viable sin necesidad de exponer internamente tokens ni debilitar el modelo de seguridad implementado.
+Si se sigue este criterio, la integracion es viable sin exponer tokens manualmente ni debilitar el modelo de seguridad implementado.
