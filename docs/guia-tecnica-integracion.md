@@ -195,16 +195,320 @@ Resultado:
 
 ---
 
-## Ejemplo Angular (corregido)
+## Ejemplos de integracion por tecnologia
 
-Puntos clave:
+Los ejemplos siguientes muestran el patron recomendado por tipo de cliente. No buscan cubrir toda la aplicacion, sino dejar claro donde deben resolverse cookies, CSRF, refresh y reconstruccion de sesion.
 
-- usar `GET /api/account/csrf` (no rutas mal escritas);
-- usar `withCredentials: true`;
-- no copiar cookies manualmente;
-- enviar `X-CSRF-TOKEN` correctamente.
+### Angular
 
-La logica de CSRF debe moverse idealmente a un interceptor.
+En Angular, la integracion recomendada es separar responsabilidades:
+
+- `AccountApi`: solo conoce rutas HTTP;
+- `AuthService`: orquesta login, currentuser, refresh y logout;
+- `HttpInterceptor`: agrega CSRF, cookies y maneja refresh ante `401`.
+
+No conviene resolver CSRF manualmente en cada componente.
+
+```ts
+@Injectable({ providedIn: 'root' })
+export class AccountApi {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = '/api/account';
+
+  csrf() {
+    return this.http.get<void>(`${this.baseUrl}/csrf`, {
+      withCredentials: true
+    });
+  }
+
+  login(payload: { email: string; password: string }) {
+    return this.http.post(`${this.baseUrl}/login`, payload, {
+      withCredentials: true
+    });
+  }
+
+  loginClaveUnica(payload: {
+    clientId: string;
+    redirectUri: string;
+    code: string;
+    state: string;
+  }) {
+    return this.http.post(`${this.baseUrl}/loginclaveunica`, payload, {
+      withCredentials: true
+    });
+  }
+
+  currentUser() {
+    return this.http.get(`${this.baseUrl}/currentuser`, {
+      withCredentials: true
+    });
+  }
+
+  loginOrganizacion(payload: { Organizacion: string }) {
+    return this.http.post(`${this.baseUrl}/loginorganizacion`, payload, {
+      withCredentials: true
+    });
+  }
+
+  refreshToken() {
+    return this.http.post(`${this.baseUrl}/refreshtoken`, {}, {
+      withCredentials: true
+    });
+  }
+
+  logout() {
+    return this.http.post(`${this.baseUrl}/logout`, {}, {
+      withCredentials: true
+    });
+  }
+}
+```
+
+```ts
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const xsrfToken = readCookie('XSRF-TOKEN');
+
+  const request = req.clone({
+    withCredentials: true,
+    setHeaders: xsrfToken
+      ? { 'X-CSRF-TOKEN': xsrfToken }
+      : {}
+  });
+
+  return next(request);
+};
+
+function readCookie(name: string): string | null {
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split(';')
+    .map(value => value.trim())
+    .find(value => value.startsWith(prefix));
+
+  return cookie
+    ? decodeURIComponent(cookie.substring(prefix.length))
+    : null;
+}
+```
+
+Nota critica:
+
+- el interceptor no debe intentar refrescar infinitamente;
+- ante `401`, debe ejecutar `refreshtoken` una sola vez y luego reintentar la request original;
+- si el refresh falla, se debe limpiar estado local y redirigir a login.
+
+### React
+
+En React, el patron recomendado es usar una instancia HTTP unica. No conviene configurar `credentials`, CSRF o refresh en cada componente.
+
+La UI debe consumir un `AuthProvider` o hook de sesion. Los componentes no deberian conocer detalles de cookies, CSRF ni refresh.
+
+```ts
+import axios from 'axios';
+
+export const api = axios.create({
+  baseURL: '/api',
+  withCredentials: true
+});
+
+api.interceptors.request.use((config) => {
+  const xsrfToken = readCookie('XSRF-TOKEN');
+
+  if (xsrfToken) {
+    config.headers['X-CSRF-TOKEN'] = xsrfToken;
+  }
+
+  return config;
+});
+
+function readCookie(name: string): string | null {
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split(';')
+    .map(value => value.trim())
+    .find(value => value.startsWith(prefix));
+
+  return cookie
+    ? decodeURIComponent(cookie.substring(prefix.length))
+    : null;
+}
+```
+
+```ts
+export const accountApi = {
+  csrf: () => api.get('/account/csrf'),
+
+  login: (payload: { email: string; password: string }) =>
+    api.post('/account/login', payload),
+
+  loginClaveUnica: (payload: {
+    clientId: string;
+    redirectUri: string;
+    code: string;
+    state: string;
+  }) =>
+    api.post('/account/loginclaveunica', payload),
+
+  currentUser: () =>
+    api.get('/account/currentuser'),
+
+  loginOrganizacion: (payload: { Organizacion: string }) =>
+    api.post('/account/loginorganizacion', payload),
+
+  refreshToken: () =>
+    api.post('/account/refreshtoken', {}),
+
+  logout: () =>
+    api.post('/account/logout', {})
+};
+```
+
+```ts
+let refreshing = false;
+
+api.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !refreshing
+    ) {
+      originalRequest._retry = true;
+      refreshing = true;
+
+      try {
+        await accountApi.refreshToken();
+        return api(originalRequest);
+      } finally {
+        refreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+```
+
+Nota critica:
+
+- no guardar `accesstoken` ni `refreshToken` en `localStorage`;
+- si la aplicacion esta en navegador y la API emite cookies, persistir tokens manualmente aumenta superficie de ataque y duplica estado.
+
+### Vue / Nuxt
+
+En Vue o Nuxt, la integracion debe resolverse en un plugin o composable compartido. Los componentes no deben conocer la mecanica de CSRF ni refresh.
+
+```ts
+export async function apiFetch<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const xsrfToken = readCookie('XSRF-TOKEN');
+
+  const response = await fetch(`/api${path}`, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(xsrfToken ? { 'X-CSRF-TOKEN': xsrfToken } : {}),
+      ...(options.headers ?? {})
+    }
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  return response.json() as Promise<T>;
+}
+
+function readCookie(name: string): string | null {
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split(';')
+    .map(value => value.trim())
+    .find(value => value.startsWith(prefix));
+
+  return cookie
+    ? decodeURIComponent(cookie.substring(prefix.length))
+    : null;
+}
+```
+
+```ts
+export const authClient = {
+  csrf: () =>
+    apiFetch<void>('/account/csrf', { method: 'GET' }),
+
+  login: (payload: { email: string; password: string }) =>
+    apiFetch('/account/login', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  currentUser: () =>
+    apiFetch('/account/currentuser', { method: 'GET' }),
+
+  refreshToken: () =>
+    apiFetch('/account/refreshtoken', { method: 'POST' }),
+
+  logout: () =>
+    apiFetch('/account/logout', { method: 'POST' })
+};
+```
+
+Nota critica para Nuxt SSR:
+
+- si se usa Nuxt con SSR, no asumir que `document.cookie` existe en servidor;
+- en SSR se debe leer la cookie desde el request entrante y reenviarla al backend de forma explicita;
+- en cliente puede usarse `document.cookie`.
+
+### .NET / servicio backend o legacy
+
+Si el integrador es un servicio .NET o una aplicacion legacy, debe conservar cookies entre llamadas usando `CookieContainer`. Sin eso, login, CSRF y refresh no funcionan de forma confiable.
+
+```csharp
+var cookieContainer = new CookieContainer();
+
+var handler = new HttpClientHandler
+{
+    CookieContainer = cookieContainer,
+    UseCookies = true
+};
+
+using var http = new HttpClient(handler)
+{
+    BaseAddress = new Uri("https://host-api/api/account/")
+};
+
+await http.GetAsync("csrf");
+
+var cookies = cookieContainer.GetCookies(new Uri("https://host-api"));
+var xsrfToken = cookies["XSRF-TOKEN"]?.Value;
+
+var request = new HttpRequestMessage(HttpMethod.Post, "login")
+{
+    Content = JsonContent.Create(new
+    {
+        email = "usuario@dominio.cl",
+        password = "password"
+    })
+};
+
+request.Headers.Add("X-CSRF-TOKEN", xsrfToken);
+
+var response = await http.SendAsync(request);
+response.EnsureSuccessStatusCode();
+```
+
+Nota critica:
+
+- no crear un `HttpClient` nuevo por cada request si se necesita conservar cookies;
+- el `CookieContainer` debe vivir al menos durante la sesion de integracion;
+- en integraciones multiusuario, no compartir el mismo `CookieContainer` entre usuarios distintos.
 
 ---
 
