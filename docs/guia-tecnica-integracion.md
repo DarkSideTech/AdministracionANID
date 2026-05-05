@@ -195,6 +195,237 @@ Resultado:
 
 ---
 
+## Diagramas de flujo de sesion
+
+Los diagramas siguientes muestran las decisiones minimas que debe implementar un cliente. No reemplazan validaciones de UI ni reglas de negocio propias de cada aplicacion.
+
+### Flujo de entrada
+
+```mermaid
+flowchart TD
+    A[Aplicacion inicia] --> B[GET /api/account/csrf]
+    B --> C[GET /api/account/currentuser]
+    C --> D{Sesion activa?}
+    D -- No --> E[Mostrar login]
+    E --> F{Metodo de login}
+    F -- Email/password --> G[POST /api/account/login]
+    F -- ClaveUnica --> H[POST /api/account/loginclaveunica]
+    G --> I[GET /api/account/currentuser]
+    H --> I
+    I --> J{Seleccion de organizacion requerida?}
+    J -- Si --> K[POST /api/account/loginorganizacion]
+    K --> L[GET /api/account/currentuser]
+    J -- No --> L
+    D -- Si --> M{Contexto operativo completo?}
+    M -- No --> K
+    M -- Si --> L
+    L --> N[Aplicacion autenticada]
+```
+
+### Refresh ante expiracion
+
+```mermaid
+sequenceDiagram
+    participant UI as Cliente
+    participant API as AUT2Services
+
+    UI->>API: Request protegida con cookies + X-CSRF-TOKEN
+    API-->>UI: 401 Unauthorized
+    UI->>API: POST /api/account/refreshtoken
+    alt Refresh exitoso
+        API-->>UI: 200 + cookies renovadas
+        UI->>API: Reintenta request original una vez
+        API-->>UI: Respuesta exitosa
+    else Refresh falla
+        API-->>UI: 401/403
+        UI->>UI: Limpia estado local y redirige a login
+    end
+```
+
+### Cambio de contexto operativo
+
+```mermaid
+flowchart TD
+    A[Usuario autenticado] --> B[Selecciona nueva unidad, entidad o rol]
+    B --> C[POST /api/account/cambiounidadorganizacionalentidadrol]
+    C --> D{Cambio exitoso?}
+    D -- Si --> E[GET /api/account/currentuser]
+    E --> F[Actualizar estado global]
+    F --> G[Invalidar datos dependientes del contexto anterior]
+    D -- No --> H[Mostrar error controlado]
+```
+
+---
+
+## Implementacion de referencia minima
+
+La implementacion de referencia debe tener cuatro piezas. Si una integracion no las separa, termina duplicando logica y aumentando errores.
+
+```text
+src/
+  auth/
+    account-api.ts        # rutas HTTP puras
+    csrf.ts               # lectura de XSRF-TOKEN
+    auth-client.ts        # login, currentuser, refresh, logout
+    auth-interceptor.ts   # cookies, CSRF y retry controlado ante 401
+```
+
+### account-api.ts
+
+```ts
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginClaveUnicaRequest {
+  clientId: string;
+  redirectUri: string;
+  code: string;
+  state: string;
+}
+
+export interface LoginOrganizacionRequest {
+  Organizacion: string;
+}
+
+export class AccountApi {
+  constructor(private readonly http: HttpClientLike) {}
+
+  csrf() {
+    return this.http.get('/api/account/csrf');
+  }
+
+  login(payload: LoginRequest) {
+    return this.http.post('/api/account/login', payload);
+  }
+
+  loginClaveUnica(payload: LoginClaveUnicaRequest) {
+    return this.http.post('/api/account/loginclaveunica', payload);
+  }
+
+  currentUser() {
+    return this.http.get('/api/account/currentuser');
+  }
+
+  loginOrganizacion(payload: LoginOrganizacionRequest) {
+    return this.http.post('/api/account/loginorganizacion', payload);
+  }
+
+  cambioUnidadOrganizacionalEntidadRol(payload: unknown) {
+    return this.http.post('/api/account/cambiounidadorganizacionalentidadrol', payload);
+  }
+
+  refreshToken() {
+    return this.http.post('/api/account/refreshtoken', {});
+  }
+
+  logout() {
+    return this.http.post('/api/account/logout', {});
+  }
+}
+```
+
+### csrf.ts
+
+```ts
+export function readXsrfToken(): string | null {
+  return readCookie('XSRF-TOKEN');
+}
+
+function readCookie(name: string): string | null {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split(';')
+    .map(value => value.trim())
+    .find(value => value.startsWith(prefix));
+
+  return cookie
+    ? decodeURIComponent(cookie.substring(prefix.length))
+    : null;
+}
+```
+
+### auth-client.ts
+
+```ts
+export class AuthClient {
+  constructor(private readonly accountApi: AccountApi) {}
+
+  async bootstrapSession() {
+    await this.accountApi.csrf();
+    return this.accountApi.currentUser();
+  }
+
+  async login(payload: LoginRequest) {
+    await this.accountApi.csrf();
+    await this.accountApi.login(payload);
+    return this.accountApi.currentUser();
+  }
+
+  async loginClaveUnica(payload: LoginClaveUnicaRequest) {
+    await this.accountApi.csrf();
+    await this.accountApi.loginClaveUnica(payload);
+    return this.accountApi.currentUser();
+  }
+
+  async seleccionarOrganizacion(payload: LoginOrganizacionRequest) {
+    await this.accountApi.loginOrganizacion(payload);
+    return this.accountApi.currentUser();
+  }
+
+  async cambiarContexto(payload: unknown) {
+    await this.accountApi.cambioUnidadOrganizacionalEntidadRol(payload);
+    return this.accountApi.currentUser();
+  }
+
+  async logout() {
+    await this.accountApi.logout();
+  }
+}
+```
+
+### auth-interceptor.ts
+
+```ts
+let refreshInProgress: Promise<unknown> | null = null;
+
+export async function requestWithAuthRetry(
+  request: () => Promise<Response>,
+  refreshToken: () => Promise<unknown>
+): Promise<Response> {
+  const response = await request();
+
+  if (response.status !== 401) {
+    return response;
+  }
+
+  if (!refreshInProgress) {
+    refreshInProgress = refreshToken().finally(() => {
+      refreshInProgress = null;
+    });
+  }
+
+  await refreshInProgress;
+
+  return request();
+}
+```
+
+Reglas de esta referencia:
+
+- `AccountApi` no decide navegacion ni estado visual;
+- `AuthClient` orquesta flujos de sesion;
+- el interceptor agrega CSRF y controla refresh;
+- `currentuser` actualiza el estado global despues de login, seleccion de organizacion y cambio de contexto;
+- nunca se persisten tokens manualmente.
+
+---
+
 ## Ejemplos de integracion por tecnologia
 
 Los ejemplos siguientes muestran el patron recomendado por tipo de cliente. No buscan cubrir toda la aplicacion, sino dejar claro donde deben resolverse cookies, CSRF, refresh y reconstruccion de sesion.
