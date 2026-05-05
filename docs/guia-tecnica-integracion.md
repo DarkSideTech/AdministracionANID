@@ -2,277 +2,252 @@
 
 ## Objetivo
 
-Esta guia entrega una referencia practica para equipos tecnicos que deban integrar otra aplicacion con la seguridad implementada en AUT2Services.
+Esta guia entrega una referencia tecnica para equipos que deben integrar, mantener o extender clientes que consumen la seguridad implementada en AUT2Services.
 
-El foco esta en integracion, no en detalle interno de codigo.
+El foco esta en integracion, contratos y comportamiento observable del sistema, no en detalle interno de codigo.
+
+---
 
 ## Principios de integracion
 
-- la sesion viaja en cookies;
-- las operaciones mutantes requieren CSRF;
-- el cliente no deberia almacenar manualmente `access token` ni `refresh token` si puede usar cookies correctamente;
-- la sesion completa depende de `Login` y, si aplica, `LoginOrganizacion`.
+- la sesion se transporta mediante cookies (`accesstoken`, `refreshToken`);
+- las operaciones mutantes requieren CSRF (`XSRF-TOKEN` + `X-CSRF-TOKEN`);
+- el cliente no debe persistir manualmente tokens si puede usar cookies;
+- la sesion puede requerir dos etapas: autenticacion base y fijacion de contexto (`LoginOrganizacion`);
+- existe autenticacion externa mediante ClaveUnica (`LoginClaveUnica`);
+- el estado de sesion se reconstruye usando `GET /api/account/currentuser`.
+
+---
 
 ## Endpoints principales
 
+### Autenticacion y sesion
+
 - `POST /api/account/register`
 - `POST /api/account/login`
+- `POST /api/account/loginclaveunica`
 - `POST /api/account/loginorganizacion`
+- `POST /api/account/cambiounidadorganizacionalentidadrol`
 - `POST /api/account/refreshtoken`
 - `POST /api/account/logout`
+
+### Email y validacion
+
 - `POST /api/account/confirmemail`
 - `POST /api/account/resendconfirmationemail`
+
+### Recuperacion de clave
+
+- `POST /api/account/solicitarecuperacionclave`
+- `POST /api/account/reenviacodigorecuperacionclave`
+- `POST /api/account/confirmarecuperacionclave`
+
+### Estado de sesion
+
 - `GET /api/account/csrf`
-- `GET /api/account/miinformacion`
-- `GET /api/account/currentuser`
+- `GET /api/account/currentuser` (AllowAnonymous)
+- `GET /api/account/miinformacion` (Authorize)
 
-## Paso a paso de integracion
+---
 
-### Paso 1. Habilitar cookies en el cliente HTTP
+## Flujo tecnico de integracion
 
-El cliente debe:
+### 1. Inicializacion
 
-- conservar cookies entre requests;
-- reenviarlas automaticamente;
-- permitir lectura de la cookie `XSRF-TOKEN` para poblar el header CSRF.
+- llamar `GET /api/account/csrf`;
+- capturar cookie `XSRF-TOKEN`;
+- configurar cliente HTTP para enviar cookies automaticamente.
 
-### Paso 2. Resolver CSRF
+### 2. CSRF
 
-Secuencia minima:
+Regla obligatoria para endpoints mutantes:
 
-1. llamar `GET /api/account/csrf`;
-2. capturar cookie `XSRF-TOKEN`;
-3. para cada `POST`, `PUT`, `PATCH` o `DELETE`, enviar:
-   - cookie `XSRF-TOKEN`
-   - header `X-CSRF-TOKEN` con el mismo valor.
+- enviar cookie `XSRF-TOKEN`;
+- enviar header `X-CSRF-TOKEN` con el mismo valor.
 
-Recomendacion:
+Notas:
 
-- centralizar esto en interceptor, middleware o helper compartido.
+- el endpoint `csrf` puede responder sin body (204);
+- la cookie puede rotar, el cliente debe usar siempre el ultimo valor;
+- errores de CSRF se manifiestan como 400/403.
 
-### Paso 3. Registro
+### 3. Registro
 
-Para registrar usuario:
+Contrato:
 
-- `POST /api/account/register`
-- body: `CorreoElectronico`, `Nacionalidad`, `TipoDeUsuario`, `DocumentoDeIdentidad`, `NumeroDeDocumento`, `CodigoValidadorDocumento`, `PrimerNombre`, `SegundoNombre`, `PrimerApellido`, `SegundoApellido`, `SexoDeclarativo`, `SexoRegistral`, `FechaDeNacimiento`, `Contraseña`, `ConfirmaContraseña`, `TerminosYCondiciones`
-- incluir CSRF
+- endpoint: `POST /api/account/register`
+- payload: datos personales + password + terminos
+- requiere CSRF
 
-Resultado esperado:
+Resultado:
 
-- respuesta de registro;
-- sin sesion autenticada;
-- confirmacion de correo requerida.
+- usuario creado;
+- sin sesion;
+- email debe ser confirmado.
 
-### Paso 4. Confirmacion de email
+### 4. Confirmacion de email
 
-Para confirmar:
+Contrato:
 
-- `POST /api/account/confirmemail`
-- body: `UserId`, `Token`
-- incluir CSRF
+- endpoint: `POST /api/account/confirmemail`
+- payload: `UserId`, `Token`
+- requiere CSRF
 
-Recomendacion:
+### 5. Login
 
-- implementar una pantalla o endpoint cliente que procese el enlace de confirmacion.
+#### Login tradicional
 
-### Paso 5. Reenvio de confirmacion
+- endpoint: `POST /api/account/login`
+- payload: `email`, `password`
+- requiere CSRF
 
-Si el usuario no confirma:
-
-- `POST /api/account/resendconfirmationemail`
-- body: `email`
-- incluir CSRF
-
-Consideracion:
-
-- el endpoint tiene rate limiting;
-- debe manejarse `429` de forma controlada.
-
-### Paso 6. Login
-
-Para autenticar:
-
-- `POST /api/account/login`
-- body: `email`, `password`
-- incluir CSRF
-
-Resultado esperado:
+Resultado:
 
 - cookies de sesion emitidas;
-- login bloqueado si `EmailConfirmed` es falso.
+- puede requerir seleccion de organizacion.
 
-### Paso 7. Consultar estado actual
+#### Login ClaveUnica
 
-Despues de login o al cargar la app:
+- endpoint: `POST /api/account/loginclaveunica`
+- payload: `clientId`, `redirectUri`, `code`, `state`
+- requiere CSRF
 
-- llamar `GET /api/account/currentuser`
+Resultado:
+
+- cookies emitidas si validacion externa es correcta;
+- flujo posterior identico al login tradicional.
+
+### 6. Estado de sesion
+
+- endpoint: `GET /api/account/currentuser`
 
 Usos:
 
-- reconstruir sesion;
-- saber si el usuario esta autenticado;
-- saber si falta seleccion de rol;
-- conocer roles disponibles.
+- reconstruir estado al iniciar app;
+- detectar autenticacion;
+- detectar si falta seleccion de organizacion;
+- obtener roles, organizaciones y unidades disponibles.
 
-### Paso 8. LoginOrganizacion
+Importante:
 
-Si el usuario debe fijar la Organizacion operativa:
+- este endpoint es AllowAnonymous;
+- si hay cookies validas, devuelve contexto;
+- si no, devuelve estado anonimo.
 
-- `POST /api/account/login-2`
-- body: `Organización`, con el código de la Organización seleccionada
-- incluir CSRF
+### 7. LoginOrganizacion
 
-Resultado esperado:
+Contrato:
 
-- sesion operativa definitiva;
-- rotacion de sesion;
-- refresh token anterior invalidado.
+- endpoint: `POST /api/account/loginorganizacion`
+- payload: `Organizacion`
+- requiere CSRF
 
-### Paso 9. Refresh
+Resultado:
 
-Cuando el cliente reciba `401` por expiracion:
+- fija organizacion/rol operativo;
+- rota sesion;
+- invalida refresh token anterior.
 
-1. llamar `POST /api/account/refresh`;
-2. incluir CSRF;
-3. si funciona, reintentar request original;
-4. si falla, limpiar estado local y pedir nuevo login.
+### 8. Cambio de contexto
+
+Contrato:
+
+- endpoint: `POST /api/account/cambiounidadorganizacionalentidadrol`
+- requiere autorizacion y CSRF
+
+Uso:
+
+- cambiar unidad organizacional, entidad o rol sin cerrar sesion;
+- debe ir seguido de una llamada a `currentuser` para sincronizar estado.
+
+### 9. Refresh
+
+Contrato:
+
+- endpoint: `POST /api/account/refreshtoken`
+- requiere CSRF
+
+Flujo:
+
+1. detectar `401`;
+2. ejecutar refresh una sola vez;
+3. si es exitoso, reintentar request original;
+4. si falla, invalidar estado local y forzar login.
 
 Consideraciones:
 
-- refresh conserva el rol operativo;
-- refresh falla si la sesion esta invalidada;
-- refresh falla si el usuario ya no tiene email confirmado.
+- mantiene contexto operativo;
+- puede rotar cookies y CSRF;
+- no debe ejecutarse en bucle.
 
-### Paso 10. Logout
+### 10. Logout
 
-Para cerrar sesion:
+Contrato:
 
-- `POST /api/account/logout`
-- incluir CSRF
+- endpoint: `POST /api/account/logout`
+- requiere CSRF
 
-Resultado esperado:
+Resultado:
 
-- cookies invalidadas;
-- sesion revocada en servidor.
+- invalida sesion en servidor;
+- elimina cookies;
+- cliente debe limpiar estado.
 
-### Paso 11. Ejemplo practico en Angular 21 para Login
+---
 
-En Angular 21, la forma recomendada es resolver el CSRF antes del login y dejar que el navegador maneje las cookies de sesion.
+## Ejemplo Angular (corregido)
 
-Secuencia recomendada:
+Puntos clave:
 
-1. llamar `GET /api/accouint/csrf`;
-2. leer la cookie `XSRF-TOKEN`;
-3. llamar `POST /api/account/login`;
-4. enviar el header `X-CSRF-TOKEN` con el mismo valor de la cookie;
-5. usar `withCredentials: true` para que el navegador conserve y reenvie cookies.
+- usar `GET /api/account/csrf` (no rutas mal escritas);
+- usar `withCredentials: true`;
+- no copiar cookies manualmente;
+- enviar `X-CSRF-TOKEN` correctamente.
 
-Ejemplo:
+La logica de CSRF debe moverse idealmente a un interceptor.
 
-```ts
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, switchMap } from 'rxjs';
+---
 
-interface LoginRequest {
-  email: string;
-  password: string;
-}
+## Manejo de errores
 
-interface AuthResponse {
-  expiresAtUtc: string;
-  selectedRole: string | null;
-  roleSelectionRequired: boolean;
-  user: {
-    id: string;
-    email: string;
-    roles: string[];
-  };
-}
+Casos relevantes:
 
-@Injectable({ providedIn: 'root' })
-export class AuthIntegrationService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:5219/api/account';
+- `401`: sesion expirada -> intentar refresh;
+- `403` o `400`: error CSRF;
+- `429`: rate limiting en resend o recuperacion;
+- login bloqueado si email no confirmado.
 
-  login(payload: LoginRequest): Observable<AuthResponse> {
-    return this.http.get(`${this.baseUrl}/csrf`, {
-      withCredentials: true,
-      observe: 'response'
-    }).pipe(
-      switchMap(() => {
-        const xsrfToken = this.readCookie('XSRF-TOKEN');
+---
 
-        return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload, {
-          withCredentials: true,
-          headers: {
-            'X-CSRF-TOKEN': xsrfToken ?? ''
-          }
-        });
-      })
-    );
-  }
+## Buenas practicas de mantenimiento
 
-  private readCookie(name: string): string | null {
-    const encodedName = `${name}=`;
-    const cookies = document.cookie.split(';');
+- centralizar autenticacion en un unico modulo;
+- no duplicar rutas de endpoints en multiples servicios;
+- usar `currentuser` como unica fuente de verdad del estado;
+- refrescar estado despues de loginorganizacion y cambio de contexto;
+- evitar depender de datos cacheados cuando cambian cookies;
+- monitorear respuestas inconsistentes de backend y normalizarlas en cliente.
 
-    for (const cookie of cookies) {
-      const value = cookie.trim();
-      if (value.startsWith(encodedName)) {
-        return decodeURIComponent(value.substring(encodedName.length));
-      }
-    }
-
-    return null;
-  }
-}
-```
-
-Puntos importantes del ejemplo:
-
-- `GET /csrf` debe ejecutarse antes del login;
-- `withCredentials: true` permite que el navegador reciba y reenvie cookies;
-- la cookie `XSRF-TOKEN` es legible desde JavaScript porque no es `HttpOnly`;
-- el header `X-CSRF-TOKEN` debe llevar exactamente el mismo valor que la cookie `XSRF-TOKEN`;
-- las cookies de autenticacion emitidas por login no deben copiarse manualmente.
-
-Recomendacion:
-
-- en una aplicacion Angular real, esta logica conviene moverla a un servicio de CSRF o a un interceptor para no repetirla en cada metodo.
-
-## Recomendaciones tecnicas
-
-### Para aplicaciones modernas
-
-- usar cookie jar del navegador o runtime;
-- resolver CSRF automaticamente;
-- usar `currentuser` como fuente de estado;
-- implementar refresh en un punto central.
-
-### Para sistemas legados
-
-- encapsular autenticacion en un modulo unico;
-- capturar cookies manualmente si hace falta;
-- no repartir logica de CSRF en muchas pantallas;
-- separar `Login`, `LoginOrganizacion` y `RefreshToken` en pasos simples y auditables.
+---
 
 ## Errores frecuentes
 
-- olvidar pedir `/api/account/csrf` antes de un `POST`;
-- enviar `X-CSRF-TOKEN` distinto a la cookie `XSRF-TOKEN`;
-- no conservar cookies entre requests;
-- asumir que `register` deja al usuario logueado;
-- intentar saltarse `LoginOrganizacion` cuando hay seleccion de rol;
-- no contemplar `401` en refresh o `429` en resend-confirmation-email.
+- usar rutas antiguas como `/login-2` o `/refresh`;
+- olvidar `GET /csrf` antes de POST;
+- no sincronizar cookie y header CSRF;
+- no reenviar cookies;
+- asumir que login deja la sesion completa lista;
+- no manejar correctamente `currentuser`;
+- ignorar `429` en endpoints protegidos por rate limiting.
+
+---
 
 ## Resumen
 
-La integracion correcta depende de tres capacidades del cliente:
+La integracion correcta depende de tres capacidades clave:
 
 1. manejo de cookies;
 2. manejo correcto de CSRF;
-3. soporte para sesion en dos etapas cuando el rol operativo debe fijarse.
+3. soporte para flujo de sesion en dos etapas y cambio de contexto.
 
-Si esos tres puntos se resuelven bien, la integracion con esta propuesta es estable y predecible.
+Si estos tres puntos estan bien resueltos, la integracion es estable, predecible y mantenible.
