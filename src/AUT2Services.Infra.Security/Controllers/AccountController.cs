@@ -116,7 +116,7 @@ public partial class AccountController : ApiController
     }
 
     [HttpPost("buscarusuariospaginados")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> BuscarUsuariosPaginados(BuscarUsuariosPaginadosViewModel viewModel)
     {
         var context = HttpContext;
@@ -124,28 +124,28 @@ public partial class AccountController : ApiController
     }
 
     [HttpPost("modificausuario")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> ModificaUsuario(ModificaUsuarioViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ModificaUsuarioAsync(viewModel, Request, Response));
     }
 
     [HttpPut("activarusuario")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> ActivarUsuario(ActivarUsuarioViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivarUsuarioAsync(viewModel, Request, Response));
     }
 
     [HttpPut("desactivarusuario")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> DesactivarUsuario(DesactivarUsuarioViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivarUsuarioAsync(viewModel, Request, Response));
     }
 
     [HttpPost("adminmodificacorreoelectronico")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> AdminModificaCorreoElectronico(AdminModificaCorreoElectronicoViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.AdminModificaCorreoElectronicoAsync(viewModel, Request, Response));
@@ -204,7 +204,7 @@ public partial class AccountController : ApiController
     }
 
     [HttpPost("buscarrolespaginados")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> BuscarRolesPaginados(BuscarRolesPaginadosViewModel viewModel)
     {
         var context = HttpContext;
@@ -212,7 +212,7 @@ public partial class AccountController : ApiController
     }
 
     [HttpPost("buscarroles")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> BuscarRoles(BuscarRolesViewModel viewModel)
     {
         var context = HttpContext;
@@ -220,63 +220,63 @@ public partial class AccountController : ApiController
     }
 
     [HttpPost("modificarol")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> ModificaRol(ModificaRolViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ModificaRolAsync(viewModel, Request, Response));
     }
 
     [HttpPut("activarrol")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> ActivarRol(ActivarRolViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivarRolAsync(viewModel, Request, Response));
     }
 
     [HttpPut("desactivarrol")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> DesactivarRol(DesactivarRolViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivarRolAsync(viewModel, Request, Response));
     }
 
     [HttpPut("requierevalidacionalserasignado")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> RequiereValidacionAlSerAsignado(RequiereValidacionAlSerAsignadoViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.RequiereValidacionAlSerAsignadoAsync(viewModel, Request, Response));
     }
 
     [HttpPut("norequierevalidacionalserasignado")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> NoRequiereValidacionAlSerAsignado(NoRequiereValidacionAlSerAsignadoViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.NoRequiereValidacionAlSerAsignadoAsync(viewModel, Request, Response));
     }
 
     [HttpPut("activavalidaciondeasignacionderoles")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> ActivaValidacionDeAsignacionDeRoles(ActivaValidacionDeAsignacionDeRolesViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivaValidacionDeAsignacionDeRolesAsync(viewModel, Request, Response));
     }
 
     [HttpPut("desactivavalidaciondeasignacionderoles")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> DesactivaValidacionDeAsignacionDeRoles(DesactivaValidacionDeAsignacionDeRolesViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivaValidacionDeAsignacionDeRolesAsync(viewModel, Request, Response));
     }
 
     [HttpPut("activadetalledeautorizaciones")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> ActivaDetalleDeAutorizaciones(ActivaDetalleDeAutorizacionesViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.ActivaDetalleDeAutorizacionesAsync(viewModel, Request, Response));
     }
 
     [HttpPut("desactivadetalledeautorizaciones")]
-    [Authorize]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     public async Task<IActionResult> DesactivaDetalleDeAutorizaciones(DesactivaDetalleDeAutorizacionesViewModel viewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await accountServiceApp.DesactivaDetalleDeAutorizacionesAsync(viewModel, Request, Response));

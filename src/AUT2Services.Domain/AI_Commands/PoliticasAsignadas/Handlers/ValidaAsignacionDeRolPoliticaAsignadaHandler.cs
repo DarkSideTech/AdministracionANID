@@ -30,6 +30,12 @@ namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Handlers
                 AddError($"El Id de PoliticaAsignada: [{command.Id}], no Existe!");
                 return CommandResponse;
             }
+
+            if (existPoliticaAsignada.PoliticaAsignadaBase)
+            {
+                AddError($"Las Politicas Asignadas marcadas como Base no se pueden modificar");
+                return CommandResponse;
+            }
          
             var newPoliticaAsignada = new PoliticaAsignada(
                 existPoliticaAsignada.Id, 

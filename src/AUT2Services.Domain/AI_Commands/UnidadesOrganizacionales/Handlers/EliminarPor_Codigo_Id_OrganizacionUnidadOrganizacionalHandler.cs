@@ -29,6 +29,12 @@ public partial class  UnidadOrganizacionalCommandHandler :
             return CommandResponse;
         }
 
+        if (existUnidadOrganizacional.UnidadOrganizacionalBase)
+        {
+            AddError($"Las unidades organizacionales marcadas como Base no se pueden eliminar");
+            return CommandResponse;
+        }
+
          
         AddDeleteDomainEvent(command, existUnidadOrganizacional, new UnidadOrganizacionalEventEliminadoPor_Codigo_Id_Organizacion(
             existUnidadOrganizacional.Id, 
