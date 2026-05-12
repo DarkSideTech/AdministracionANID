@@ -44,7 +44,7 @@ public partial class AutenticadorExternoCommandHandler :
             command.ClaveDeAcceso, 
             command.NombreADesplegar, 
             command.ValidadorPrimario, 
-            false, 
+            command.AutenticadorExternoBase, 
             command.Activo 
         );
 

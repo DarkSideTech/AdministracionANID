@@ -42,7 +42,7 @@ public partial class ProveedorCommandHandler :
             command.Nombre, 
             command.Descripcion, 
             command.APIDeAutenticacion, 
-            false, 
+            command.ProveedorBase, 
             command.Activo 
         );
 

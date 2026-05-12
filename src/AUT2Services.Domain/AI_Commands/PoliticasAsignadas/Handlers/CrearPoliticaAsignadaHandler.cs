@@ -46,14 +46,10 @@ public partial class PoliticaAsignadaCommandHandler :
             command.FechaCreacion, 
             command.RolRequiereValidacion, 
             command.RolAsignadoValidado, 
-            false 
+            command.PoliticaAsignadaBase 
         );
 
-        newPoliticaAsignada.CambiarFechaInicioAsignacion(_clock.UtcNow);
-        newPoliticaAsignada.CambiarFechaTerminoAsignacion(null);
-        newPoliticaAsignada.CambiarFechaCreacion(_clock.UtcNow);
-        newPoliticaAsignada.CambiarPoliticaAsignadaBase(false);
-        newPoliticaAsignada.CambiarRolAsignadoValidado(!newPoliticaAsignada.RolRequiereValidacion);
+            newPoliticaAsignada.CambiarRolAsignadoValidado(!newPoliticaAsignada.RolRequiereValidacion);
 
         AddCreateDomainEvent(command, newPoliticaAsignada, new PoliticaAsignadaEventCreado(
             newPoliticaAsignada.Id, 

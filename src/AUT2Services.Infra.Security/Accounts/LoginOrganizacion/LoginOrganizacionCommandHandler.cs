@@ -16,6 +16,7 @@ public class LoginOrganizacionCommandHandler(
     ISecurityRepository securityRepository,
     ITokenService tokenService,
     IOrganizacionRepository organizacionRepository,
+    IEntidadRepository entidadRepository,
     IAuthCookieService authCookieService,
     ICsrfService csrfService,
     AUT2ServicesContext aUT2ServicesContext,
@@ -25,6 +26,7 @@ public class LoginOrganizacionCommandHandler(
     private readonly ISecurityRepository securityRepository = securityRepository;
     private readonly ITokenService tokenService = tokenService;
     private readonly IOrganizacionRepository organizacionRepository = organizacionRepository;
+    private readonly IEntidadRepository entidadRepository = entidadRepository;
     private readonly IAuthCookieService authCookieService = authCookieService;
     private readonly ICsrfService csrfService = csrfService;
     private readonly AUT2ServicesContext aUT2ServicesContext = aUT2ServicesContext;
@@ -83,11 +85,26 @@ public class LoginOrganizacionCommandHandler(
                 }
 
                 entidad = await securityRepository.BuscarEntidadPrincipalPorUsuarioOrganizacion(Guid.Parse(user.Id), organizacion.Id);
+                if (entidad is null)
+                {
+                    var unidadesDisponibles = await securityRepository.BuscarUnidadesOrganizacionalesEntidadRolPor_Id_Organizacion(
+                        organizacion.Id,
+                        Guid.Parse(user.Id));
+
+                    var entidadFallbackId = unidadesDisponibles
+                        .Select(item => item.Id_Entidad)
+                        .FirstOrDefault(item => Guid.TryParse(item, out _));
+
+                    if (Guid.TryParse(entidadFallbackId, out var idEntidadFallback))
+                    {
+                        entidad = await entidadRepository.BuscarPor_Id(idEntidadFallback);
+                    }
+                }
             }
 
             if (entidad is null)
             {
-                AddError("El usuario no cuenta con una entidad principal habilitada para la organizacion seleccionada.");
+                AddError("El usuario no cuenta con entidades habilitadas para la organizacion seleccionada.");
                 return CommandResponse;
             }
 
