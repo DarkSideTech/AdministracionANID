@@ -30,6 +30,12 @@ namespace AUT2Services.Domain.Commands.Entidades.Handlers
                 AddError($"El Id de Entidad: [{command.Id}], no Existe!");
                 return CommandResponse;
             }
+
+            if (existEntidad.EntidadBase)
+            {
+                AddError($"Los entidades marcados como Base no se pueden modificar");
+                return CommandResponse;
+            }
          
             var newEntidad = new Entidad(
                 existEntidad.Id, 

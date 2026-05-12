@@ -32,36 +32,42 @@ public class ProveedorController : ApiController
         _logger = logger;
     }
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpPost("Crear")]
     public async Task<IActionResult> Crear(CrearProveedorViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _proveedorServiceApp.Crear(dataViewModel));
     } 
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpPut("Modificar")]
     public async Task<IActionResult> Modificar(ModificarProveedorViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _proveedorServiceApp.Modificar(dataViewModel));
     } 
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpDelete("Eliminar")]
     public async Task<IActionResult> Eliminar(EliminarProveedorViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _proveedorServiceApp.Eliminar(dataViewModel));
     } 
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpDelete("EliminarPor_Codigo")]
     public async Task<IActionResult> EliminarPor_Codigo(EliminarPor_CodigoProveedorViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _proveedorServiceApp.EliminarPor_Codigo(dataViewModel));
     } 
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpPut("Activar")]
     public async Task<IActionResult> Activar(ActivarProveedorViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _proveedorServiceApp.Activar(dataViewModel));
     } 
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpPut("Desactivar")]
     public async Task<IActionResult> Desactivar(DesactivarProveedorViewModel dataViewModel)
     {
@@ -94,6 +100,7 @@ public class ProveedorController : ApiController
         ); 
     } 
 
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
     [HttpGet("BuscarTrazabilidadPor_Id")]
     public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
     {

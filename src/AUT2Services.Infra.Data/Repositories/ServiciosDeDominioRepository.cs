@@ -562,6 +562,58 @@ public class ServicioDeDominioRepository : IServicioDeDominioRepository
         return result;
     }
 
+    public async Task<bool> UsuarioConRolEnOrganizacion(
+        Guid id_Usuario,
+        Guid id_Organizacion,
+        string nombreRol,
+        DateTimeOffset fechaConsulta)
+    {
+        if (string.IsNullOrWhiteSpace(nombreRol))
+        {
+            return false;
+        }
+
+        var nombreRolNormalizado = nombreRol.Trim().ToUpperInvariant();
+
+        var idsRoles = await db.Roles
+            .AsNoTracking()
+            .Where(rol =>
+                rol.NormalizedName == nombreRolNormalizado ||
+                rol.Name == nombreRol ||
+                rol.Name == nombreRolNormalizado)
+            .Select(rol => rol.Id)
+            .ToArrayAsync();
+
+        var idsRolesGuid = idsRoles
+            .Select(id => Guid.TryParse(id, out var idRol) ? idRol : Guid.Empty)
+            .Where(id => id != Guid.Empty)
+            .ToArray();
+
+        if (idsRolesGuid.Length == 0)
+        {
+            return false;
+        }
+
+        return await (
+            from politicaAsignada in db.PoliticaAsignada.AsNoTracking()
+
+            join entidad in db.Entidad.AsNoTracking()
+                on politicaAsignada.Id_Entidad equals entidad.Id
+
+            join unidadOrganizacional in db.UnidadOrganizacional.AsNoTracking()
+                on entidad.Id_UnidadOrganizacional equals unidadOrganizacional.Id
+
+            where entidad.Id_Usuario == id_Usuario
+                && unidadOrganizacional.Id_Organizacion == id_Organizacion
+                && idsRolesGuid.Contains(politicaAsignada.Id_Rol)
+                && politicaAsignada.RolAsignadoValidado
+                && (politicaAsignada.FechaInicioAsignacion == null || politicaAsignada.FechaInicioAsignacion <= fechaConsulta)
+                && (politicaAsignada.FechaTerminoAsignacion == null || politicaAsignada.FechaTerminoAsignacion > fechaConsulta)
+
+            select true)
+            .AnyAsync();
+    }
+
     public async Task<IEnumerable<OrganizacionPorUsuarioDTO>> BuscarOrganizacionesPor_Id_Usuario(Guid id_Usuario)
     {
         IList<OrganizacionPorUsuarioDTO> result = [];
