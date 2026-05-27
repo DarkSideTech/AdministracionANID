@@ -337,19 +337,6 @@ public static class AccountExtensions
         };
     }
 
-    public static BuscarRolesCommand ToBuscarRolesCommand(this BuscarRolesViewModel viewModel, HttpRequest request, HttpResponse response, HttpContext httpContext)
-    {
-        if (viewModel is null) return null;
-
-        return new BuscarRolesCommand()
-        {
-            Estado = viewModel.Estado,
-            Request = request,
-            Response = response,
-            Context = httpContext
-        };
-    }
-
     public static ModificaRolCommand ToModificaRolCommand(this ModificaRolViewModel viewModel, HttpRequest request, HttpResponse response)
     {
         if (viewModel is null) return null;

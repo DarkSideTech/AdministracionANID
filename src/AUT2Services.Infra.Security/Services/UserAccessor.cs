@@ -30,17 +30,6 @@ public class UserAccessor : IUserAccessor
                 .FindFirstValue(ClaimTypes.Email)!;
     }
 
-    public List<string> GetRoles()
-    {
-        return _httpContextAccessor
-            .HttpContext!
-                .User
-                    .FindAll(ClaimTypes.Role)
-                    .Select(claim => claim.Value)
-                    .Where(value => !string.IsNullOrWhiteSpace(value))
-                    .ToList();
-    }
-
     public string GetIdEntidad()
     {
         return _httpContextAccessor

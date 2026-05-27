@@ -18,9 +18,6 @@ public interface IEntidadRepository : IRepository<Entidad>
     Task<Entidad> BuscarPor_Id(
         Guid id 
         );
-    Task<IEnumerable<Entidad>> BuscarPor_Ids(
-        IEnumerable<Guid> ids
-        );
     Task<Entidad> BuscarPor_Id_Usuario_Id_UnidadOrganizacional_Principal(
         Guid id_Usuario, 
         Guid id_UnidadOrganizacional 
@@ -32,16 +29,8 @@ public interface IEntidadRepository : IRepository<Entidad>
     Task<IEnumerable<Entidad>> BuscarPor_Id_Usuario(
         Guid id_Usuario 
         );
-    Task<IEnumerable<Entidad>> BuscarPor_Id_Usuario_Id_Organizacion(
-        Guid id_Usuario,
-        Guid id_Organizacion,
-        DateTimeOffset fechaConsulta
-        );
     Task<IEnumerable<Entidad>> BuscarPor_Id_UnidadOrganizacional(
         Guid id_UnidadOrganizacional 
-        );
-    Task<IEnumerable<Entidad>> BuscarPor_Ids_UnidadOrganizacional(
-        IEnumerable<Guid> ids_UnidadOrganizacional
         );
     Task<Entidad> BuscarPor_Id_Usuario_TipoDeEntidad_Persona(
         Guid id_Usuario 

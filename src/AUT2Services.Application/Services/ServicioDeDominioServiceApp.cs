@@ -22,7 +22,6 @@ public partial class ServicioDeDominioServiceApp : IServicioDeDominioServiceApp
     private readonly IPoliticaAsignadaRepository politicaAsignadaRepository;
     private readonly IProcesoRepository procesoRepository;
     private readonly IUserAccessor userAccessor;
-    private readonly ISecurityTraceabilityService securityTraceabilityService;
     private readonly IClock clock;
     private readonly CancellationToken cancellationToken = default;
 
@@ -38,7 +37,6 @@ public partial class ServicioDeDominioServiceApp : IServicioDeDominioServiceApp
         IPoliticaAsignadaRepository politicaAsignadaRepository,
         IProcesoRepository procesoRepository,
         IUserAccessor userAccessor,
-        ISecurityTraceabilityService securityTraceabilityService,
         IClock clock)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -52,7 +50,6 @@ public partial class ServicioDeDominioServiceApp : IServicioDeDominioServiceApp
         this.politicaAsignadaRepository = politicaAsignadaRepository;
         this.procesoRepository = procesoRepository;
         this.userAccessor = userAccessor;
-        this.securityTraceabilityService = securityTraceabilityService;
         this.clock = clock;
     }
 

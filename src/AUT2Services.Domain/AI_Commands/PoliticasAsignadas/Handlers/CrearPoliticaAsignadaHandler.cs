@@ -30,7 +30,7 @@ public partial class PoliticaAsignadaCommandHandler :
 
         var existPoliticaAsignada = await _politicaAsignadaRepository.BuscarPor_Id_Entidad_Id_Rol_Id_Proceso(command.Id_Entidad, command.Id_Rol, command.Id_Proceso);
 
-        if(existPoliticaAsignada.Any())
+        if(existPoliticaAsignada is not null)
         {
             AddError($"Ya existe PoliticaAsignada para la busqueda : Id_Entidad [{command.Id_Entidad}] Id_Rol [{command.Id_Rol}] Id_Proceso [{command.Id_Proceso}] ");
             return CommandResponse;
@@ -46,14 +46,10 @@ public partial class PoliticaAsignadaCommandHandler :
             command.FechaCreacion, 
             command.RolRequiereValidacion, 
             command.RolAsignadoValidado, 
-            false 
+            command.PoliticaAsignadaBase 
         );
 
-        newPoliticaAsignada.CambiarFechaInicioAsignacion(_clock.UtcNow);
-        newPoliticaAsignada.CambiarFechaTerminoAsignacion(null);
-        newPoliticaAsignada.CambiarFechaCreacion(_clock.UtcNow);
-        newPoliticaAsignada.CambiarPoliticaAsignadaBase(false);
-        newPoliticaAsignada.CambiarRolAsignadoValidado(!newPoliticaAsignada.RolRequiereValidacion);
+            newPoliticaAsignada.CambiarRolAsignadoValidado(!newPoliticaAsignada.RolRequiereValidacion);
 
         AddCreateDomainEvent(command, newPoliticaAsignada, new PoliticaAsignadaEventCreado(
             newPoliticaAsignada.Id, 

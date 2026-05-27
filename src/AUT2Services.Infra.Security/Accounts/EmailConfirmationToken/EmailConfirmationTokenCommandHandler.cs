@@ -114,34 +114,6 @@ public class EmailConfirmationTokenCommandHandler : CommandHandler,
                 }
             }
 
-            if (entidadBaseExistente is null && usuario.RequiereValidacionEnrrolamiento == true)
-            {
-                securityTraceabilityService.TrackCreate(
-                    command,
-                    usuario.Id,
-                    confirmationEventType,
-                    UsuarioTraceabilityState.FromUser(usuario) with
-                    {
-                        ActionContext = "REGISTER_CONFIRMATION",
-                        RequestPath = command.Request.Path,
-                        Result = "PENDING_ENROLLMENT_VALIDATION",
-                        RespondedAtUtc = DateTimeOffset.UtcNow
-                    });
-
-                if (!await aUT2ServicesContext.Commit())
-                {
-                    AddError("No fue posible persistir la trazabilidad de la validacion del correo electronico.");
-                    await aUT2ServicesContext.RollbackExternalTransactionAsync(transaction, cancellationToken);
-                    return CommandResponse;
-                }
-
-                await aUT2ServicesContext.CommitExternalTransactionAsync(transaction, cancellationToken);
-                csrfService.EnsureTokenCookie(command.Response);
-                CommandResponse.Data = "Correo electronico confirmado. Tu cuenta queda pendiente de validacion de enrrolamiento.";
-                CommandResponse.Result = true;
-                return CommandResponse;
-            }
-
             if (entidadBaseExistente is null)
             {
                 var baseEntityCommand = new BaseEntityCommand()

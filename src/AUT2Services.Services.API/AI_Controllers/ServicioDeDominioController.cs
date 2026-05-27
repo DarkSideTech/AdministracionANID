@@ -28,20 +28,6 @@ public class ServicioDeDominioController : ApiController
     }
 
     [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
-    [HttpPost("BuscarUsuariosPendientesEnrrolamiento")]
-    public async Task<IActionResult> BuscarUsuariosPendientesEnrrolamiento(BuscarUsuariosPendientesEnrrolamientoServicioDeDominioViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.BuscarUsuariosPendientesEnrrolamiento(dataViewModel));
-    }
-
-    [Authorize(Policy = EnumPolicyMaster.VALIDA_ASIGNACION_ROLES)]
-    [HttpPost("BuscarAsignacionesRolesPendientesValidacion")]
-    public async Task<IActionResult> BuscarAsignacionesRolesPendientesValidacion(BuscarAsignacionesRolesPendientesValidacionServicioDeDominioViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.BuscarAsignacionesRolesPendientesValidacion(dataViewModel));
-    }
-
-    [Authorize(Policy = EnumPolicyMaster.VALIDA_ENRROLAMIENTO)]
     [HttpPost("ValidaEnrrolamiento")]
     public async Task<IActionResult> ValidaEnrrolamiento(ValidaEnrrolamientoServicioDeDominioViewModel dataViewModel)
     {
@@ -55,40 +41,12 @@ public class ServicioDeDominioController : ApiController
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.ValidaAsignacionDeRol(dataViewModel));
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpPost("CrearEntidad")]
     public async Task<IActionResult> CrearEntidad(CrearEntidadServicioDeDominioViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.CrearEntidad(dataViewModel));
     } 
-
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpPost("EliminarEntidad")]
-    public async Task<IActionResult> EliminarEntidad(EliminarEntidadServicioDeDominioViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.EliminarEntidad(dataViewModel));
-    } 
-
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpPost("SincronizarPoliticasAsignadas")]
-    public async Task<IActionResult> SincronizarPoliticasAsignadas(SincronizarPoliticasAsignadasServicioDeDominioViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.SincronizarPoliticasAsignadas(dataViewModel));
-    } 
-
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
-    [HttpPost("BuscarUnidadesOrganizacionalesParaAsignarOrganizacion")]
-    public async Task<IActionResult> BuscarUnidadesOrganizacionalesParaAsignarOrganizacion(BuscarUnidadesOrganizacionalesParaAsignarOrganizacionServicioDeDominioViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.BuscarUnidadesOrganizacionalesParaAsignarOrganizacion(dataViewModel));
-    }
-
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
-    [HttpPost("SincronizarUnidadesOrganizacionalesOrganizacion")]
-    public async Task<IActionResult> SincronizarUnidadesOrganizacionalesOrganizacion(SincronizarUnidadesOrganizacionalesOrganizacionServicioDeDominioViewModel dataViewModel)
-    {
-        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _servicioDeDominioServiceApp.SincronizarUnidadesOrganizacionalesOrganizacion(dataViewModel));
-    }
 
     [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD_UNIDAD_USUARIO)]
     [HttpPost("MarcarEntidadComoPrincipal")]
@@ -109,41 +67,6 @@ public class ServicioDeDominioController : ApiController
             id_Organizacion 
         ); 
     } 
-
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpGet("BuscarEntidadesParaAsignarPolitica")]
-    public async Task<IEnumerable<EntidadParaAsignarPoliticaViewModel>> BuscarEntidadesParaAsignarPolitica(
-            Guid id_Usuario,
-            Guid id_UnidadOrganizacional
-        )
-    {
-        return await _servicioDeDominioServiceApp.BuscarEntidadesParaAsignarPolitica(
-            id_Usuario,
-            id_UnidadOrganizacional
-        );
-    }
-
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpGet("BuscarEntidadesParaAsignarPoliticaPorOrganizacion")]
-    public async Task<IEnumerable<EntidadParaAsignarPoliticaViewModel>> BuscarEntidadesParaAsignarPoliticaPorOrganizacion(
-            Guid id_Organizacion
-        )
-    {
-        return await _servicioDeDominioServiceApp.BuscarEntidadesParaAsignarPoliticaPorOrganizacion(
-            id_Organizacion
-        );
-    }
-
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpGet("BuscarPoliticasAsignadasPorEntidad")]
-    public async Task<IEnumerable<PoliticaAsignadaParaEntidadViewModel>> BuscarPoliticasAsignadasPorEntidad(
-            Guid id_Entidad
-        )
-    {
-        return await _servicioDeDominioServiceApp.BuscarPoliticasAsignadasPorEntidad(
-            id_Entidad
-        );
-    }
 
     [Authorize]
     [HttpGet("BuscarEntidadPrincipalPor_Id_Usuario_Id_Organizacion")]

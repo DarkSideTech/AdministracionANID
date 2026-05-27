@@ -242,8 +242,7 @@ public class RegisterCommandHandler : CommandHandler,
 
     private static bool RequiresEnrollmentValidation(string? tipoDeUsuario)
     {
-        return !string.IsNullOrWhiteSpace(tipoDeUsuario) &&
-               !string.Equals(tipoDeUsuario, Domain.Enumerations.EnumTipoDeUsuario.NACIONAL, StringComparison.OrdinalIgnoreCase);
+        return ShouldNotifyZendesk(tipoDeUsuario);
     }
 
     private static bool ShouldNotifyZendesk(string? tipoDeUsuario)

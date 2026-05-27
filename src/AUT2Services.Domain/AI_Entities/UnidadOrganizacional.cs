@@ -43,11 +43,6 @@ public class UnidadOrganizacional : Entity, IAggregateRoot
         UnidadOrganizacionalBase = nuevoValor;
     }
 
-    public void CambiarOrganizacion(Guid idOrganizacion)
-    {
-        Id_Organizacion = idOrganizacion;
-    }
-
     public void CambiarActivo(bool nuevoValor)
     {
         Activo = nuevoValor;

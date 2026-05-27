@@ -73,13 +73,6 @@ public class ProcesoController : ApiController
         return await _procesoServiceApp.BuscarTodos(); 
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpGet("BuscarActivosParaSeleccion")]
-    public async Task<IEnumerable<ProcesoSeleccionViewModel>> BuscarActivosParaSeleccion()
-    {
-        return await _procesoServiceApp.BuscarActivosParaSeleccion();
-    }
-
     [AllowAnonymous]
     [HttpGet("BuscarPor_Id")]
     public async Task<ProcesoViewModel> BuscarPor_Id( 

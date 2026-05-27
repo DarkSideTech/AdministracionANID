@@ -11,12 +11,10 @@ namespace AUT2Services.Domain.Commands.PoliticasAsignadas.Commands;
 public class EliminarPoliticaAsignadaCommand : PoliticaAsignadaCommand
 {
     public EliminarPoliticaAsignadaCommand(
-        Guid id,
-        Guid? auditAggregateId = null
+        Guid id 
         )
     {
         Id = id; 
-        AuditAggregateId = auditAggregateId;
     }
 
     public override bool IsValid()

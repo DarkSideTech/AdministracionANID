@@ -6,7 +6,6 @@
 // -------------------------------------------------
  
 using AUT2Services.Domain.Core.Data;
-using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
@@ -49,22 +48,6 @@ public class ProcesoRepository : IProcesoRepository
                 .AsNoTracking() 
                 .ToListAsync(); 
     } 
-
-    public async Task<IEnumerable<ProcesoSeleccionDTO>> BuscarActivosParaSeleccion()
-    {
-        return await DbSet
-                .AsNoTracking()
-                .Where(data => data.Activo)
-                .OrderBy(data => data.Codigo)
-                .ThenBy(data => data.Nombre)
-                .Select(data => new ProcesoSeleccionDTO
-                {
-                    Id = data.Id,
-                    Codigo = data.Codigo,
-                    Nombre = data.Nombre
-                })
-                .ToListAsync();
-    }
 
     public async Task<Proceso> BuscarPor_Id( 
             Guid id 

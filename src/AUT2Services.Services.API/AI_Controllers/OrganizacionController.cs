@@ -31,42 +31,42 @@ public class OrganizacionController : ApiController
         _logger = logger;
     }
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpPost("Crear")]
     public async Task<IActionResult> Crear(CrearOrganizacionViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _organizacionServiceApp.Crear(dataViewModel));
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpPut("Modificar")]
     public async Task<IActionResult> Modificar(ModificarOrganizacionViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _organizacionServiceApp.Modificar(dataViewModel));
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpDelete("Eliminar")]
     public async Task<IActionResult> Eliminar(EliminarOrganizacionViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _organizacionServiceApp.Eliminar(dataViewModel));
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpDelete("EliminarPor_Codigo")]
     public async Task<IActionResult> EliminarPor_Codigo(EliminarPor_CodigoOrganizacionViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _organizacionServiceApp.EliminarPor_Codigo(dataViewModel));
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpPut("Activar")]
     public async Task<IActionResult> Activar(ActivarOrganizacionViewModel dataViewModel)
     {
         return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _organizacionServiceApp.Activar(dataViewModel));
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpPut("Desactivar")]
     public async Task<IActionResult> Desactivar(DesactivarOrganizacionViewModel dataViewModel)
     {
@@ -91,7 +91,7 @@ public class OrganizacionController : ApiController
         ); 
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
+    [AllowAnonymous]
     [HttpGet("BuscarPor_Codigo")]
     public async Task<OrganizacionViewModel> BuscarPor_Codigo( 
             string codigo 
@@ -102,7 +102,7 @@ public class OrganizacionController : ApiController
         ); 
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR)]
+    [Authorize(Policy = EnumPolicyMaster.ADMINISTRADOR_ENTIDAD)]
     [HttpGet("BuscarTrazabilidadPor_Id")]
     public async Task<ActionResult<IReadOnlyList<AuditEnvelope>>> BuscarTrazabilidadPor_Id(Guid id)
     {

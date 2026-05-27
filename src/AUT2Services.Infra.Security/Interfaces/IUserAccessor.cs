@@ -4,7 +4,6 @@ public interface IUserAccessor
 {
     string GetUsername();
     string GetEmail();
-    List<string> GetRoles();
     string GetIdEntidad();
     List<string> GetProcesos();
     List<string> GetRolesPorProceso(string proceso);

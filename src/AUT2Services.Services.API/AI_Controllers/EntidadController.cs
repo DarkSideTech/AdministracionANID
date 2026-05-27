@@ -100,19 +100,6 @@ public class EntidadController : ApiController
         ); 
     } 
 
-    [Authorize(Policy = EnumPolicyMaster.USUARIO_LOGUEADO)]
-    [HttpGet("BuscarPor_Id_Usuario_Id_Organizacion")]
-    public async Task<IEnumerable<EntidadViewModel>> BuscarPor_Id_Usuario_Id_Organizacion(
-            Guid id_Usuario,
-            Guid id_Organizacion
-        )
-    {
-        return await _entidadServiceApp.BuscarPor_Id_Usuario_Id_Organizacion(
-            id_Usuario,
-            id_Organizacion
-        );
-    }
-
     [AllowAnonymous]
     [HttpGet("BuscarPor_Id_UnidadOrganizacional")]
     public async Task<IEnumerable<EntidadViewModel>> BuscarPor_Id_UnidadOrganizacional( 

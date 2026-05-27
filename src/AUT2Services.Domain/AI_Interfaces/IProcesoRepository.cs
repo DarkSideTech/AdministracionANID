@@ -6,7 +6,6 @@
 // -------------------------------------------------
  
 using AUT2Services.Domain.Core.Data;
-using AUT2Services.Domain.DTOs;
 using AUT2Services.Domain.Entities;
 
 namespace AUT2Services.Domain.Interfaces;
@@ -17,8 +16,6 @@ public interface IProcesoRepository : IRepository<Proceso>
     void Modificar(Proceso data);
     void Eliminar(Proceso data);
     Task<IEnumerable<Proceso>> BuscarTodos(
-        );
-    Task<IEnumerable<ProcesoSeleccionDTO>> BuscarActivosParaSeleccion(
         );
     Task<Proceso> BuscarPor_Id(
         Guid id 

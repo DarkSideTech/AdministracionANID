@@ -12,13 +12,12 @@ namespace AUT2Services.Domain.Events.PoliticasAsignadas.Events;
 public class PoliticaAsignadaEventEliminado : Event
 {
     public PoliticaAsignadaEventEliminado(
-        Guid id,
-        Guid? auditAggregateId = null
+        Guid id 
         )
     {
         Id = id;
 
-        AggregateId = auditAggregateId ?? id;
+        AggregateId = id;
     }
 
     public Guid Id { get; private set; } = Guid.Empty;

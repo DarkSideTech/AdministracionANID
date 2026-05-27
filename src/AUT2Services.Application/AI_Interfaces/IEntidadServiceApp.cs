@@ -37,11 +37,6 @@ public interface IEntidadServiceApp : IDisposable
         Guid id_Usuario 
         ); 
 
-    Task<IEnumerable<EntidadViewModel>> BuscarPor_Id_Usuario_Id_Organizacion(
-        Guid id_Usuario,
-        Guid id_Organizacion
-        ); 
-
     Task<IEnumerable<EntidadViewModel>> BuscarPor_Id_UnidadOrganizacional(
         Guid id_UnidadOrganizacional 
         ); 

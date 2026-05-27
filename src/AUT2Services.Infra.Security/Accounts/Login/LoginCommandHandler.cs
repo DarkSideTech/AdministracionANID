@@ -1,7 +1,6 @@
 using AUT2Services.Domain.Core.Commands;
 using AUT2Services.Domain.Core.Mediator;
 using AUT2Services.Domain.Entities;
-using AUT2Services.Domain.Enumerations;
 using AUT2Services.Domain.Interfaces;
 using AUT2Services.Domain.Security.Entities;
 using AUT2Services.Infra.Data.Context;
@@ -72,12 +71,6 @@ public class LoginCommandHandler(
             if (!result.Succeeded)
             {
                 AddError("Credenciales no válidas.");
-                return CommandResponse;
-            }
-
-            if (!string.Equals(usuario.EstadoDeUsuario, EnumEstadoDeUsuario.REGISTRADO, StringComparison.OrdinalIgnoreCase))
-            {
-                AddError("El usuario no se encuentra en estado REGISTRADO. Debe completar la validacion de enrrolamiento.");
                 return CommandResponse;
             }
 

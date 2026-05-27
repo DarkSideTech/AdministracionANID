@@ -20,7 +20,6 @@ namespace AUT2Services.Domain.Commands.PoliticasAsignadas
         public bool RolRequiereValidacion { get; protected set; } = false; 
         public bool RolAsignadoValidado { get; protected set; } = false; 
         public bool PoliticaAsignadaBase { get; protected set; } = false; 
-        public Guid? AuditAggregateId { get; protected set; }
     }
 }
 

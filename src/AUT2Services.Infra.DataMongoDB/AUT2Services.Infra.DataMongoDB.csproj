@@ -12,8 +12,8 @@
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     <PackageReference Include="MongoDB.Driver" />
-    <PackageReference Include="SharpCompress" />
     <PackageReference Include="Snappier" />
+    <PackageReference Include="SharpCompress" />
   </ItemGroup>
 
   <ItemGroup>

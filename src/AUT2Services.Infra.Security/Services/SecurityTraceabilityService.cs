@@ -59,28 +59,6 @@ public sealed class SecurityTraceabilityService(IAuditBuffer auditBuffer) : ISec
         return true;
     }
 
-    public bool TrackUpdate(
-        string commandType,
-        string? userId,
-        string eventType,
-        UsuarioTraceabilityState before,
-        UsuarioTraceabilityState after,
-        bool includeSnapshot = false)
-    {
-        if (!TryCreateAggregateId(userId, out var aggregateId))
-        {
-            return false;
-        }
-
-        auditBuffer.TrackUpdate(
-            new SecurityTraceabilityCommand(aggregateId, commandType),
-            new SecurityTraceabilityEvent(aggregateId, eventType),
-            before,
-            after,
-            includeSnapshot);
-        return true;
-    }
-
     private static bool TryCreateAggregateId(string? userId, out Guid aggregateId)
     {
         return Guid.TryParse(userId, out aggregateId) && aggregateId != Guid.Empty;
