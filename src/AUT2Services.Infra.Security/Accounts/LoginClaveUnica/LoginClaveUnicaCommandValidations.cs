@@ -5,6 +5,5 @@ public class LoginClaveUnicaCommandValidations : LoginClaveUnicaValidations<Logi
     public LoginClaveUnicaCommandValidations()
     {
         Validate_Code();
-        Validate_State();
     }
 }

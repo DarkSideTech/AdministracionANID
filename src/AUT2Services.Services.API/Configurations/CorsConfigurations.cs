@@ -10,7 +10,7 @@ public static class CorsConfigurations
 
         var allowedCorsOrigins = builder.Configuration.GetSection("JwtOptions:AllowedCorsOrigins").Get<string[]>();
 
-        CorsExtensions.AddCorsConfiguration(builder.Services, allowedCorsOrigins!, environment_develop);
+        CorsExtensions.AddCorsConfiguration(builder.Services, allowedCorsOrigins ?? [], environment_develop);
 
         return builder.Services;
     }

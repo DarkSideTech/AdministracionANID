@@ -59,5 +59,6 @@ app.UseMiddleware<AuditExecutionContextMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/healthz", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
 app.Run();
