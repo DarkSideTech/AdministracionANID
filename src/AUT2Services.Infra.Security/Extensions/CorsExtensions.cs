@@ -18,8 +18,21 @@ public class CorsExtensions
                 }
                 else
                 {
+                    var configuredOrigins = allowedOrigins
+                        .Where(origin => !string.IsNullOrWhiteSpace(origin))
+                        .Select(origin => origin.Trim().TrimEnd('/'))
+                        .Where(origin => !origin.Equals("*", StringComparison.Ordinal))
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToArray();
+
+                    if (configuredOrigins.Length == 0)
+                    {
+                        policy.SetIsOriginAllowed(_ => false);
+                        return;
+                    }
+
                     policy
-                        .WithOrigins(allowedOrigins)
+                        .WithOrigins(configuredOrigins)
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();

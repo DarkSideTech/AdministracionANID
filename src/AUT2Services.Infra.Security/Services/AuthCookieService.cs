@@ -1,13 +1,17 @@
 using AUT2Services.Domain.Core.Time;
 using AUT2Services.Infra.Security.Enumerations;
 using AUT2Services.Infra.Security.Interfaces;
+using AUT2Services.Infra.Security.Models;
 using AUT2Services.Infra.Security.Records;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace AUT2Services.Infra.Security.Services;
 
-public class AuthCookieService(IClock clock) : IAuthCookieService
+public class AuthCookieService(IClock clock, IOptions<JwtOptions> jwtOptions) : IAuthCookieService
 {
+    private readonly JwtOptions jwtOptions = jwtOptions.Value;
+
     public void AppendAuthCookies(HttpResponse response, AccessTokenResult accessToken, DateTimeOffset? refreshTokenExpiresAtUtc, string refreshToken)
     {
         response.Cookies.Append(
@@ -32,7 +36,7 @@ public class AuthCookieService(IClock clock) : IAuthCookieService
     private CookieOptions BuildCookieOptions(DateTimeOffset? expiresAtUtc) => new()
     {
         HttpOnly = true,
-        Secure = false,
+        Secure = jwtOptions.ImplementCookieOptionsSecure,
         SameSite = SameSiteMode.Strict,
         Expires = expiresAtUtc,
         IsEssential = true,

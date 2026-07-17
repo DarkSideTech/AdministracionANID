@@ -5,10 +5,7 @@ namespace AUT2Services.Infra.Security.Accounts.LoginClaveUnica;
 
 public class LoginClaveUnicaCommand : Command
 {
-    public string? ClientId { get; set; } = string.Empty;
-    public string? RedirectUri { get; set; } = string.Empty;
     public string? Code { get; set; } = string.Empty;
-    public string? State { get; set; } = string.Empty;
     public required HttpRequest Request { get; set; }
     public required HttpResponse Response { get; set; }
 

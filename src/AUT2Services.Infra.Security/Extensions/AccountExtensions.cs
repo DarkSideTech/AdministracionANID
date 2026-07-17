@@ -73,10 +73,7 @@ public static class AccountExtensions
 
         return new LoginClaveUnicaCommand()
         {
-            ClientId = viewModel.ClientId,
-            RedirectUri = viewModel.RedirectUri,
             Code = viewModel.Code,
-            State = viewModel.State,
             Request = request,
             Response = response
         };

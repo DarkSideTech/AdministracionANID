@@ -76,6 +76,7 @@ public class SecurityNativeInjectorBootStrapper
 
         services.AddScoped<IAccountServiceApp, AccountServiceApp>();
         services.AddScoped<IAuthCookieService, AuthCookieService>();
+        services.AddScoped<IClaveUnicaClient, ClaveUnicaClient>();
         services.AddScoped<ICsrfService, CsrfService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IEmailConfirmationMessageService, EmailConfirmationMessageService>();
@@ -85,6 +86,10 @@ public class SecurityNativeInjectorBootStrapper
         services.AddScoped<INotificationChannelDispatcher, EmailNotificationChannelDispatcher>();
         services.AddScoped<INotificationChannelDispatcher, ZendeskNotificationChannelDispatcher>();
         services.AddHttpClient();
+        services.AddHttpClient(ClaveUnicaClient.HttpClientName, client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(15);
+        });
         services.AddHttpClient<ITicketDataSender, ZendeskTicketSender>((serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<ZendeskSendTicketOptions>>().Value;
