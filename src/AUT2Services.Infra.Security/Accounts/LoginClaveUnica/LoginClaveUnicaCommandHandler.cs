@@ -13,8 +13,7 @@ using AUT2Services.Infra.Security.Traceability;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace AUT2Services.Infra.Security.Accounts.LoginClaveUnica;
@@ -27,9 +26,9 @@ public class LoginClaveUnicaCommandHandler(
     ICsrfService csrfService,
     IEntidadRepository entidadRepository,
     IMediatorHandler mediator,
-    IHttpClientFactory httpClientFactory,
-    IOptions<ClaveUnicaOptions> claveUnicaOptions,
-    ISecurityTraceabilityService securityTraceabilityService) : CommandHandler,
+    IClaveUnicaClient claveUnicaClient,
+    ISecurityTraceabilityService securityTraceabilityService,
+    ILogger<LoginClaveUnicaCommandHandler> logger) : CommandHandler,
     IRequestHandler<LoginClaveUnicaCommand, CommandResponse>
 {
     private const string LoginProvider = "CLAVEUNICA";
@@ -42,9 +41,9 @@ public class LoginClaveUnicaCommandHandler(
     private readonly ICsrfService csrfService = csrfService;
     private readonly IEntidadRepository entidadRepository = entidadRepository;
     private readonly IMediatorHandler mediator = mediator;
-    private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
-    private readonly ClaveUnicaOptions claveUnicaOptions = claveUnicaOptions.Value;
+    private readonly IClaveUnicaClient claveUnicaClient = claveUnicaClient;
     private readonly ISecurityTraceabilityService securityTraceabilityService = securityTraceabilityService;
+    private readonly ILogger<LoginClaveUnicaCommandHandler> logger = logger;
 
     public async Task<CommandResponse> Handle(LoginClaveUnicaCommand command, CancellationToken cancellationToken)
     {
@@ -62,7 +61,7 @@ public class LoginClaveUnicaCommandHandler(
             return CommandResponse;
         }
 
-        if (!IsClaveUnicaConfigured())
+        if (!claveUnicaClient.IsConfigured)
         {
             AddError("La configuracion de Clave Unica no esta completa en el backend.");
             return CommandResponse;
@@ -72,12 +71,13 @@ public class LoginClaveUnicaCommandHandler(
 
         try
         {
-            var accessToken = await ExchangeCodeAsync(command, cancellationToken);
-            userInfo = await GetUserInfoAsync(accessToken, cancellationToken);
+            var accessToken = await claveUnicaClient.ExchangeCodeAsync(command.Code!, cancellationToken);
+            userInfo = await claveUnicaClient.GetUserInfoAsync(accessToken, cancellationToken);
         }
         catch (Exception ex)
         {
-            AddError($"No fue posible autenticar con Clave Unica. {ex.Message}");
+            logger.LogWarning(ex, "No fue posible completar la comunicacion con Clave Unica.");
+            AddError("No fue posible autenticar con Clave Unica.");
             return CommandResponse;
         }
 
@@ -100,75 +100,11 @@ public class LoginClaveUnicaCommandHandler(
         }
         catch (Exception ex)
         {
-            AddError($"No fue posible completar el login con Clave Unica. {ex.Message}");
+            logger.LogError(ex, "No fue posible completar el login de Clave Unica.");
+            AddError("No fue posible completar el login con Clave Unica.");
         }
 
         return CommandResponse;
-    }
-
-    private bool IsClaveUnicaConfigured()
-    {
-        return !string.IsNullOrWhiteSpace(claveUnicaOptions.ClientId)
-            && !string.IsNullOrWhiteSpace(claveUnicaOptions.ClientSecret)
-            && !string.IsNullOrWhiteSpace(claveUnicaOptions.RedirectUri)
-            && !string.IsNullOrWhiteSpace(claveUnicaOptions.TokenUrl)
-            && !string.IsNullOrWhiteSpace(claveUnicaOptions.UserInfoUrl);
-    }
-
-    private async Task<string> ExchangeCodeAsync(LoginClaveUnicaCommand command, CancellationToken cancellationToken)
-    {
-        using var client = httpClientFactory.CreateClient();
-        using var request = new HttpRequestMessage(HttpMethod.Post, claveUnicaOptions.TokenUrl)
-        {
-            Content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                ["client_id"] = claveUnicaOptions.ClientId,
-                ["client_secret"] = claveUnicaOptions.ClientSecret,
-                ["redirect_uri"] = claveUnicaOptions.RedirectUri,
-                ["grant_type"] = "authorization_code",
-                ["code"] = command.Code!,
-                ["state"] = command.State!
-            })
-        };
-
-        using var response = await client.SendAsync(request, cancellationToken);
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new InvalidOperationException($"Token endpoint respondio {(int)response.StatusCode}. {content}");
-        }
-
-        var payload = JsonSerializer.Deserialize<ClaveUnicaTokenResponse>(content);
-        if (payload is null || string.IsNullOrWhiteSpace(payload.AccessToken))
-        {
-            throw new InvalidOperationException("La respuesta del token endpoint no contiene un access_token valido.");
-        }
-
-        return payload.AccessToken;
-    }
-
-    private async Task<ClaveUnicaUserInfoResponse> GetUserInfoAsync(string accessToken, CancellationToken cancellationToken)
-    {
-        using var client = httpClientFactory.CreateClient();
-        using var request = new HttpRequestMessage(HttpMethod.Post, claveUnicaOptions.UserInfoUrl);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-        using var response = await client.SendAsync(request, cancellationToken);
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new InvalidOperationException($"UserInfo endpoint respondio {(int)response.StatusCode}. {content}");
-        }
-
-        var payload = JsonSerializer.Deserialize<ClaveUnicaUserInfoResponse>(content);
-        if (payload is null)
-        {
-            throw new InvalidOperationException("La respuesta del endpoint userinfo no pudo deserializarse.");
-        }
-
-        return payload;
     }
 
     private async Task<Usuario> FindOrCreateUserAsync(

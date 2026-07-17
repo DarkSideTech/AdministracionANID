@@ -1,0 +1,7 @@
+.git
+.vs
+**/bin
+**/obj
+src/AUT2Services.Services.API/appsettings.Development.json
+src/AUT2Services.Services.API/appsettings.Staging.json
+src/AUT2Services.Services.API/appsettings.Production.json
