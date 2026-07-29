@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="MSTest.TestAdapter" />
     <PackageReference Include="MSTest.TestFramework" />
+    <PackageReference Include="MongoDB.Driver" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +26,8 @@
     <ProjectReference Include="..\AUT2Services.Domain.Core\AUT2Services.Domain.Core.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Cross.IoC\AUT2Services.Infra.Cross.IoC.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Data\AUT2Services.Infra.Data.csproj" />
+    <ProjectReference Include="..\AUT2Services.Infra.DataMongoDB\AUT2Services.Infra.DataMongoDB.csproj" />
+    <ProjectReference Include="..\AUT2Services.Infra.Migrations.PostgreSql\AUT2Services.Infra.Migrations.PostgreSql.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Security\AUT2Services.Infra.Security.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Tools.EmailManager\AUT2Services.Infra.Tools.EmailManager.csproj" />
     <ProjectReference Include="..\AUT2Services.Infra.Tools.ZendeskManager\AUT2Services.Infra.Tools.ZendeskManager.csproj" />
