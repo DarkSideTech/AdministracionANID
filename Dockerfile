@@ -9,6 +9,7 @@ RUN dotnet publish AUT2Services.Services.API/AUT2Services.Services.API.csproj --
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
+ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 ENV ASPNETCORE_ENVIRONMENT=Sandbox
 ENV ASPNETCORE_URLS=http://+:10000
 

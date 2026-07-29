@@ -14,8 +14,8 @@ public static class ApiConfig
 
         builder.Configuration
                     .SetBasePath(builder.Environment.ContentRootPath)
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false)
                     .AddEnvironmentVariables();
 
         builder.Services.AddControllers();
