@@ -289,31 +289,45 @@ public class LoginClaveUnicaCommandHandler(
         ClaveUnicaRun run,
         CancellationToken cancellationToken)
     {
-        var entidad = await entidadRepository.BuscarPor_Id_Usuario_TipoDeEntidad_Persona(Guid.Parse(usuario.Id));
-        if (entidad is not null)
+        var userId = Guid.Parse(usuario.Id);
+        var personas = (await entidadRepository.BuscarPor_Id_Usuario(userId))
+            .Where(entidad => EnumTipoDeEntidad.PERSONA.Equals(entidad.TipoDeEntidad, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (personas.Count == 0)
         {
-            return entidad;
+            var (_, _, _, _, nombreADesplegar) = ExtractNames(userInfo);
+            var baseEntityCommand = new BaseEntityCommand
+            {
+                CodigoOrganizacion = run.Number,
+                NombreOrganizacion = nombreADesplegar,
+                Id_Usuario = userId,
+                TipoDeEntidad = EnumTipoDeEntidad.PERSONA,
+                CorreoElectronico = string.Empty,
+                PermitirCorreoElectronicoVacio = true
+            };
+
+            var result = await mediator.SendCommand(baseEntityCommand, cancellationToken);
+            if (!result.Result)
+            {
+                throw new InvalidOperationException(string.Join(" ", result.ValidationResult.Errors.Select(x => x.ErrorMessage)));
+            }
+
+            personas = (await entidadRepository.BuscarPor_Id_Usuario(userId))
+                .Where(entidad => EnumTipoDeEntidad.PERSONA.Equals(entidad.TipoDeEntidad, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
-        var (_, _, _, _, nombreADesplegar) = ExtractNames(userInfo);
-        var baseEntityCommand = new BaseEntityCommand
+        if (personas.Count == 1 && personas[0].Principal)
         {
-            CodigoOrganizacion = run.Number,
-            NombreOrganizacion = nombreADesplegar,
-            Id_Usuario = Guid.Parse(usuario.Id),
-            TipoDeEntidad = EnumTipoDeEntidad.PERSONA,
-            CorreoElectronico = string.Empty,
-            PermitirCorreoElectronicoVacio = true
-        };
-
-        var result = await mediator.SendCommand(baseEntityCommand, cancellationToken);
-        if (!result.Result)
-        {
-            throw new InvalidOperationException(string.Join(" ", result.ValidationResult.Errors.Select(x => x.ErrorMessage)));
+            return personas[0];
         }
 
-        return await entidadRepository.BuscarPor_Id_Usuario_TipoDeEntidad_Persona(Guid.Parse(usuario.Id))
-            ?? throw new InvalidOperationException("No fue posible recuperar la entidad base del usuario.");
+        logger.LogWarning(
+            "Se bloqueo el login de Clave Unica porque la entidad PERSONA no cumple la invariancia requerida. PersonaCount: {PersonaCount}; PrincipalCount: {PrincipalCount}.",
+            personas.Count,
+            personas.Count(persona => persona.Principal));
+        throw new InvalidOperationException("La entidad PERSONA del usuario no cumple la invariancia requerida.");
     }
 
     private async Task<ProfileLogin> IssueSessionAsync(
