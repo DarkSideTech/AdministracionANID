@@ -41,9 +41,9 @@ namespace AUT2Services.Domain.Commands.Procesos.Handlers
                 command.NivelDeProceso, 
                 command.Url, 
                 command.Token, 
-                command.ComoDesplegarUrlDeProceso, 
-                existProceso.ProcesoBase, 
-                existProceso.MaximaAsignacionDeRoles, 
+                command.ComoDesplegarUrlDeProceso,
+                command.ProcesoBase,
+                command.MaximaAsignacionDeRoles, 
                 existProceso.Activo 
                 );
 
