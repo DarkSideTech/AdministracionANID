@@ -40,7 +40,9 @@ public sealed class DefaultAuditDeltaBuilder(IAuditSerializer serializer) : IAud
                 order++,
                 afterProperty.Name,
                 afterProperty.PropertyType.FullName ?? afterProperty.PropertyType.Name,
-                serializer.Serialize(newValue)));
+                AuditSensitiveDataPolicy.IsSensitiveProperty(afterProperty.Name)
+                    ? AuditSensitiveDataPolicy.RedactedJsonValue
+                    : serializer.Serialize(newValue)));
         }
 
         return changes;
